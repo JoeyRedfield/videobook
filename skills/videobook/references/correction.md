@@ -8,12 +8,13 @@
 
 ```bash
 python src/make_corrected.py <video_id> [<video_id> ...]   # 或 --all
-python src/make_corrected.py <video_id> --edits corrections.json
+python src/make_corrected.py <video_id> --edits corrections.json --force
 ```
 
 - 输出 `output/<video_id>/transcript.corrected.txt`，格式与 `transcript.txt` 相同：`[HH:MM:SS] 原文`，逐段不合并。
 - **重跑保护**：目标文件已存在时脚本拒绝覆盖（防止抹掉后续的人工 / AI 行级订正）。
-  确需从头重建加 `--force`；要叠加新校订用 `--edits <corrections.json>`。
+  确需从头重建加 `--force`；要叠加新校订用 `--edits <corrections.json>` 加 `--force`
+  （`--edits` 只决定“叠加什么”，并不豁免重跑保护，漏写 `--force` 会直接报错退出）。
 - 纯本地步骤，沙箱内可跑。
 
 ## 只允许两类修改（铁律 5）
@@ -21,6 +22,10 @@ python src/make_corrected.py <video_id> --edits corrections.json
 1. **ASR 错词替换**：来自 `src/make_corrected.py` 里的 `MAP`（按 key 长度降序应用，避免子串误伤）。
    **新视频遇到的系统性错词，直接往 `MAP` 里加一条并提交**（仓库里已有按讲次补充的先例），
    不要把 MAP 复制进 skill 或 `book.md`。
+   - 加 key 必须先 `rg` 全仓库 transcript 确认它不会误伤正常用语：MAP 是**全局子串替换**，
+     过短的 key 会改坏别的讲次。仓库里真实踩过的坑：`"构图": "goto"` 会把「架构**图**」变成「架goto」，
+     `"view": "View"` 会把「review」变成「reView」（后者已改为带前导空格的 `" view"`）。
+     **判断标准**：key 只有出现在你正在修的那句话里才安全，否则把 key 写长一点（带上上下文词）。
 2. **口癖清理**：纯语气词整段删除、句尾语气词剥离、单字口吃叠词折叠。
 
 ## AI 行级订正（第二遍，叠加在 MAP 之后）

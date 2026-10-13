@@ -42,6 +42,16 @@ python src/course_assets.py <video_id> --locate-slides   # 抽样视频，定位
 python src/course_assets.py <video_id> --weave           # 自动修复：重复图去重保留首次、缺失页按首现时间插入对应小节、课堂未展示的页进附录；修复后自动复审
 ```
 
+- `--locate-slides` 逐帧比对后写出 `course/slide_timeline.json`（每页 `first_ts` + `source`，来自抽帧则为 `probe`），
+  并打印「timeline: N/M slides located; not shown on video: [...]」。**写到 book.md 里的 `SLIDE:n@HH:MM:SS` 建议直接取自这份文件**，
+  比自己按内容估时准得多；抽帧默认步长 20s (`--step`)，**画面停留短于一个步长的页会匹配不到**，
+  会被归入「未展示」；判定“课堂没讲过”前先用 `--step 10` 复核一轮。
+- 抽帧中间产物落在 `course/_probe_frames/probe_<秒数>.png`，**体积很大**（97 分钟的课约 110 MB）。
+  它只是定位用的临时帧，按铁律 9 询问用户后再删；删掉不影响已生成的 `slide_timeline.json`，但重跑本步会重新抓。
+- **课堂未展示页**在附录里只写 `![第 n 页幻灯片 · <标题>](SLIDE:n)`（**不带** `@时间`）；
+  物化时它会被复制为 `images/slide_NNN.png`（带时间的则复制为 `images/shot_HH_MM_SS.png`），
+  因此附录里的图同样不依赖 `course/`，`course/` 可整体删除。
+
 ## 截帧后升级：把「画面即幻灯片」的糊帧换成官方渲染图
 
 ```bash
