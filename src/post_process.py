@@ -168,6 +168,19 @@ def process_markdown(video_url: str, md_file: str):
     with open(md_file, 'r', encoding='utf-8') as f:
         content = f.read()
 
+    # 0) 目录由标题机械生成，避免模型手写编号与 Markdown 有序列表重复。
+    #    只把显式占位符或外观修正写回源文件；章节增删导致的结构变化仅用于本次渲染。
+    from build_toc import normalize_for_render
+    normalized, toc_mode = normalize_for_render(content)
+    if toc_mode != "noop":
+        content = normalized
+    if toc_mode == "cosmetic":
+        with open(md_file, 'w', encoding='utf-8', newline='\n') as f:
+            f.write(content)
+        print(">> 目录已规范化（去掉重复编号 / 重算锚点），已写回 book.md")
+    elif toc_mode == "structural":
+        print(">> 目录已按当前章节生成用于 HTML；源 book.md 未改动。需要保存目录时运行 src/build_toc.py")
+
     # 从 MD 第一行提取标题
     title_match = re.search(r'^#\s+(.+)', content, re.MULTILINE)
     title = title_match.group(1).strip() if title_match else "VideoBook"
