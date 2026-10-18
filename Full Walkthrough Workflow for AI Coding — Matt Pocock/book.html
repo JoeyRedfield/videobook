@@ -322,13 +322,27 @@
     <aside class="book-toc"><details open><summary>目录</summary><nav aria-label="章节目录"><div class="toc">
 <ul>
 <li><a href="#_1">核心结论</a></li>
-<li><a href="#1">1. 先承认代理的上下文限制</a></li>
-<li><a href="#2">2. 先用人机对齐解决产品歧义</a></li>
+<li><a href="#_2">视频章节对照</a></li>
+<li><a href="#1">1. 先承认代理的上下文限制</a><ul>
+<li><a href="#_3">研究与原型：先获得反馈，再决定是否实现</a></li>
+</ul>
+</li>
+<li><a href="#2">2. 先用人机对齐解决产品歧义</a><ul>
+<li><a href="#prd">把对话沉淀成 PRD</a></li>
+</ul>
+</li>
 <li><a href="#3-prd">3. 把 PRD 拆成垂直切片</a></li>
-<li><a href="#4">4. 自动化实现，但保留质量所有权</a></li>
-<li><a href="#5">5. 设计代理能够继承的代码库</a></li>
-<li><a href="#_2">一份可直接执行的检查清单</a></li>
-<li><a href="#_3">相关资源</a></li>
+<li><a href="#4">4. 自动化实现，但保留质量所有权</a><ul>
+<li><a href="#afk">AFK 实现循环</a></li>
+<li><a href="#qa">新上下文审查与人工 QA</a></li>
+</ul>
+</li>
+<li><a href="#5">5. 设计代理能够继承的代码库</a><ul>
+<li><a href="#_4">并行编排与最终回到人的判断</a></li>
+</ul>
+</li>
+<li><a href="#_5">一份可直接执行的检查清单</a></li>
+<li><a href="#_6">相关资源</a></li>
 </ul>
 </div>
 </nav></details></aside>
@@ -354,6 +368,69 @@
     G --&gt; D
 </code></pre></div>
 
+<h2 id="_2">视频章节对照</h2>
+<table>
+<thead>
+<tr>
+<th>视频时间</th>
+<th>视频章节</th>
+<th>笔记位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00:00–00:04:20</td>
+<td>引入与 AI 工程的主张</td>
+<td>核心结论、§1</td>
+</tr>
+<tr>
+<td>00:04:20–00:12:45</td>
+<td>Research &amp; Prototyping</td>
+<td>§1「研究与原型」</td>
+</tr>
+<tr>
+<td>00:12:45–00:22:10</td>
+<td>Grill Session</td>
+<td>§2</td>
+</tr>
+<tr>
+<td>00:22:10–00:35:50</td>
+<td>Writing the PRD</td>
+<td>§2「把对话沉淀成 PRD」</td>
+</tr>
+<tr>
+<td>00:35:50–00:48:15</td>
+<td>Slicing Work into Issues</td>
+<td>§3</td>
+</tr>
+<tr>
+<td>00:48:15–01:05:30</td>
+<td>Implementation with AI Agents</td>
+<td>§4「AFK 实现循环」</td>
+</tr>
+<tr>
+<td>01:05:30–01:18:45</td>
+<td>Human-in-the-Loop Review</td>
+<td>§4「新上下文审查与人工 QA」</td>
+</tr>
+<tr>
+<td>01:18:45–01:28:10</td>
+<td>架构、测试边界与反馈</td>
+<td>§5</td>
+</tr>
+<tr>
+<td>01:28:10–01:34:06</td>
+<td>Push/Pull 与 Sandcastle</td>
+<td>§5「并行编排」</td>
+</tr>
+<tr>
+<td>01:34:06–01:36:30</td>
+<td>Final Takeaways</td>
+<td>检查清单</td>
+</tr>
+</tbody>
+</table>
+<p>这张表按字幕中的官方章节时间核对过。官方简介把 01:18:45 一段标为 Deployment &amp; Monitoring，但演讲此处实际重点是代码库形状、测试边界、架构改进和文档腐化，笔记按实际内容记录。</p>
 <h2 id="1">1. 先承认代理的上下文限制</h2>
 <p><em>(参考时间：00:03:00)</em></p>
 <div class="video-card screenshot-card">   <img src="images/shot_00_03_00.png" alt="上下文从“聪明区”滑向“迟钝区”的示意" loading="lazy">   <p class="video-caption">📷 上下文从“聪明区”滑向“迟钝区”的示意<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=180" target="_blank" rel="noopener">回到原视频 (00:03:00)</a></p> </div>
@@ -367,6 +444,9 @@
 <li>把仓库探索、实现和测试拆成清楚的阶段；昂贵的探索可以交给隔离的子代理，主会话只接收结论。</li>
 </ul>
 <p>这也解释了为什么“再开一个阶段”通常比让同一个代理无限延长更可靠。每次重置都重新加载持久指令，代理知道自己从哪里开始，开发者也更容易判断当前结果是否可信。</p>
+<h3 id="_3">研究与原型：先获得反馈，再决定是否实现</h3>
+<p><em>(参考时间：00:04:20)</em></p>
+<p>演讲者把“探索代码库—实现—测试”看成可重复的工作阶段，而不是一条必须从头跑到尾的长会话。研究阶段可以让代理在隔离上下文中搜集结构和约束，主会话只接收结论；原型则用于尽快获得真实反馈，确认方向是否值得继续。原型的目标是减少不确定性，不是先把生产级架构完整做出来，因此不必为每个一次性原型编写完整 PRD。</p>
 <h2 id="2">2. 先用人机对齐解决产品歧义</h2>
 <p><em>(参考时间：00:11:35)</em></p>
 <div class="video-card screenshot-card">   <img src="images/shot_00_15_00.png" alt="Grill Me 通过提问澄清产品决策" loading="lazy">   <p class="video-caption">📷 Grill Me 通过提问澄清产品决策<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=900" target="_blank" rel="noopener">回到原视频 (00:15:00)</a></p> </div>
@@ -387,6 +467,10 @@
 <li>预计涉及的模块，以及与现有代码库的关系。</li>
 </ol>
 <p>PRD 是“目的地”的记录，不是永远不变的真理。演讲者倾向于信任充分对齐后的代理总结，但仍会检查模块边界，确保方案能落在现有系统里。</p>
+<h3 id="prd">把对话沉淀成 PRD</h3>
+<p><em>(参考时间：00:22:10)</em></p>
+<p>Grill Me 的对话本身就是资产：它保存了为什么做某个决定、哪些问题曾经没有答案，以及哪些假设需要后续验证。PRD 应该从这段对话中提炼出目的地，而不是退回“把规格交给代理、等待代码出现”的 specs-to-code 模式。</p>
+<p>演讲者的取舍是：对齐充分后，不必反复润色 PRD 或逐字审阅代理的总结；需要重点检查的是模块边界、测试决策和非目标是否与代码库现实相容。若原型或领域专家反馈改变了假设，就回到 PRD 和 issue 图修正目的地。</p>
 <h2 id="3-prd">3. 把 PRD 拆成垂直切片</h2>
 <p><em>(参考时间：00:39:23)</em></p>
 <div class="video-card screenshot-card">   <img src="images/shot_00_41_00.png" alt="把 PRD 转成带依赖关系的 issue 图" loading="lazy">   <p class="video-caption">📷 把 PRD 转成带依赖关系的 issue 图<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=2460" target="_blank" rel="noopener">回到原视频 (00:41:00)</a></p> </div>
@@ -411,11 +495,14 @@
 <li>它是否足够小，能在代理的聪明区内完成？</li>
 <li>它的阻塞关系和完成标准是否清楚，能否安全交给另一个会话？</li>
 </ul>
+<p>演讲中还把 issue 分成普通任务和适合 AFK 的任务。AFK 不是“无需审查”，而是“前置条件、验收标准和反馈回路都足够清楚，可以交给无人值守的一次迭代”。一个共享前置任务完成后，依赖图上互不阻塞的 AFK 分支才可以并行。</p>
 <h2 id="4">4. 自动化实现，但保留质量所有权</h2>
 <p><em>(参考时间：00:51:58)</em></p>
 <div class="video-card screenshot-card">   <img src="images/shot_00_55_44.png" alt="代理在隔离环境中领取 issue 并运行测试" loading="lazy">   <p class="video-caption">📷 代理在隔离环境中领取 issue 并运行测试<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=3344" target="_blank" rel="noopener">回到原视频 (00:55:44)</a></p> </div>
 
-<p>当目标、PRD 和 issue 图都经过人工确认后，才适合进入“夜班”循环：代理从可执行的 AFK issue 中选择一个，探索仓库、实现代码、运行反馈，然后提交结果。演讲者建议先反复运行单次循环，观察代理行为并调好提示词，再把它放进更长时间的 Docker 沙箱。</p>
+<h3 id="afk">AFK 实现循环</h3>
+<p><em>(参考时间：00:48:15)</em></p>
+<p>当目标、PRD 和 issue 图都经过人工确认后，才适合进入“夜班”循环：代理从本地 issue 文件中选择一个未阻塞的 AFK 任务，读取最近提交和仓库指令，探索代码、实现、运行反馈，然后提交结果；没有可执行任务时明确输出“没有更多任务”。演讲者建议先反复运行单次循环，观察代理行为并调好提示词，再把它放进更长时间的 Docker 沙箱。</p>
 <p>实现提示词应明确：</p>
 <ul>
 <li>按依赖关系和优先级选任务；</li>
@@ -431,6 +518,10 @@
 <li>自动证据：测试、类型检查、静态审查；</li>
 <li>真实证据：人工 QA、界面体验和端到端行为。</li>
 </ul>
+<h3 id="qa">新上下文审查与人工 QA</h3>
+<p><em>(参考时间：01:05:30)</em></p>
+<p>实现结束后，审查应该进入一个新的会话：实现者已经消耗了自己的上下文，审查者需要独立判断代码是否符合规范、是否遗漏边界。演讲者用“拉取（pull）”和“推送（push）”区分两类信息流：实现者按需拉取技能和仓库知识；审查者则应直接收到本次审查适用的标准。</p>
+<p>这一步仍然不能把责任交给代理。测试通过只能证明自动反馈回路没有发现问题，不能证明用户流程真的可用；演示中的缺失数据库表就是反例。人工 QA 还要检查仪表盘、端到端路径和视觉结果。演讲者也承认一个现实矛盾：代理可能产生多到人类难以完整审阅的代码，因此应尽量保持提交和 Pull Request 小而自洽。</p>
 <h2 id="5">5. 设计代理能够继承的代码库</h2>
 <p><em>(参考时间：01:15:46)</em></p>
 <div class="video-card screenshot-card">   <img src="images/shot_01_16_37.png" alt="深模块与边界级行为测试" loading="lazy">   <p class="video-caption">📷 深模块与边界级行为测试<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=4597" target="_blank" rel="noopener">回到原视频 (01:16:37)</a></p> </div>
@@ -451,7 +542,11 @@
 </code></pre></div>
 
 <p>这仍然是一个循环系统，而不是完全自治的机器：人工 QA 可以继续产生新 issue，团队反馈可以推翻早先的假设，前端细节可能需要一次性的可视化原型。另一个风险是 <strong>文档腐化（doc rot）</strong>：已经完成的 PRD 如果长期留在仓库里，未来代理可能把旧目标误当成现状。完成的计划应当关闭、归档或删除，当前代码和待办队列才是下一轮工作的依据。</p>
-<h2 id="_2">一份可直接执行的检查清单</h2>
+<h3 id="_4">并行编排与最终回到人的判断</h3>
+<p><em>(参考时间：01:28:10)</em></p>
+<p>Sandcastle 把上面的原则做成了一个编排器：规划器从带依赖的 issue 队列挑选可兼容任务，在独立 worktree 和 Docker 沙箱中启动实现代理；审查代理检查各自提交，合并代理处理测试、类型和集成冲突。它扩大的是执行并行度，不是扩大人的责任边界。</p>
+<p>演讲最后重新强调，实际工作不会严格按“研究 → PRD → issue → 实现”单向前进。QA 可能产生新问题，原型可能推翻方案，架构调整也可能改变 issue 图。最稳定的闭环是：人负责对齐、架构、品味和最终质量；代理在清楚的边界内执行，并把可验证的结果交回来。</p>
+<h2 id="_5">一份可直接执行的检查清单</h2>
 <ol>
 <li>用一次人机对齐会话把需求中的产品问题问清楚。</li>
 <li>生成 PRD，记录目标、约束、测试与非目标。</li>
@@ -461,7 +556,7 @@
 <li>用小接口、深模块和边界级行为测试维持架构可理解性。</li>
 <li>让 QA 反馈回到 issue 队列，及时清理过期 PRD 和计划文档。</li>
 </ol>
-<h2 id="_3">相关资源</h2>
+<h2 id="_6">相关资源</h2>
 <ul>
 <li><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko">YouTube 原视频</a></li>
 <li><a href="https://ai.engineer/talks/-QFHIoCo-Ko-ai-coding-workflow">AI Engineer 官方讲义、校订稿与时间线</a></li>
