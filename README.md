@@ -52,6 +52,30 @@ python -m pytest tests -q
 
 - 在线阅读：<https://linbol.top/videobook/>
 
+## 创建自己的知识网站
+
+本仓库已经内置一个适合个人知识库的静态书架。先编辑根目录的 [`site.json`](site.json)，填写站点标题、简介、页脚和项目地址；之后每次生成电子书后运行：
+
+```bash
+python src/publish.py <视频ID>   # 或 python src/publish.py --all
+git push origin pages
+```
+
+在 GitHub 仓库的 Settings → Pages 中选择 `pages` 分支和根目录，部署完成后就是你的在线阅读站点。每个 `output/<视频ID>/book.html` 会成为书架中的一篇可阅读文章，图片和字幕对照会一并发布。
+
+### 同步原项目更新
+
+本仓库使用 `origin` 指向你的仓库，`upstream` 指向原项目。同步原项目的 `main` 更新并合并到自己的仓库：
+
+```bash
+git fetch upstream
+git switch main
+git merge upstream/main
+git push origin main
+```
+
+更新内容后重新运行 `python src/publish.py --all`，再推送 `pages` 分支即可。
+
 ## 开源许可
 
 Apache License 2.0，见 [LICENSE](LICENSE)。生成的电子书中所含课程视频画面、字幕、讲义与幻灯片，版权归各自权利人所有，不在本许可授予范围内。

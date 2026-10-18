@@ -9,6 +9,7 @@ tagged 稿等中间物。全程使用 git plumbing + 临时 index/工作树，�
     python publish.py --all
 """
 import argparse
+import html
 import json
 import os
 import re
@@ -23,6 +24,7 @@ BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GD = os.path.join(BASE, ".git")
 PAGES = "pages"
 CORRECTED = "transcript.corrected.txt"
+SITE_CONFIG = os.path.join(BASE, "site.json")
 
 
 def run(args, env=None, cwd=BASE, check=True):
@@ -59,11 +61,11 @@ def _src_blob_map(src):
     return out
 
 
-def _pages_blob_map(folder):
+def _pages_blob_map(folder, ref=PAGES):
     """pages 分支中某目录的 relpath -> blob sha；不存在返回 {}。"""
     if not folder:
         return {}
-    r = run(["-c", "core.quotePath=false", "ls-tree", "-r", PAGES, "--", folder], check=False)
+    r = run(["-c", "core.quotePath=false", "ls-tree", "-r", ref, "--", folder], check=False)
     if r.returncode != 0:
         return {}
     m = {}
@@ -74,9 +76,19 @@ def _pages_blob_map(folder):
 
 
 def pages_tip():
-    r = run(["rev-parse", "--verify", "--quiet", f"refs/heads/{PAGES}"], check=False)
+    ref = pages_source_ref()
+    r = run(["rev-parse", "--verify", "--quiet", ref], check=False)
     return r.stdout.strip() if r.returncode == 0 else None
 
+def pages_source_ref():
+    """优先使用本地 pages；新 clone 则基于已抓取的 origin/pages。"""
+    local = f"refs/heads/{PAGES}"
+    remote = f"refs/remotes/origin/{PAGES}"
+    if run(["show-ref", "--verify", "--quiet", local], check=False).returncode == 0:
+        return local
+    if run(["show-ref", "--verify", "--quiet", remote], check=False).returncode == 0:
+        return remote
+    return PAGES
 
 def read_title(video_id):
     p = os.path.join(BASE, "output", video_id, "transcript.json")
@@ -91,32 +103,55 @@ def _seq(meta):
     m = re.search(r"\[(\d+)[-－]", meta.get("title", ""))
     return int(m.group(1)) if m else 10**9
 
+def read_site_config():
+    """读取个人站点配置；缺失或损坏时使用通用默认值。"""
+    defaults = {
+        "title": "我的知识书架",
+        "description": "把视频、课程和笔记整理成可搜索、可持续阅读的知识库。",
+        "footer": "由 VideoBook 流水线自动生成",
+        "github_url": "",
+    }
+    try:
+        with open(SITE_CONFIG, encoding="utf-8") as f:
+            raw = json.load(f)
+        if isinstance(raw, dict):
+            defaults.update({k: str(v) for k, v in raw.items() if k in defaults})
+    except (OSError, json.JSONDecodeError):
+        pass
+    return defaults
 
 
-def build_index_html(manifest):
-    """落地页：浅色背景 + 卡片设计（参考 idealclover/homepage 的 daisyUI 语言）。"""
+def build_index_html(manifest, site=None):
+    """生成纯静态知识书架首页。"""
+    site = site or read_site_config()
     rows = sorted(manifest.items(), key=lambda kv: (_seq(kv[1]), kv[1].get("updated", "")))
     cards = []
     for i, (vid, meta) in enumerate(rows):
         href = quote(meta["folder"]) + "/book.html"
+        title = html.escape(meta.get("title") or vid)
+        safe_vid = html.escape(vid)
         txt = (f'<a class="btn" href="{quote(meta["folder"])}/{CORRECTED}">字幕对照</a>'
                if meta.get("corrected") else "")
         cards.append(
             f'      <div class="card">\n'
             f'        <a class="stretch" href="{href}" aria-label="开始阅读"></a>\n'
             f'        <div class="badge b{i % 4}">{i + 1:02d}</div>\n'
-            f'        <h2>{meta["title"] or vid}</h2>\n'
-            f'        <p class="meta">{vid} · 更新于 {meta.get("updated", "")[:10]}</p>\n'
+            f'        <h2>{title}</h2>\n'
+            f'        <p class="meta">{safe_vid} · 更新于 {html.escape(meta.get("updated", "")[:10])}</p>\n'
             f'        <div class="grow"></div>\n'
             f'        <div class="actions">{txt}<a class="btn read hb{i % 4}" href="{href}">开始阅读</a></div>\n'
             f'      </div>')
     body = "\n".join(cards) or '      <p class="empty">暂无成品</p>'
+    site_title = html.escape(site["title"])
+    site_description = html.escape(site["description"])
+    site_footer = html.escape(site["footer"])
+    github_url = site["github_url"].strip() or "https://github.com/Luke-Evan/videobook"
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>生成式软件工程电子书架</title>
+<title>{site_title}</title>
 <style>
   :root {{ color-scheme: light; }}
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
@@ -167,21 +202,23 @@ def build_index_html(manifest):
   .read.hb3:hover {{ background: linear-gradient(135deg,#fef3c7,#fce7f3); }}
   .empty {{ color: #6e7781; }}
   footer {{ margin-top: 44px; color: #8b949e; font-size: .8em; text-align: center; }}
+  .github-corner {{ position: absolute; top: 0; right: 0; fill: #151513; color: #fff; }}
   .github-corner:hover .octo-arm {{ animation: octocat-wave 560ms ease-in-out; }}
   @keyframes octocat-wave {{ 0%, 100% {{ transform: rotate(0); }} 20%, 60% {{ transform: rotate(-25deg); }} 40%, 80% {{ transform: rotate(10deg); }} }}
   @media (max-width: 500px) {{ .github-corner:hover .octo-arm {{ animation: none; }} .github-corner .octo-arm {{ animation: octocat-wave 560ms ease-in-out; }} }}
 </style>
 </head>
 <body>
-  <a href="https://github.com/Luke-Evan/videobook" target="_blank" rel="noopener" class="github-corner" aria-label="View my GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0; z-index: 5;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+  <a href="{html.escape(github_url, quote=True)}" target="_blank" rel="noopener" class="github-corner" aria-label="打开项目仓库"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0; z-index: 5;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
   <div class="wrap">
     <header>
-      <h1>生成式软件工程电子书架</h1>
+      <h1>{site_title}</h1>
+      <p>{site_description}</p>
     </header>
     <div class="grid">
 {body}
     </div>
-    <footer>由 VideoBook 流水线自动生成 · 内容衍生自 B 站公开课程视频</footer>
+    <footer>{site_footer}</footer>
   </div>
 </body>
 </html>
@@ -206,6 +243,7 @@ def main():
         if not os.path.isfile(os.path.join(BASE, "output", vid, "book.html")):
             sys.exit(f"output/{vid}/book.html 不存在，先完成渲染步骤")
 
+    source_ref = pages_source_ref()
     tip = pages_tip()
     tmp = tempfile.mkdtemp(prefix="videobook_publish_")
     env = {"GIT_INDEX_FILE": tmp + ".index"}  # 索引文件必须在工作树之外，否则会被 add 进提交
@@ -214,7 +252,7 @@ def main():
     try:
         # 1) 临时 index 装载旧 pages 树（若有），并物化到临时工作树
         if tip:
-            g("--git-dir", GD, "--work-tree", tmp, "read-tree", PAGES)
+            g("--git-dir", GD, "--work-tree", tmp, "read-tree", source_ref)
             g("--git-dir", GD, "--work-tree", tmp, "checkout-index", "-a", check=False)
         else:
             g("--git-dir", GD, "--work-tree", tmp, "read-tree", "--empty")
@@ -227,7 +265,7 @@ def main():
         # 2) 读旧 manifest
         manifest = {}
         if tip:
-            r = run(["show", f"{PAGES}:manifest.json"], check=False)
+            r = run(["show", f"{source_ref}:manifest.json"], check=False)
             if r.returncode == 0:
                 try:
                     manifest = json.loads(r.stdout)
@@ -248,7 +286,7 @@ def main():
             dst = os.path.join(tmp, folder)
 
             # 4) 内容未变且目录未改名：保持原发布（含原 updated），保证幂等
-            if old == folder and _pages_blob_map(old) == _src_blob_map(src):
+            if old == folder and _pages_blob_map(old, source_ref) == _src_blob_map(src):
                 manifest[vid] = {"folder": folder, "title": title,
                                  "updated": manifest[vid].get("updated", now),
                                  "corrected": os.path.isfile(os.path.join(src, CORRECTED))}
@@ -286,7 +324,7 @@ def main():
         g("-C", tmp, "--git-dir", GD, "--work-tree", tmp, "add", "-A")
         tree = g("--git-dir", GD, "--work-tree", tmp, "write-tree").stdout.strip()
         if tip:
-            old_tree = run(["rev-parse", f"{PAGES}^{{tree}}"]).stdout.strip()
+            old_tree = run(["rev-parse", f"{source_ref}^{{tree}}"]).stdout.strip()
             if tree == old_tree:
                 print(">> 内容无变化，跳过提交")
                 return
