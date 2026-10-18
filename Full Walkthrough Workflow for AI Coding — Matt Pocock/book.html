@@ -356,7 +356,7 @@
 
 <h2 id="1">1. 先承认代理的上下文限制</h2>
 <p><em>(参考时间：00:03:00)</em></p>
-<div class="video-card youtube-card">   <div class="video-wrapper">     <iframe src="https://www.youtube-nocookie.com/embed/-QFHIoCo-Ko?start=180&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&playsinline=1&cc_load_policy=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>   </div>   <p class="video-caption">▶ 上下文从“聪明区”滑向“迟钝区”的示意<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=180s" target="_blank" rel="noopener">在 YouTube 中打开 (00:03:00)</a></p> </div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_03_00.png" alt="上下文从“聪明区”滑向“迟钝区”的示意" loading="lazy">   <p class="video-caption">📷 上下文从“聪明区”滑向“迟钝区”的示意<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=180" target="_blank" rel="noopener">回到原视频 (00:03:00)</a></p> </div>
 
 <p>演讲者把代理的工作状态分成“聪明区”和“迟钝区”。随着对话不断变长，模型需要维护的注意力关系越来越多，代码决策会逐渐变差。更大的上下文窗口有助于检索更多资料，却不等于模型能在整个窗口里保持同样的推理质量。演讲者以大约 100K token 作为自己的经验阈值，并强调这是工作标尺，不是永恒的硬限制。</p>
 <p>因此，任务应当保持在一次会话的有效范围内：</p>
@@ -369,7 +369,7 @@
 <p>这也解释了为什么“再开一个阶段”通常比让同一个代理无限延长更可靠。每次重置都重新加载持久指令，代理知道自己从哪里开始，开发者也更容易判断当前结果是否可信。</p>
 <h2 id="2">2. 先用人机对齐解决产品歧义</h2>
 <p><em>(参考时间：00:11:35)</em></p>
-<div class="video-card youtube-card">   <div class="video-wrapper">     <iframe src="https://www.youtube-nocookie.com/embed/-QFHIoCo-Ko?start=900&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&playsinline=1&cc_load_policy=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>   </div>   <p class="video-caption">▶ Grill Me 通过提问澄清产品决策<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=900s" target="_blank" rel="noopener">在 YouTube 中打开 (00:15:00)</a></p> </div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_15_00.png" alt="Grill Me 通过提问澄清产品决策" loading="lazy">   <p class="video-caption">📷 Grill Me 通过提问澄清产品决策<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=900" target="_blank" rel="noopener">回到原视频 (00:15:00)</a></p> </div>
 
 <p>演讲中的例子是给课程平台 Cadence 增加游戏化功能。原始需求只有一句“学生完成几节课后就流失了，希望加点游戏化”。这还不足以直接交给代理实现，因为真正的产品决策仍然悬而未决：</p>
 <ul>
@@ -389,7 +389,7 @@
 <p>PRD 是“目的地”的记录，不是永远不变的真理。演讲者倾向于信任充分对齐后的代理总结，但仍会检查模块边界，确保方案能落在现有系统里。</p>
 <h2 id="3-prd">3. 把 PRD 拆成垂直切片</h2>
 <p><em>(参考时间：00:39:23)</em></p>
-<div class="video-card youtube-card">   <div class="video-wrapper">     <iframe src="https://www.youtube-nocookie.com/embed/-QFHIoCo-Ko?start=2460&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&playsinline=1&cc_load_policy=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>   </div>   <p class="video-caption">▶ 把 PRD 转成带依赖关系的 issue 图<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=2460s" target="_blank" rel="noopener">在 YouTube 中打开 (00:41:00)</a></p> </div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_41_00.png" alt="把 PRD 转成带依赖关系的 issue 图" loading="lazy">   <p class="video-caption">📷 把 PRD 转成带依赖关系的 issue 图<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=2460" target="_blank" rel="noopener">回到原视频 (00:41:00)</a></p> </div>
 
 <p>PRD 说明要去哪里，却没有说明如何安全抵达。下一步是把它转换成带阻塞关系的 Kanban issue：哪些任务可以立即开始，哪些任务必须等前置条件，哪些任务适合 AFK（无人值守）执行。</p>
 <p>拆分时要避免“水平分层”：先把整个数据库层做完，再做 API，最后做前端。这样直到很晚才会发现各层无法真正连起来。优先使用 <strong>垂直切片（vertical slice / tracer bullet）</strong>，让一个小 issue 横跨必要的数据库、服务和界面，并产出一个可运行、可验证的行为。</p>
@@ -413,7 +413,7 @@
 </ul>
 <h2 id="4">4. 自动化实现，但保留质量所有权</h2>
 <p><em>(参考时间：00:51:58)</em></p>
-<div class="video-card youtube-card">   <div class="video-wrapper">     <iframe src="https://www.youtube-nocookie.com/embed/-QFHIoCo-Ko?start=3344&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&playsinline=1&cc_load_policy=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>   </div>   <p class="video-caption">▶ 代理在隔离环境中领取 issue 并运行测试<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=3344s" target="_blank" rel="noopener">在 YouTube 中打开 (00:55:44)</a></p> </div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_55_44.png" alt="代理在隔离环境中领取 issue 并运行测试" loading="lazy">   <p class="video-caption">📷 代理在隔离环境中领取 issue 并运行测试<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=3344" target="_blank" rel="noopener">回到原视频 (00:55:44)</a></p> </div>
 
 <p>当目标、PRD 和 issue 图都经过人工确认后，才适合进入“夜班”循环：代理从可执行的 AFK issue 中选择一个，探索仓库、实现代码、运行反馈，然后提交结果。演讲者建议先反复运行单次循环，观察代理行为并调好提示词，再把它放进更长时间的 Docker 沙箱。</p>
 <p>实现提示词应明确：</p>
@@ -433,7 +433,7 @@
 </ul>
 <h2 id="5">5. 设计代理能够继承的代码库</h2>
 <p><em>(参考时间：01:15:46)</em></p>
-<div class="video-card youtube-card">   <div class="video-wrapper">     <iframe src="https://www.youtube-nocookie.com/embed/-QFHIoCo-Ko?start=4597&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&playsinline=1&cc_load_policy=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>   </div>   <p class="video-caption">▶ 深模块与边界级行为测试<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=4597s" target="_blank" rel="noopener">在 YouTube 中打开 (01:16:37)</a></p> </div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_16_37.png" alt="深模块与边界级行为测试" loading="lazy">   <p class="video-caption">📷 深模块与边界级行为测试<br><a href="https://www.youtube.com/watch?v=-QFHIoCo-Ko&amp;t=4597" target="_blank" rel="noopener">回到原视频 (01:16:37)</a></p> </div>
 
 <p>糟糕的代码库会制造糟糕的代理：依赖纠缠、反馈回路薄弱、测试边界不清，都会让代理难以理解、修改和验证系统。许多彼此相连的浅模块看似粒度很小，实际却把行为拆散到难以测试的函数集合里。</p>
 <p>演讲者更偏好<strong>深模块</strong>：接口小而清楚，内部包含足够多的功能，并在模块边界测试有意义的行为。人应该掌握模块接口和架构地图，把内部实现交给代理；只要边界行为有可靠测试，自动化速度就不会以失去理解为代价。</p>
@@ -489,7 +489,7 @@
             codeNodes.forEach(function(node) {
                 const text = node.textContent.trim();
                 // 匹配常见的 mermaid 图表前缀
-                if (text.startsWith('graph ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
+                if (text.startsWith('graph ') || text.startsWith('flowchart ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
                     const tempDiv = document.createElement('div');
                     tempDiv.className = 'mermaid';
                     tempDiv.textContent = text;
