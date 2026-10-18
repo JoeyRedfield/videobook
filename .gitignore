@@ -21,6 +21,7 @@ venv.bak/
 .idea/
 *.swp
 *.swo
+.DS_Store
 
 memory/
 .claude/settings.local.json
