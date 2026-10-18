@@ -50,7 +50,7 @@ python -m pytest tests -q
 
 ## 成品在哪里看
 
-- 在线阅读：<https://linbol.top/videobook/>
+- 在线阅读：<https://joeyredfield.github.io/videobook/>
 
 ## 创建自己的知识网站
 
