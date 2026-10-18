@@ -140,7 +140,8 @@ def replace_screenshots_with_embeds(md_content: str, video_url: str, images_dir:
                 image_rel = "images/" + fname
         if ts is None and image_rel is None:
             return match.group(0)  # 幻灯片图缺失时保留原 Markdown，不生成空锚点卡片
-        return make_video_card(platform, video_id, video_url, ts, desc, image_rel=image_rel)
+        # 卡片保持单行，避免插入引用或列表时跨行 HTML 提前关闭正文容器。
+        return make_video_card(platform, video_id, video_url, ts, desc, image_rel=image_rel).replace('\n', ' ')
 
     return re.sub(pattern, replacer, md_content)
 
@@ -148,15 +149,25 @@ def replace_screenshots_with_embeds(md_content: str, video_url: str, images_dir:
 def md_to_html(md_content: str, title: str) -> str:
     """将 Markdown 内容转为完整的 HTML 页面"""
     # 先将 markdown 转为 HTML 片段
-    body_html = markdown.markdown(
-        md_content,
+    renderer = markdown.Markdown(
         extensions=['tables', 'fenced_code', 'codehilite', 'toc'],
         extension_configs={
-            'codehilite': {'css_class': 'highlight', 'guess_lang': False}
+            'codehilite': {'css_class': 'highlight', 'guess_lang': False},
+            'toc': {'toc_depth': '2-3'},
         }
     )
+    body_html = renderer.convert(md_content)
+    # 旧稿中的手写目录可能与实际标题锚点不一致，统一使用渲染器生成的链接。
+    body_html = re.sub(r'(<h2\b[^>]*>目录</h2>\s*)<(ol|ul)>.*?</\2>',
+                       lambda match: match.group(1) + renderer.toc, body_html, flags=re.S)
+    toc_html = (
+        '<aside class="book-toc"><details open><summary>目录</summary>'
+        f'<nav aria-label="章节目录">{renderer.toc}</nav></details></aside>'
+        if renderer.toc_tokens else ''
+    )
 
-    return HTML_TEMPLATE.replace("{title}", html.escape(title)).replace("{content}", body_html)
+    return (HTML_TEMPLATE.replace("{title}", html.escape(title))
+            .replace("{toc}", toc_html).replace("{content}", body_html))
 
 
 # ─────────────────────────────────────────────
@@ -260,9 +271,39 @@ HTML_TEMPLATE = r'''<!DOCTYPE html>
 
         /* ── 文章容器 ── */
         .book-content {
+            width: 100%;
+            min-width: 0;
             max-width: 780px;
             margin: 0 auto;
             padding: 60px 32px 120px;
+        }
+
+        /* ── 章节目录 ── */
+        .book-toc {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            margin: 16px 16px 0;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 14px;
+        }
+        .book-toc summary { cursor: pointer; font-weight: 600; }
+        .book-toc nav { max-height: 55vh; overflow-y: auto; overflow-wrap: anywhere; }
+        .book-toc ul { list-style: none; margin: 8px 0; padding: 0; }
+        .book-toc ul ul { padding-left: 16px; }
+        .book-toc a { display: block; padding: 3px 0; }
+        .book-content :is(h2, h3) { scroll-margin-top: 88px; }
+        @media (min-width: 1440px) {
+            .book-toc { position: fixed; width: 280px; top: 60px; left: calc(50% - 700px); margin: 0; }
+            .book-toc nav { max-height: calc(100vh - 140px); }
+            .book-content :is(h2, h3) { scroll-margin-top: 24px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
         }
 
         /* ── 标题 ── */
@@ -507,16 +548,26 @@ HTML_TEMPLATE = r'''<!DOCTYPE html>
     </style>
 </head>
 <body>
+    {toc}
     <article class="book-content">
         {content}
     </article>
+    <script>
+        const tocDetails = document.querySelector('.book-toc details');
+        if (tocDetails && window.matchMedia('(max-width: 1439px)').matches) {
+            tocDetails.open = false;
+            tocDetails.addEventListener('click', function(event) {
+                if (event.target.closest('a')) tocDetails.open = false;
+            });
+        }
+    </script>
 
     <!-- Mermaid 图表引擎初始化 -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             mermaid.initialize({ startOnLoad: false, theme: 'default' });
-            
+
             // 兼容普通代码块以及丢失 language-mermaid 类名的情况 (CodeHilite 干扰)
             const codeNodes = document.querySelectorAll('pre code, .highlight code');
             codeNodes.forEach(function(node) {
@@ -526,13 +577,13 @@ HTML_TEMPLATE = r'''<!DOCTYPE html>
                     const tempDiv = document.createElement('div');
                     tempDiv.className = 'mermaid';
                     tempDiv.textContent = text;
-                    
+
                     // 获取需要替换的最外层父节点 (比如 div.highlight 或者 pre)
                     const wrapper = node.closest('.highlight') || node.parentNode;
-                    wrapper.replaceWith(tempDiv); 
+                    wrapper.replaceWith(tempDiv);
                 }
             });
-            
+
             // 所有节点转换完成，统一进行图表动态绘制
             mermaid.run();
         });

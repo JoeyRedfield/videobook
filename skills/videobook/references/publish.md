@@ -17,6 +17,7 @@ git push origin pages
 - 首次推送后需在 GitHub 仓库 **Settings → Pages** 一次性启用：分支选 `pages`、目录选 `/ (root)`；
   之后每次 `git push origin pages` 自动部署。
 - 在线阅读地址：`https://<owner>.github.io/videobook/`（落地页列出全部电子书，支持截图放大与 Mermaid 交互）。
+- 阅读页自动从二、三级标题生成可跳转目录：正文保持居中，宽屏目录固定在左侧留白中，空间不足时改为顶部折叠目录。更新渲染模板后，需重跑 `post_process.py` 再发布，已有 HTML 才会应用新样式。
 
 ## 注意
 
