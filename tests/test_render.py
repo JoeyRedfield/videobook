@@ -91,3 +91,9 @@ def test_process_markdown_writes_toc(tmp_path):
     assert '<nav aria-label="章节目录">' in page
     assert '<summary>目录</summary>' in page
     assert '{toc}' not in page
+
+
+def test_flowchart_blocks_are_supported_by_mermaid_bootstrap():
+    page = pp.md_to_html('# 书名\n\n```mermaid\nflowchart TD\n    A --> B\n```', '书名')
+    assert 'text.startsWith(\'flowchart \')' in page
+    assert 'flowchart TD' in page

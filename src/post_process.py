@@ -573,7 +573,7 @@ HTML_TEMPLATE = r'''<!DOCTYPE html>
             codeNodes.forEach(function(node) {
                 const text = node.textContent.trim();
                 // 匹配常见的 mermaid 图表前缀
-                if (text.startsWith('graph ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
+                if (text.startsWith('graph ') || text.startsWith('flowchart ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
                     const tempDiv = document.createElement('div');
                     tempDiv.className = 'mermaid';
                     tempDiv.textContent = text;
