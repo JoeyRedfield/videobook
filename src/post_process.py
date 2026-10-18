@@ -391,6 +391,7 @@ HTML_TEMPLATE = r'''<!DOCTYPE html>
         /* ── 表格 ── */
         table {
             width: 100%;
+            overflow-wrap: anywhere;
             border-collapse: separate;
             border-spacing: 0;
             margin: 24px 0;
