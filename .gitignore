@@ -32,3 +32,10 @@ memory/
 # exported cookies (never commit login state)
 cookies.txt
 *.cookies.txt
+
+# Local notes may contain private machine context; keep them out of GitHub.
+ASR模型说明.md
+macOS运行说明.md
+运行经验-*.md
+分析报告.md
+local-notes/
