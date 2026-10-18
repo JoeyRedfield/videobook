@@ -68,9 +68,8 @@
         .book-toc ul ul { padding-left: 16px; }
         .book-toc a { display: block; padding: 3px 0; }
         .book-content :is(h2, h3) { scroll-margin-top: 88px; }
-        @media (min-width: 1100px) {
-            .reader-layout { display: flex; align-items: flex-start; max-width: 1120px; margin: 0 auto; }
-            .book-toc { flex: 0 0 280px; top: 24px; margin: 60px 0 24px 24px; }
+        @media (min-width: 1440px) {
+            .book-toc { position: fixed; width: 280px; top: 60px; left: calc(50% - 700px); margin: 0; }
             .book-toc nav { max-height: calc(100vh - 140px); }
             .book-content :is(h2, h3) { scroll-margin-top: 24px; }
         }
@@ -320,7 +319,6 @@
     </style>
 </head>
 <body>
-    <div class="reader-layout">
     <aside class="book-toc"><details open><summary>目录</summary><nav aria-label="章节目录"><div class="toc">
 <ul>
 <li><a href="#_2">前言</a></li>
@@ -846,10 +844,9 @@
 </ol>
 <p><em>（全书完。字幕中的人名、产品名与个别术语按上下文推断转写，如有出入以视频为准。）</em></p>
     </article>
-    </div>
     <script>
         const tocDetails = document.querySelector('.book-toc details');
-        if (tocDetails && window.matchMedia('(max-width: 1099px)').matches) {
+        if (tocDetails && window.matchMedia('(max-width: 1439px)').matches) {
             tocDetails.open = false;
             tocDetails.addEventListener('click', function(event) {
                 if (event.target.closest('a')) tocDetails.open = false;

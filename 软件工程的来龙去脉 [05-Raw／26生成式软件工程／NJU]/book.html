@@ -68,9 +68,8 @@
         .book-toc ul ul { padding-left: 16px; }
         .book-toc a { display: block; padding: 3px 0; }
         .book-content :is(h2, h3) { scroll-margin-top: 88px; }
-        @media (min-width: 1100px) {
-            .reader-layout { display: flex; align-items: flex-start; max-width: 1120px; margin: 0 auto; }
-            .book-toc { flex: 0 0 280px; top: 24px; margin: 60px 0 24px 24px; }
+        @media (min-width: 1440px) {
+            .book-toc { position: fixed; width: 280px; top: 60px; left: calc(50% - 700px); margin: 0; }
             .book-toc nav { max-height: calc(100vh - 140px); }
             .book-content :is(h2, h3) { scroll-margin-top: 24px; }
         }
@@ -320,7 +319,6 @@
     </style>
 </head>
 <body>
-    <div class="reader-layout">
     <aside class="book-toc"><details open><summary>目录</summary><nav aria-label="章节目录"><div class="toc">
 <ul>
 <li><a href="#_1">目录</a></li>
@@ -1805,10 +1803,9 @@ print(image)
 <p>本书由 B 站 AI 字幕（<code>ai-zh</code>，覆盖率 100%、2583 段、时长 99 分 59 秒）经 AI 重构而成：口语转书面语、按内容逻辑分 34 章（另加本篇后记）、绘制 6 张 Mermaid 图、插入 56 个截图锚点；截帧管线在已登录的专用 Chrome 配置里逐个 seek 到锚点时间、隐藏播放器 UI、锁定顶码率流后截取纯视频帧；最终渲染为带截图放大（lightbox）与 Mermaid 交互的 HTML。</p>
 <p>与视频逐句对照的订正稿见 <code>transcript.corrected.txt</code>：先由脚本按本讲错词 MAP 修正（如 <code>type c AI→TypeSafe AI</code>、<code>JEFF/JB→Jev</code>、<code>chal salt/CHAMPSHO/CHAS→chain of thought</code>、<code>GP6→GPT-6</code>、<code>大圆模型/大于原模型→大语言模型</code>、<code>基摩场/机膜厂/禁摩场→基模厂</code>、<code>达舍尔/DEXTRA→Dijkstra</code>、<code>I trio e→IEEE</code>、<code>IFL/埃菲尔→Eiffel</code>、<code>pick check→QuickCheck</code>、<code>rose/pom/ROIS→Royce</code>、<code>train lecture→Turing Lecture</code>、<code>NATTO→NATO</code>、<code>恋爱来了→LLM 来了</code>、<code>反攻→返工</code>、<code>羽翼→语义</code>、<code>latin space→latent space</code>、<code>流感→留白</code>、<code>button map→bottom-up</code>、<code>干水教材→灌水教材</code>、<code>AI slap/AI s lop→AI slop</code>、<code>web coding→vibe coding</code>、<code>deep pick/deep sk flash→DeepSeek</code>、<code>cloud open4.6→Claude Opus 4.6</code> 等），再由 AI 通读全文做一轮行级订正（保留讲师原始字词与有意重复，仅修明显识别错误）。</p>
     </article>
-    </div>
     <script>
         const tocDetails = document.querySelector('.book-toc details');
-        if (tocDetails && window.matchMedia('(max-width: 1099px)').matches) {
+        if (tocDetails && window.matchMedia('(max-width: 1439px)').matches) {
             tocDetails.open = false;
             tocDetails.addEventListener('click', function(event) {
                 if (event.target.closest('a')) tocDetails.open = false;

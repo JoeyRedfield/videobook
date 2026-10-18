@@ -68,9 +68,8 @@
         .book-toc ul ul { padding-left: 16px; }
         .book-toc a { display: block; padding: 3px 0; }
         .book-content :is(h2, h3) { scroll-margin-top: 88px; }
-        @media (min-width: 1100px) {
-            .reader-layout { display: flex; align-items: flex-start; max-width: 1120px; margin: 0 auto; }
-            .book-toc { flex: 0 0 280px; top: 24px; margin: 60px 0 24px 24px; }
+        @media (min-width: 1440px) {
+            .book-toc { position: fixed; width: 280px; top: 60px; left: calc(50% - 700px); margin: 0; }
             .book-toc nav { max-height: calc(100vh - 140px); }
             .book-content :is(h2, h3) { scroll-margin-top: 24px; }
         }
@@ -320,7 +319,6 @@
     </style>
 </head>
 <body>
-    <div class="reader-layout">
     <aside class="book-toc"><details open><summary>目录</summary><nav aria-label="章节目录"><div class="toc">
 <ul>
 <li><a href="#_1">目录</a></li>
@@ -888,10 +886,9 @@
 <p>本书由 B 站 AI 字幕（<code>ai-zh</code>，覆盖率 99.9%、2427 段）经 AI 重构而成：口语转书面语、按内容逻辑分 23 章（另加本篇后记）、绘制 6 张 Mermaid 图、插入 40 个截图锚点；截帧管线在已登录的浏览器里逐个 seek 到锚点时间、隐藏播放器 UI、锁定顶码率流后截取纯视频帧；最终渲染为带截图放大（lightbox）与 Mermaid 交互的 HTML。</p>
 <p>与视频逐句对照的订正稿见 <code>transcript.corrected.txt</code>：先由脚本按本讲错词 MAP 修正（如 <code>web code→vibe code</code>、<code>A证/A政→agent</code>、<code>交流坑→焦油坑</code>、<code>瑞贝斯→rebase</code>、<code>t max→tmux</code>、<code>get it report→git repo</code>、<code>句句词/JJS→Jujutsu/jj</code>、<code>deep pick→DeepSeek</code> 等），再由 AI 通读全文做一轮行级订正（保留讲师原始字词与有意重复，仅修明显识别错误）。</p>
     </article>
-    </div>
     <script>
         const tocDetails = document.querySelector('.book-toc details');
-        if (tocDetails && window.matchMedia('(max-width: 1099px)').matches) {
+        if (tocDetails && window.matchMedia('(max-width: 1439px)').matches) {
             tocDetails.open = false;
             tocDetails.addEventListener('click', function(event) {
                 if (event.target.closest('a')) tocDetails.open = false;
