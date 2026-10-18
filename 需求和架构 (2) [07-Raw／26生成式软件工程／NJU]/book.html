@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>需求和架构（2）：设计一片会生长的解空间，让"现在"从"过去"计算而来</title>
+    <title>需求和架构（2）：设计一片会生长的解空间，让&quot;现在&quot;从&quot;过去&quot;计算而来</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -42,9 +42,40 @@
 
         /* ── 文章容器 ── */
         .book-content {
+            width: 100%;
+            min-width: 0;
             max-width: 780px;
             margin: 0 auto;
             padding: 60px 32px 120px;
+        }
+
+        /* ── 章节目录 ── */
+        .book-toc {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            margin: 16px 16px 0;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 14px;
+        }
+        .book-toc summary { cursor: pointer; font-weight: 600; }
+        .book-toc nav { max-height: 55vh; overflow-y: auto; overflow-wrap: anywhere; }
+        .book-toc ul { list-style: none; margin: 8px 0; padding: 0; }
+        .book-toc ul ul { padding-left: 16px; }
+        .book-toc a { display: block; padding: 3px 0; }
+        .book-content :is(h2, h3) { scroll-margin-top: 88px; }
+        @media (min-width: 1100px) {
+            .reader-layout { display: flex; align-items: flex-start; max-width: 1120px; margin: 0 auto; }
+            .book-toc { flex: 0 0 280px; top: 24px; margin: 60px 0 24px 24px; }
+            .book-toc nav { max-height: calc(100vh - 140px); }
+            .book-content :is(h2, h3) { scroll-margin-top: 24px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
         }
 
         /* ── 标题 ── */
@@ -289,6 +320,90 @@
     </style>
 </head>
 <body>
+    <div class="reader-layout">
+    <aside class="book-toc"><details open><summary>目录</summary><nav aria-label="章节目录"><div class="toc">
+<ul>
+<li><a href="#_1">目录</a></li>
+<li><a href="#1">1. 需求与架构：怎样驾驭复杂性</a><ul>
+<li><a href="#11">1.1 从十行到五十万行：架构无处不在</a></li>
+<li><a href="#12">1.2 本质复杂性与附带复杂性</a></li>
+<li><a href="#13-intent-spec-impl">1.3 需求收缩 intent 空间，架构收缩 spec / impl 空间</a></li>
+</ul>
+</li>
+<li><a href="#2_1">2. 尊重自己的"小脑袋"</a><ul>
+<li><a href="#21-ai-structured-programming">2.1 用 AI 读一手经典：Structured Programming</a></li>
+<li><a href="#22-on-our-inability-to-do-much">2.2 On Our Inability to Do Much</a></li>
+<li><a href="#23">2.3 三种思维辅助与"珍珠项链"</a></li>
+<li><a href="#24">2.4 层次化程序结构：类、对象与协程</a></li>
+<li><a href="#25-ai">2.5 让 AI 带我们读"概念层次"</a></li>
+</ul>
+</li>
+<li><a href="#3">3. 好的架构，设计的是一片解空间</a><ul>
+<li><a href="#31-1990s">3.1 阅读经典（1990s）：名字、联想与品味</a></li>
+<li><a href="#32-growing-a-language">3.2 Growing a Language：出路不是二选一，而是生长</a></li>
+<li><a href="#33">3.3 好的架构设计的是解空间</a></li>
+<li><a href="#34">3.4 阅读经典，建立品味：一个"大学毁灭计划"</a></li>
+</ul>
+</li>
+<li><a href="#4-unix">4. UNIX：组合规则比现成用途更有力量</a><ul>
+<li><a href="#41">4.1 三条原则，精髓在第三条</a></li>
+<li><a href="#42-posix">4.2 组合需要共同约定：POSIX</a></li>
+<li><a href="#43">4.3 使用者创造新的用途</a></li>
+</ul>
+</li>
+<li><a href="#5">5. 关系数据库：分开"理解数据"与"存放数据"</a><ul>
+<li><a href="#51-codd-1970">5.1 Codd 1970：把物理世界的状态投射到关系上</a></li>
+<li><a href="#52">5.2 现实、关系与存储</a></li>
+</ul>
+</li>
+<li><a href="#6-internet">6. Internet：在持续变化中保持协作</a><ul>
+<li><a href="#61-tcpip">6.1 分层与 TCP/IP</a></li>
+<li><a href="#62">6.2 唯一永存的原则是变化本身</a></li>
+<li><a href="#63-systems">6.3 Systems：每一轮浪潮的新抽象</a></li>
+</ul>
+</li>
+<li><a href="#7-sql-mvc">7. 从"一个页面一段 SQL"到 MVC</a><ul>
+<li><a href="#71-sql-transaction">7.1 每个页面就是一个 SQL transaction</a></li>
+<li><a href="#72-java-web-html">7.2 Java Web：直接在 HTML 里写代码</a></li>
+<li><a href="#73-jsp-java">7.3 JSP：从 Java 片段到表达式与标签</a></li>
+<li><a href="#74-mvc">7.4 MVC：让不同的变化各有归属</a></li>
+<li><a href="#75">7.5 一次选课请求</a></li>
+</ul>
+</li>
+<li><a href="#8-mvvm-react">8. 界面状态也是状态：MVVM 与 React</a><ul>
+<li><a href="#81-viewstate-model">8.1 把 ViewState 也当成 Model</a></li>
+<li><a href="#82-mvvm">8.2 MVVM：让界面绑定状态</a></li>
+<li><a href="#83-react">8.3 React：用状态快照描述界面</a></li>
+<li><a href="#84-vue-react">8.4 Vue 与 React：同一个课程筛选框</a></li>
+</ul>
+</li>
+<li><a href="#9-model">9. 把复杂性放进 Model，还远远不够</a><ul>
+<li><a href="#91">9.1 长流程与强规则</a></li>
+</ul>
+</li>
+<li><a href="#10">10. 把过去、现在和未来分开</a><ul>
+<li><a href="#101">10.1 复式记账：同一笔业务，保持会计等式</a></li>
+<li><a href="#102-event-sourcing-llm-as-a-compiler">10.2 记账架构：Event Sourcing 与 LLM as a Compiler</a></li>
+<li><a href="#103">10.3 从分录到报表</a></li>
+<li><a href="#104">10.4 记账为什么麻烦？"当前状态"编码了过去、现在与未来</a></li>
+<li><a href="#105-event-sourcing">10.5 Event Sourcing 和复杂性分解</a></li>
+</ul>
+</li>
+<li><a href="#11_1">11. 教务系统：让毕业结论有一条可追溯的计算路径</a><ul>
+<li><a href="#111-data-dependency">11.1 显式建模 Data Dependency</a></li>
+</ul>
+</li>
+<li><a href="#12_1">12. 从状态一致性问题，转向计算正确性问题</a><ul>
+<li><a href="#121-sql-billion-dollar-mistake">12.1 SQL 的 Billion Dollar Mistake</a></li>
+<li><a href="#122-source-of-truth">12.2 保存 Source of Truth</a></li>
+<li><a href="#123">12.3 对生成式软件工程的意义</a></li>
+</ul>
+</li>
+<li><a href="#_2">附：官方参考与延伸阅读</a></li>
+<li><a href="#_3">后记：本书是如何生成的</a></li>
+</ul>
+</div>
+</nav></details></aside>
     <article class="book-content">
         <h1 id="2">需求和架构（2）：设计一片会生长的解空间，让"现在"从"过去"计算而来</h1>
 <blockquote>
@@ -298,22 +413,89 @@
 </blockquote>
 <hr />
 <h2 id="_1">目录</h2>
-<ol>
-<li><a href="#1">需求与架构：怎样驾驭复杂性</a></li>
-<li><a href="#2_1">尊重自己的"小脑袋"</a></li>
-<li><a href="#3">好的架构，设计的是一片解空间</a></li>
-<li><a href="#4-unix">UNIX：组合规则比现成用途更有力量</a></li>
-<li><a href="#5">关系数据库：分开"理解数据"与"存放数据"</a></li>
-<li><a href="#6-internet">Internet：在持续变化中保持协作</a></li>
-<li><a href="#7-sql-mvc">从"一个页面一段 SQL"到 MVC</a></li>
-<li><a href="#8-mvvm-react">界面状态也是状态：MVVM 与 React</a></li>
-<li><a href="#9-model">把复杂性放进 Model，还远远不够</a></li>
-<li><a href="#10">把过去、现在和未来分开</a></li>
-<li><a href="#11_1">教务系统：让毕业结论有一条可追溯的计算路径</a></li>
-<li><a href="#12_1">从状态一致性问题，转向计算正确性问题</a></li>
+<div class="toc">
+<ul>
+<li><a href="#_1">目录</a></li>
+<li><a href="#1">1. 需求与架构：怎样驾驭复杂性</a><ul>
+<li><a href="#11">1.1 从十行到五十万行：架构无处不在</a></li>
+<li><a href="#12">1.2 本质复杂性与附带复杂性</a></li>
+<li><a href="#13-intent-spec-impl">1.3 需求收缩 intent 空间，架构收缩 spec / impl 空间</a></li>
+</ul>
+</li>
+<li><a href="#2_1">2. 尊重自己的"小脑袋"</a><ul>
+<li><a href="#21-ai-structured-programming">2.1 用 AI 读一手经典：Structured Programming</a></li>
+<li><a href="#22-on-our-inability-to-do-much">2.2 On Our Inability to Do Much</a></li>
+<li><a href="#23">2.3 三种思维辅助与"珍珠项链"</a></li>
+<li><a href="#24">2.4 层次化程序结构：类、对象与协程</a></li>
+<li><a href="#25-ai">2.5 让 AI 带我们读"概念层次"</a></li>
+</ul>
+</li>
+<li><a href="#3">3. 好的架构，设计的是一片解空间</a><ul>
+<li><a href="#31-1990s">3.1 阅读经典（1990s）：名字、联想与品味</a></li>
+<li><a href="#32-growing-a-language">3.2 Growing a Language：出路不是二选一，而是生长</a></li>
+<li><a href="#33">3.3 好的架构设计的是解空间</a></li>
+<li><a href="#34">3.4 阅读经典，建立品味：一个"大学毁灭计划"</a></li>
+</ul>
+</li>
+<li><a href="#4-unix">4. UNIX：组合规则比现成用途更有力量</a><ul>
+<li><a href="#41">4.1 三条原则，精髓在第三条</a></li>
+<li><a href="#42-posix">4.2 组合需要共同约定：POSIX</a></li>
+<li><a href="#43">4.3 使用者创造新的用途</a></li>
+</ul>
+</li>
+<li><a href="#5">5. 关系数据库：分开"理解数据"与"存放数据"</a><ul>
+<li><a href="#51-codd-1970">5.1 Codd 1970：把物理世界的状态投射到关系上</a></li>
+<li><a href="#52">5.2 现实、关系与存储</a></li>
+</ul>
+</li>
+<li><a href="#6-internet">6. Internet：在持续变化中保持协作</a><ul>
+<li><a href="#61-tcpip">6.1 分层与 TCP/IP</a></li>
+<li><a href="#62">6.2 唯一永存的原则是变化本身</a></li>
+<li><a href="#63-systems">6.3 Systems：每一轮浪潮的新抽象</a></li>
+</ul>
+</li>
+<li><a href="#7-sql-mvc">7. 从"一个页面一段 SQL"到 MVC</a><ul>
+<li><a href="#71-sql-transaction">7.1 每个页面就是一个 SQL transaction</a></li>
+<li><a href="#72-java-web-html">7.2 Java Web：直接在 HTML 里写代码</a></li>
+<li><a href="#73-jsp-java">7.3 JSP：从 Java 片段到表达式与标签</a></li>
+<li><a href="#74-mvc">7.4 MVC：让不同的变化各有归属</a></li>
+<li><a href="#75">7.5 一次选课请求</a></li>
+</ul>
+</li>
+<li><a href="#8-mvvm-react">8. 界面状态也是状态：MVVM 与 React</a><ul>
+<li><a href="#81-viewstate-model">8.1 把 ViewState 也当成 Model</a></li>
+<li><a href="#82-mvvm">8.2 MVVM：让界面绑定状态</a></li>
+<li><a href="#83-react">8.3 React：用状态快照描述界面</a></li>
+<li><a href="#84-vue-react">8.4 Vue 与 React：同一个课程筛选框</a></li>
+</ul>
+</li>
+<li><a href="#9-model">9. 把复杂性放进 Model，还远远不够</a><ul>
+<li><a href="#91">9.1 长流程与强规则</a></li>
+</ul>
+</li>
+<li><a href="#10">10. 把过去、现在和未来分开</a><ul>
+<li><a href="#101">10.1 复式记账：同一笔业务，保持会计等式</a></li>
+<li><a href="#102-event-sourcing-llm-as-a-compiler">10.2 记账架构：Event Sourcing 与 LLM as a Compiler</a></li>
+<li><a href="#103">10.3 从分录到报表</a></li>
+<li><a href="#104">10.4 记账为什么麻烦？"当前状态"编码了过去、现在与未来</a></li>
+<li><a href="#105-event-sourcing">10.5 Event Sourcing 和复杂性分解</a></li>
+</ul>
+</li>
+<li><a href="#11_1">11. 教务系统：让毕业结论有一条可追溯的计算路径</a><ul>
+<li><a href="#111-data-dependency">11.1 显式建模 Data Dependency</a></li>
+</ul>
+</li>
+<li><a href="#12_1">12. 从状态一致性问题，转向计算正确性问题</a><ul>
+<li><a href="#121-sql-billion-dollar-mistake">12.1 SQL 的 Billion Dollar Mistake</a></li>
+<li><a href="#122-source-of-truth">12.2 保存 Source of Truth</a></li>
+<li><a href="#123">12.3 对生成式软件工程的意义</a></li>
+</ul>
+</li>
 <li><a href="#_2">附：官方参考与延伸阅读</a></li>
 <li><a href="#_3">后记：本书是如何生成的</a></li>
-</ol>
+</ul>
+</div>
+
 <hr />
 <h2 id="1">1. 需求与架构：怎样驾驭复杂性</h2>
 <p><em>(参考时间: 00:00)</em></p>
@@ -326,20 +508,14 @@
 <p>只要软件足够复杂，你迟早会面对 <strong>intent（意图）→ specification（规约）→ implementation（实现）</strong> 之间那条缝隙。从最早的瀑布模型开始，我们一路讨论过：怎样用数据依赖去理解这条缝隙，怎样用一个最小的可行产品（MVP）去探索和控制它。</p>
 <p>一个重要的观察是：<strong>架构并不只属于大系统</strong>。从十行代码的最小程序，到你将来可能要维护的五十万行、一百万行、一千万行代码；代码规模每上一个台阶，你都会在某个地方做出一批影响未来走向的决定。而只要你做出决定，从那一刻起，你就背上了一定程度的技术债——它会一直跟着你。</p>
 <p>更关键的是：<strong>一个"脑子一热"、确实能够工作的架构，往往还有很大的改进空间</strong>。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_02_07.png" alt="从 10 行到 500,000 行：架构无处不在" loading="lazy">
-  <p class="video-caption">📷 从 10 行到 500,000 行：架构无处不在<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=127" target="_blank" rel="noopener">回到原视频 (00:02:07)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_02_07.png" alt="从 10 行到 500,000 行：架构无处不在" loading="lazy">   <p class="video-caption">📷 从 10 行到 500,000 行：架构无处不在<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=127" target="_blank" rel="noopener">回到原视频 (00:02:07)</a></p> </div>
 
 <p>上一讲有一张图说过：最初什么也没有的时候，我们就需要做决定；一旦做了决定，它就会影响未来的走向。所以当你做第一个实验、把需求原样粘给 AI、让它直接给你做出一个东西时，你的<strong>第一反应应该是停下来想一想</strong>——</p>
 <blockquote>
 <p>这个东西真的只能这样做吗？数据库真的应该这样设计吗？也许我可以回过头来再多想一想，可能会有更好的方案。</p>
 </blockquote>
 <p>这正是"架构无处不在"的含义。架构不是只在系统做大以后才出现的一层装饰，而是从最小的一份代码起就已经在场。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_00_19.png" alt="Intent → Spec → Impl：看似明确的需求其实都有很多开放的空间" loading="lazy">
-  <p class="video-caption">📷 Intent → Spec → Impl：看似明确的需求其实都有很多开放的空间<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=19" target="_blank" rel="noopener">回到原视频 (00:00:19)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_00_19.png" alt="Intent → Spec → Impl：看似明确的需求其实都有很多开放的空间" loading="lazy">   <p class="video-caption">📷 Intent → Spec → Impl：看似明确的需求其实都有很多开放的空间<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=19" target="_blank" rel="noopener">回到原视频 (00:00:19)</a></p> </div>
 
 <h3 id="12">1.2 本质复杂性与附带复杂性</h3>
 <p><em>(参考时间: 00:03:01)</em></p>
@@ -348,10 +524,7 @@
 <li><strong>本质复杂性（essential complexity）</strong>：来自问题领域本身。选课就是这么复杂——要考虑课程容量、先修要求、时间冲突，还要排课、考虑教室，系统里老师和同学都能借教室。物理世界本身就是复杂的，而它在信息世界里的投影，这份复杂性没有办法被消除。</li>
 <li><strong>附带复杂性（accidental complexity）</strong>：来自我们选择的实现方式。用数据库还是文件系统、用哪种并发控制、在哪一层做数据转换——这些都是做技术选型时必然引入的 trade-off。业务规则没有变，换一种实现，就可能省掉一大批麻烦。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_03_03.png" alt="软件工程的本质：驾驭复杂性" loading="lazy">
-  <p class="video-caption">📷 软件工程的本质：驾驭复杂性<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=183" target="_blank" rel="noopener">回到原视频 (00:03:03)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_03_03.png" alt="软件工程的本质：驾驭复杂性" loading="lazy">   <p class="video-caption">📷 软件工程的本质：驾驭复杂性<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=183" target="_blank" rel="noopener">回到原视频 (00:03:03)</a></p> </div>
 
 <p>以一个很朴素的例子说明 trade-off：如果你想用<strong>文件系统</strong>来管理数据，写起来很方便、想 hack 它也很容易，但代价是性能可能远不如数据库，而且<strong>文件系统本身不提供事务、原子性与并发控制</strong>——它不能保证你读写多个数据时"看起来是原子的"。数据库能给你事务、备份、高可用这些承诺，代价就是你每次调试时都要经过一个中间层，不能像文件系统那样用各种 UNIX 工具随意组合它。</p>
 <blockquote>
@@ -365,10 +538,7 @@
 <li><strong>需求工程</strong>直面本质复杂性，<strong>收缩 intent 空间的不确定性</strong>：把"我到底要什么"讲清楚。</li>
 <li><strong>架构设计</strong>分解本质复杂性、减少附带复杂性，<strong>收缩 specification 与 implementation 空间的可能性</strong>。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_05_35.png" alt="需求工程：直面 essential complexity" loading="lazy">
-  <p class="video-caption">📷 需求工程：直面 essential complexity<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=335" target="_blank" rel="noopener">回到原视频 (00:05:35)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_05_35.png" alt="需求工程：直面 essential complexity" loading="lazy">   <p class="video-caption">📷 需求工程：直面 essential complexity<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=335" target="_blank" rel="noopener">回到原视频 (00:05:35)</a></p> </div>
 
 <p>需求工程有一个很容易被低估的代价。说"课程容量为 100 人"还远远不够——候补学生算不算？跨院预留名额能不能借用？特殊批准能不能突破上限？每补上一条约束，就减少了一点实现者自行猜测的空间，但也<strong>多了一条需要检查、维护、在需求变化时重新审视的承诺</strong>。到了生成式软件工程里，这些成本会具体地体现为上下文长度、token 开销，以及模型在复杂约束下出错的机会。</p>
 <p>一个现场例子是"登录"。所有人都有用户名密码登录，于是我的软件也理所应当做一个——可你一旦开始想这件事，就掉进了泥潭：注册用户要保护密码，第一次要确认密码，用户一定会忘记密码，忘记密码要么发短信要么发邮件，发邮件又要考虑用什么发……仅仅登录这一件事，就有无穷的细节。最后很多人干脆选择微信、支付宝登录，把复杂度外包出去；但那又意味着要交钱、而且往往需要一个公司实体才能注册。<strong>需求层面的每一个选择，都会对未来产生很大的影响。</strong></p>
@@ -378,10 +548,7 @@
 <li><strong>广度优先</strong>：登录方式、界面布局、首页怎么展现……这些分散在需求空间里的决策，没有哪个能靠"做深一个点"来替代。</li>
 </ul>
 <p>这两者并不矛盾，但需要在它们之间达成一个比较好的平衡。这里没有特别的办法，只能说<strong>看得多、做得多</strong>。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_10_50.png" alt="架构设计：分解 essential complexity，减少 accidental complexity" loading="lazy">
-  <p class="video-caption">📷 架构设计：分解 essential complexity，减少 accidental complexity<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=650" target="_blank" rel="noopener">回到原视频 (00:10:50)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_10_50.png" alt="架构设计：分解 essential complexity，减少 accidental complexity" loading="lazy">   <p class="video-caption">📷 架构设计：分解 essential complexity，减少 accidental complexity<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=650" target="_blank" rel="noopener">回到原视频 (00:10:50)</a></p> </div>
 
 <p>架构设计这一侧的判断标准却很朴素：<strong>需求改了一处，系统里需要跟着改多少处？</strong> 我们不能通过"分模块"让先修要求凭空消失，却可以把资格、容量、时间冲突分别建模，让学生选课、管理员补选和批量导入都调用相同的规则。模块职责、数据归属和接口一旦明确，规约与实现中大量随意组合的可能性就被排除了。</p>
 <p>一个真实的、希望达成但尚未完全达成的例子，是学校的信息系统打通：学校花了很长时间完成统一身份认证的打通，但财务系统因为承载了大量领域知识（要把账做平、要接受审计）还没有和其他系统很好地连起来——数据共享、通知推送都还没有做到。<strong>"需求与架构能不能做到这一点"，本身就是架构要回答的问题。</strong></p>
@@ -399,16 +566,10 @@
 <li>我们<strong>其实不需要 goto</strong>；</li>
 <li>用顺序、选择、循环这三种结构，<strong>就能表示任何程序逻辑</strong>。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_15_30.png" alt="打开《Structured Programming》，看 Dijkstra 时代的流程图" loading="lazy">
-  <p class="video-caption">📷 打开《Structured Programming》，看 Dijkstra 时代的流程图<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=930" target="_blank" rel="noopener">回到原视频 (00:15:30)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_15_30.png" alt="打开《Structured Programming》，看 Dijkstra 时代的流程图" loading="lazy">   <p class="video-caption">📷 打开《Structured Programming》，看 Dijkstra 时代的流程图<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=930" target="_blank" rel="noopener">回到原视频 (00:15:30)</a></p> </div>
 
 <p>他随即让 AI 帮忙：<strong>"我想阅读《结构化程序设计》，先帮我总结一下全书。"</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_16_38.png" alt="让 AI 先总结整本书" loading="lazy">
-  <p class="video-caption">📷 让 AI 先总结整本书<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=998" target="_blank" rel="noopener">回到原视频 (00:16:38)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_16_38.png" alt="让 AI 先总结整本书" loading="lazy">   <p class="video-caption">📷 让 AI 先总结整本书<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=998" target="_blank" rel="noopener">回到原视频 (00:16:38)</a></p> </div>
 
 <p>这件事的意义不在于"AI 会总结"，而在于<strong>读书这件事本身变容易了</strong>。讲者给每一位博士生的建议都是：去读一些经典文献。他自己做操作系统、程序语言、软件工程相关的研究，会说这三个领域<strong>从 1980 年到 2010 年是一个 golden age</strong>——那之后做的东西越来越小、越来越窄，而在那个黄金时代，有很多天马行空的想法：在系统还不存在的时候，人们怎么把这些东西构建出来。</p>
 <p>他做了一件事：让后台有一台云电脑的 agent 去收集 1980—2010 年值得读的系统文献，结果它每个领域找了两三百篇、总共上千篇。他基本都读过这些文献，仔细核对之后发现——<strong>这份列表相当好</strong>，其中很多正是他自己会推荐的文章。这件"非常恐怖"的事还带来了一个日常习惯：现在他开车时会打开 GPT 或 Claude，把一篇论文丢进去，一边开车一边聊——因为论文会被索引，AI 能看到全文。</p>
@@ -428,10 +589,7 @@
 <p>（我的脑子很小，最好学会与它共处、尊重它的局限并正视它，而不是假装它不存在。）</p>
 </blockquote>
 <p>用讲者的话说：<strong>我们人也是一个参数有限的"大模型"</strong>。程序规模增大，并不只是多写几遍同样的代码——<strong>能在脑中追踪十个状态，不意味着能用同样的办法追踪一万个状态。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_19_36.png" alt="On Our Inability to Do Much：我们是一个参数有限的"大模型"" loading="lazy">
-  <p class="video-caption">📷 On Our Inability to Do Much：我们是一个参数有限的"大模型"<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=1176" target="_blank" rel="noopener">回到原视频 (00:19:36)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_19_36.png" alt="On Our Inability to Do Much：我们是一个参数有限的&quot;大模型&quot;" loading="lazy">   <p class="video-caption">📷 On Our Inability to Do Much：我们是一个参数有限的&quot;大模型&quot;<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=1176" target="_blank" rel="noopener">回到原视频 (00:19:36)</a></p> </div>
 
 <p>所以关键手段就是<strong>抽象加上层次化的分解</strong>：把人不能一次理解的东西，变成人可以逐层理解的东西。你可能会觉得 "structured programming" 这个概念已经过时了——今天我们面向对象、用各种 fancy 的框架，前端用 React 和 Vue 的开发者至今还在"圣战"，就像当年 Vim 和 Emacs 的开发者一样（虽然这两批人也越来越像了）。但<strong>今天所有的这些东西，在过去其实已经被想过一遍</strong>：他们需要的就是用层次化的分解，把不能一次理解的东西变成可以逐层理解的东西。</p>
 <h3 id="23">2.3 三种思维辅助与"珍珠项链"</h3>
@@ -443,10 +601,7 @@
 <li><strong>抽象</strong>则让我们使用一个操作时，只依赖它承诺的效果，不必每次重新展开内部过程。</li>
 </ul>
 <p>书里的案例今天看来都是小程序，但它做了一个非常好的比喻：<strong>necklace（珍珠项链）</strong>。你要做一个程序、想象成做一个软件系统，其实是在做一条项链——项链上每一颗珍珠把它串起来，就得到一个软件。这个比喻讲的正是<strong>分解复杂性</strong>：把一个人类不能理解的东西，变成人类可以逐个理解的东西。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_20_56.png" alt="Our Mental Aids：枚举、归纳、抽象，以及"珍珠项链"的比喻" loading="lazy">
-  <p class="video-caption">📷 Our Mental Aids：枚举、归纳、抽象，以及"珍珠项链"的比喻<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=1256" target="_blank" rel="noopener">回到原视频 (00:20:56)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_20_56.png" alt="Our Mental Aids：枚举、归纳、抽象，以及&quot;珍珠项链&quot;的比喻" loading="lazy">   <p class="video-caption">📷 Our Mental Aids：枚举、归纳、抽象，以及&quot;珍珠项链&quot;的比喻<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=1256" target="_blank" rel="noopener">回到原视频 (00:20:56)</a></p> </div>
 
 <p>更精确地说，<strong>每颗珍珠承载一项独立的设计决策</strong>，上层使用下层提供的概念。如果两种实现提供相同的接口，就有机会替换其中一颗，而保留其余部分。</p>
 <p>重要的不只是<strong>切出了多少块</strong>，还包括<strong>决定的顺序</strong>：</p>
@@ -469,12 +624,9 @@
 <p>书的第三部分 "Hierarchical Program Structures" 把这些想法落实到 <strong>SIMULA 的语言机制</strong>里：</p>
 <ul>
 <li><strong>类</strong>描述一组相关对象的结构和行为，<strong>对象</strong>保存自己的状态。这样我们可以先用业务概念思考，再把概念逐层落到机器能够执行的操作上。对象抽象解决了"这一份数据和哪些操作属于同一个概念"的问题。</li>
-<li><strong>协程（coroutine）</strong>则帮助处理另一种耦合：几个程序片段之间，<strong>谁必须服从谁的控制流</strong>？</li>
+<li>**协程（coroutine）**则帮助处理另一种耦合：几个程序片段之间，<strong>谁必须服从谁的控制流</strong>？</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_22_57.png" alt="Hierarchical Program Structures：类、对象与协程" loading="lazy">
-  <p class="video-caption">📷 Hierarchical Program Structures：类、对象与协程<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=1377" target="_blank" rel="noopener">回到原视频 (00:22:57)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_22_57.png" alt="Hierarchical Program Structures：类、对象与协程" loading="lazy">   <p class="video-caption">📷 Hierarchical Program Structures：类、对象与协程<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=1377" target="_blank" rel="noopener">回到原视频 (00:22:57)</a></p> </div>
 
 <p><strong>子程序</strong>的基本关系是调用与返回：主程序调用它，它完成工作后返回。<strong>协程</strong>则可以在执行中暂停、保留自己的局部状态和执行位置，之后从暂停处恢复。书里用两个游戏程序互相对弈来说明这个区别：双方都要计算自己的下一步、交给对方、等待回应，再继续。强行把其中一方改成另一方的子程序，会让原本对等的合作关系变得别扭；把它们看作<strong>交替恢复的协程</strong>，就能保留双方各自的程序结构。</p>
 <p>讲者用了一个日常类比来讲协程：想象<strong>线程就像人</strong>，<strong>共享内存就是物理空间</strong>——每个人有自己的记忆（我知道我做到哪一步了、今天要干什么、明天要干什么），但我们又在共享空间里合作完成一个任务；那么人和人之间的 communication 就成了一种协议。这样，你就可以把一份工作分解给若干条线，让它们通过某个数据结构共享、各自向前推进，再通过通信完成整个任务。</p>
@@ -494,10 +646,7 @@
 <h3 id="25-ai">2.5 让 AI 带我们读"概念层次"</h3>
 <p><em>(参考时间: 00:24:40)</em></p>
 <p>第三部分第七节 "Concept Hierarchies" 尤其值得顺着读一次。讲者的意思很明确：这本书对上课的本科生来说可能有点难，<strong>那就让 AI 带我们读</strong>——读原文、翻译、去掉你觉得不必要的部分，都是很好的做法。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_24_40.png" alt="让 AI 带我们读第三部分第七章" loading="lazy">
-  <p class="video-caption">📷 让 AI 带我们读第三部分第七章<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=1480" target="_blank" rel="noopener">回到原视频 (00:24:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_24_40.png" alt="让 AI 带我们读第三部分第七章" loading="lazy">   <p class="video-caption">📷 让 AI 带我们读第三部分第七章<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=1480" target="_blank" rel="noopener">回到原视频 (00:24:40)</a></p> </div>
 
 <p>这条层次链是这样的：</p>
 <ul>
@@ -531,34 +680,22 @@
 <p>（人类大脑很擅长的一件事就是给东西命名；我们有强大的联想记忆。给一个名字，我们就能迅速想起与之关联的东西。）</p>
 </blockquote>
 <p>也就是说，<strong>一个好名字可以承载已经理解过的知识</strong>：程序员于是可以用"事务""队列""选课资格"思考，而不必每次都回到它们的全部实现细节。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_34_16.png" alt="阅读经典（1990s）：从名字与联想记忆开始" loading="lazy">
-  <p class="video-caption">📷 阅读经典（1990s）：从名字与联想记忆开始<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2056" target="_blank" rel="noopener">回到原视频 (00:34:16)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_34_16.png" alt="阅读经典（1990s）：从名字与联想记忆开始" loading="lazy">   <p class="video-caption">📷 阅读经典（1990s）：从名字与联想记忆开始<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2056" target="_blank" rel="noopener">回到原视频 (00:34:16)</a></p> </div>
 
 <p>Steele 本人在 <strong>1998 年的 OOPSLA 主题演讲 "Growing a Language"</strong> 中，把这种"命名与生长"变成了一场表演。</p>
 <h3 id="32-growing-a-language">3.2 Growing a Language：出路不是二选一，而是生长</h3>
 <p><em>(参考时间: 00:35:23)</em></p>
 <p>讲者现场打开了这篇演讲的 PDF。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_35_23.png" alt="打开 Growing a Language 原文" loading="lazy">
-  <p class="video-caption">📷 打开 Growing a Language 原文<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2123" target="_blank" rel="noopener">回到原视频 (00:35:23)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_35_23.png" alt="打开 Growing a Language 原文" loading="lazy">   <p class="video-caption">📷 打开 Growing a Language 原文<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2123" target="_blank" rel="noopener">回到原视频 (00:35:23)</a></p> </div>
 
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_35_40.png" alt="Growing a Language：让听众亲身经历一次语言的"生长"" loading="lazy">
-  <p class="video-caption">📷 Growing a Language：让听众亲身经历一次语言的"生长"<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2140" target="_blank" rel="noopener">回到原视频 (00:35:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_35_40.png" alt="Growing a Language：让听众亲身经历一次语言的&quot;生长&quot;" loading="lazy">   <p class="video-caption">📷 Growing a Language：让听众亲身经历一次语言的&quot;生长&quot;<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2140" target="_blank" rel="noopener">回到原视频 (00:35:40)</a></p> </div>
 
 <p>第一次看到它，你会想："这是什么呢？"——因为它的开头是这样一句话：</p>
 <blockquote>
 <p>Most of the time I do not read my talks...</p>
 </blockquote>
 <p>你会觉得没读懂，往后翻一页，看到一大堆字、十几页，然后很可能<strong>就把它关掉了</strong>。但讲者说：<strong>这个 talk 非常非常有趣</strong>，它是一个<strong>表演性的演讲</strong>。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_36_04.png" alt="全篇只用单音节词的开场白" loading="lazy">
-  <p class="video-caption">📷 全篇只用单音节词的开场白<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2164" target="_blank" rel="noopener">回到原视频 (00:36:04)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_36_04.png" alt="全篇只用单音节词的开场白" loading="lazy">   <p class="video-caption">📷 全篇只用单音节词的开场白<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2164" target="_blank" rel="noopener">回到原视频 (00:36:04)</a></p> </div>
 
 <p>Steele 的规则是：<strong>全篇尽量只用单音节的英文词</strong>，凡是遇到双音节以上的词（比如 <em>woman</em>、<em>machine</em>、<em>vocabulary</em>、<em>programming</em>、<em>computer</em>），<strong>必须当场定义</strong>。就像写一首藏头诗——他做了一件非常炫技的事。</p>
 <p><strong>但这件事恰恰暴露了编程语言的根本困境。</strong> 所有编程语言相对于英语、相对于用户需求，<strong>都是很小的</strong>。因为编程语言需要一套<strong>形式语义（formal semantics）</strong>；如果语言里可以随便出现 "woman" 这种无法形式化的概念，你就定义不出它的语义。而<strong>只有有形式语义的东西，才能在计算机上执行</strong>。所以编程语言相对来说都比较小。</p>
@@ -596,10 +733,7 @@
 <blockquote>
 <p><strong>好的架构不是选出一个解，而是设计开放需求空间所对应的一片解空间。</strong></p>
 </blockquote>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_42_29.png" alt="好的架构：设计解空间" loading="lazy">
-  <p class="video-caption">📷 好的架构：设计解空间<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2549" target="_blank" rel="noopener">回到原视频 (00:42:29)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_42_29.png" alt="好的架构：设计解空间" loading="lazy">   <p class="video-caption">📷 好的架构：设计解空间<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2549" target="_blank" rel="noopener">回到原视频 (00:42:29)</a></p> </div>
 
 <p>一场演讲里，每个同学问出的问题不一样，得到的结果也不一样——<strong>完全取决于你的提示词和想象力能到什么程度</strong>。但方向是清楚的：</p>
 <ul>
@@ -614,10 +748,7 @@
 <p><strong>有太多宝藏被"埋在"这个快速发展的时代里了。</strong></p>
 <p>海量的<strong>人类 slop 和 AI slop</strong>——比如 CSDN 上的东西、"防自学教科书"——正在疯狂污染大家的品味。<strong>阅读经典是成长必备的道路。</strong></p>
 </blockquote>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_47_25.png" alt="阅读经典，建立品味" loading="lazy">
-  <p class="video-caption">📷 阅读经典，建立品味<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2845" target="_blank" rel="noopener">回到原视频 (00:47:25)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_47_25.png" alt="阅读经典，建立品味" loading="lazy">   <p class="video-caption">📷 阅读经典，建立品味<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2845" target="_blank" rel="noopener">回到原视频 (00:47:25)</a></p> </div>
 
 <p>他半开玩笑地说"我真的很期待一个<strong>大学毁灭计划</strong>"：所有学校的改进空间都实在太大了。他的构想是——能不能把大一第一门程序语言课的知识点全部拆散，不用一本教科书（甚至是老师自己写的教科书），而是<strong>把 1970、1980、1990 年代的经典原样 break down、重新串联起来，为你生成一本教材</strong>。在 AI 的帮助下，今天每个人都有机会<strong>原汁原味地</strong>了解作者想要传达的原始想法。</p>
 <p>落到实操上，就是把经典读进自己的设计：<strong>拿你自己的系统追问——作者把哪些判断交还给了使用者？这些选择，需要什么共同规则才能彼此兼容？</strong></p>
@@ -639,10 +770,7 @@
 </ul>
 <p>讲者用"用数据库"的感受来解释这一点：你<strong>知道数据库好</strong>，但用数据库的时候<strong>总觉得隔了一层纱</strong>——因为你每次查询任何东西都需要一个 SQL query，而这个 query 对人是<strong>间接的（indirect）</strong>，你想要的却是一个<strong>立即的东西</strong>。人并不是很适应"做任何事都要加一层 indirection"。当然模型可以遵循这种指令（你甚至可以让它每说一句都加一个"喵"），但让人来遵循就会非常痛苦。</p>
 <p><strong>而这个想法，早在 1964 年就已经被提出来了</strong>：McIlroy 提出，要<strong>像连接花园水管一样连接程序</strong>。UNIX 在 1983 年前后引入了管道，但"把程序当作可连接的部件"这个想法，在更早的时候就已经有了。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_49_37.png" alt="设计解空间：UNIX Philosophy" loading="lazy">
-  <p class="video-caption">📷 设计解空间：UNIX Philosophy<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2977" target="_blank" rel="noopener">回到原视频 (00:49:37)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_49_37.png" alt="设计解空间：UNIX Philosophy" loading="lazy">   <p class="video-caption">📷 设计解空间：UNIX Philosophy<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=2977" target="_blank" rel="noopener">回到原视频 (00:49:37)</a></p> </div>
 
 <div class="highlight"><pre><span></span><code>graph LR
     A["工具 A&lt;br/&gt;do one thing well"] --&gt;|stdout| PIPE["|"]
@@ -662,10 +790,7 @@
 <li><strong>数据与诊断分开</strong>：<code>stdin</code> 输入、<code>stdout</code> 输出、<code>stderr</code> 诊断；Shell 的管道默认把前一个程序的标准输出连接到后一个程序的标准输入。</li>
 <li><strong>退出状态单独传递</strong>：<code>0</code> 通常表示成功，其他值按工具约定解释；例如 <code>grep</code> 的 <code>1</code> 表示未匹配。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_51_31.png" alt="UNIX：组合需要共同约定" loading="lazy">
-  <p class="video-caption">📷 UNIX：组合需要共同约定<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3091" target="_blank" rel="noopener">回到原视频 (00:51:31)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_51_31.png" alt="UNIX：组合需要共同约定" loading="lazy">   <p class="video-caption">📷 UNIX：组合需要共同约定<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3091" target="_blank" rel="noopener">回到原视频 (00:51:31)</a></p> </div>
 
 <p>长期的社区实践还形成了一些很有用的习惯，<strong>让文本成为稳定的数据接口</strong>：</p>
 <ul>
@@ -680,10 +805,7 @@
 <p>讲者用一个非常具体的例子说明什么叫"组合性"：<strong>"打开文件"这个菜单。</strong></p>
 <p>在一个 GUI 程序里，需要一个"打开文件"的菜单。它<strong>要么自己实现一个</strong>（比如 Adobe 全家桶里的打开对话框，会提供预览之类的功能，好用的时候挺好用，不符合你习惯的时候很难用），<strong>要么用操作系统的</strong>（虽然集成了绝大部分常用功能，但也不一定好用）。<strong>如果你对这两个都不满意，你有办法吗？——没有办法。</strong></p>
 <p>但在 UNIX 里，答案不一样。你想给 Vim 或 Emacs（"我们不胜战"）、或者 Nano / Neovim 配一个自己想要的菜单，<strong>就可以配一个自己的菜单</strong>。因为你手上有一整套可以组合的小工具。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_53_47.png" alt="自己组合出来的"打开文件"菜单" loading="lazy">
-  <p class="video-caption">📷 自己组合出来的"打开文件"菜单<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3227" target="_blank" rel="noopener">回到原视频 (00:53:47)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_53_47.png" alt="自己组合出来的&quot;打开文件&quot;菜单" loading="lazy">   <p class="video-caption">📷 自己组合出来的&quot;打开文件&quot;菜单<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3227" target="_blank" rel="noopener">回到原视频 (00:53:47)</a></p> </div>
 
 <p>于是就有了这些现代工具继续扩展组合边界的例子：</p>
 <ul>
@@ -692,10 +814,7 @@
 <li><strong><a href="https://github.com/jordansissel/xdotool">xdotool</a></strong>：把窗口搜索、键盘和鼠标操作变成命令（适用于 X11）。</li>
 </ul>
 <p>于是"<strong>书目 JSON → jq 提取书名 → fzf 人工选择</strong>"可以成为一条流水线——<strong>人的判断也变成了可组合的一步</strong>；"<strong>窗口 ID 列表 → fzf 选择 → xdotool windowactivate</strong>"就组合出了你自己的窗口切换器。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_52_55.png" alt="UNIX：使用者创造新的用途" loading="lazy">
-  <p class="video-caption">📷 UNIX：使用者创造新的用途<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3175" target="_blank" rel="noopener">回到原视频 (00:52:55)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_52_55.png" alt="UNIX：使用者创造新的用途" loading="lazy">   <p class="video-caption">📷 UNIX：使用者创造新的用途<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3175" target="_blank" rel="noopener">回到原视频 (00:52:55)</a></p> </div>
 
 <p><strong>设计者提供了组合的规则，使用者可以创造设计者没有想到的用途。</strong> 讲者说：我上操作系统课的时候经常讲——<strong>你们在用 Linux / UNIX 的那一刻起，每个人都是程序员</strong>。因为你敲下的每一个命令都是一个小程序，而这个小程序负责把各种"做好一件事"的工具组合起来。这种可组合性非常关键——<strong>一直到今天，你都很难在一个 GUI 程序里得到这样的组合性</strong>，而这样的 ground-breaking 东西应该是可以做得出来的。</p>
 <h2 id="5">5. 关系数据库：分开"理解数据"与"存放数据"</h2>
@@ -714,10 +833,7 @@
 <li>坏处是你"太过自由"，以至于没有统一的管理。</li>
 </ul>
 <p>而<strong>关系代数做了一个非常了不起的对世界的建模</strong>：现实世界里的数据，可以用<strong>一堆二维表</strong>、以及<strong>表和表之间的操作</strong>来表示。你几乎可以用表与表之间的 join 之类的操作，去处理任何你需要的数据管理；至于数据怎么存、可靠不可靠，<strong>全部交给底下的数据库系统去实现</strong>。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_55_01.png" alt="案例二：关系数据库" loading="lazy">
-  <p class="video-caption">📷 案例二：关系数据库<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3301" target="_blank" rel="noopener">回到原视频 (00:55:01)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_55_01.png" alt="案例二：关系数据库" loading="lazy">   <p class="video-caption">📷 案例二：关系数据库<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3301" target="_blank" rel="noopener">回到原视频 (00:55:01)</a></p> </div>
 
 <p>于是<strong>在关系代数的基础上，我们有了 SQL</strong>——一门结构化的查询语言。<strong>注意，这也是一门语言</strong>：unix shell / bash 是一门语言，SQL 也是一门语言。讲者由此提炼出一条规律：</p>
 <blockquote>
@@ -727,10 +843,7 @@
 <h3 id="52">5.2 现实、关系与存储</h3>
 <p><em>(参考时间: 00:56:20)</em></p>
 <p>以图书馆为例，现实里发生了"某位读者借走某册书"。系统可以用<strong>读者、馆藏和借阅关系</strong>表达这个事实。我们既可以问某位读者借了哪些书，也可以问某册书被谁借走；<strong>这些问题都建立在同一组逻辑关系上</strong>。底层究竟采用哪种索引、记录放在哪个数据页、执行查询时先扫描哪张表，则属于另一个层次。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_56_20.png" alt="关系数据库：现实、关系与存储" loading="lazy">
-  <p class="video-caption">📷 关系数据库：现实、关系与存储<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3380" target="_blank" rel="noopener">回到原视频 (00:56:20)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_56_20.png" alt="关系数据库：现实、关系与存储" loading="lazy">   <p class="video-caption">📷 关系数据库：现实、关系与存储<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3380" target="_blank" rel="noopener">回到原视频 (00:56:20)</a></p> </div>
 
 <p>这里同样存在<strong>开放空间</strong>：数据库设计者没有提前列出全世界的图书馆报表、商城查询和教务统计，却提供了<strong>表达关系、约束和查询的规则</strong>。用户可以在其上提出新的问题，底层也可以改进存储与执行方式。<strong>逻辑关系稳定下来，双方就获得了一定程度的独立演化能力。</strong></p>
 <p>而这套抽象带来的影响是历史性的：数据库系统的实现给了我们<strong>近乎无限 scale 的能力</strong>——到今天，SQL 的数据依然可以近乎无限地扩展。于是数据库<strong>带起了整个人类世界信息化的浪潮</strong>：</p>
@@ -760,25 +873,19 @@
 <p><em>(参考时间: 00:58:29)</em></p>
 <p>Internet 解决一个非常简单的问题：<strong>把整个世界连起来。</strong> 讲者现场举的例子就是自己：<strong>我今天为什么可以站在那上课，同时还推着流，我的手机还能同时看推流的结果和弹幕？</strong> 因为 Internet 把整个世界连起来了。</p>
 <p>它也是一个<strong>可以成长的架构</strong>。当你用 TCP 的时候，你<strong>再也不用担心这个数据传输到底可靠不可靠</strong>——无论什么样的数据流，都可以稳定可靠地从一个点送到另一个点，从我的手机，到世界上另外一头的某一个点。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_58_29.png" alt="案例三：The Internet" loading="lazy">
-  <p class="video-caption">📷 案例三：The Internet<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3509" target="_blank" rel="noopener">回到原视频 (00:58:29)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_58_29.png" alt="案例三：The Internet" loading="lazy">   <p class="video-caption">📷 案例三：The Internet<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3509" target="_blank" rel="noopener">回到原视频 (00:58:29)</a></p> </div>
 
 <p>以手机通过 TCP 访问 HTTPS 服务为例：应用提出请求，安全与传输协议处理相应的数据，IP 层组织跨网络传递，链路层负责相邻设备之间的传送；请求经过多个网络到达数据中心，接收端再逐层处理。<strong>应用不必知道途中每一段链路使用什么硬件，也不必为每一次物理路径变化重新设计业务逻辑。</strong></p>
 <p>它的设计哲学是：<strong>我负责解决系统里的一部分问题，不预设上面跑什么应用。</strong> 网络只管高效地传 datagram，至于上面跑什么样的应用程序，<strong>"能支持什么就支持什么，不要做预设"</strong>。</p>
 <h3 id="62">6.2 唯一永存的原则是变化本身</h3>
 <p><em>(参考时间: 00:59:40)</em></p>
-<p><strong>RFC 1958《Architectural Principles of the Internet》（1996 年 6 月）</strong>开篇就强调：</p>
+<p>**RFC 1958《Architectural Principles of the Internet》（1996 年 6 月）**开篇就强调：</p>
 <blockquote>
 <p>In searching for Internet architectural principles, we must remember that technical change is continuous in the information technology industry.</p>
 <p>（在寻找 Internet 的架构原则时，我们必须记住：信息技术产业中的技术变化是持续不断的。）</p>
 </blockquote>
 <p>文中用<strong>城市</strong>作类比：<strong>街道和建筑不断改建，城市仍然继续运转。</strong> 共同的协作规则，使<strong>局部替换</strong>和<strong>整体延续</strong>能够同时发生。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_59_40.png" alt="Internet：在持续变化中演化" loading="lazy">
-  <p class="video-caption">📷 Internet：在持续变化中演化<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3580" target="_blank" rel="noopener">回到原视频 (00:59:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_59_40.png" alt="Internet：在持续变化中演化" loading="lazy">   <p class="video-caption">📷 Internet：在持续变化中演化<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3580" target="_blank" rel="noopener">回到原视频 (00:59:40)</a></p> </div>
 
 <p><strong>唯一应该永存的原则，就是变化本身。</strong> 所以 Internet 只做一件事——<strong>networking</strong>，目标就是 <strong>connectivity</strong>；在 connectivity 的基础上，上面会爆发式地长出很多应用。当然，为了把这一件事做好，架构里必须包含一些很硬的设计细节，比如 <strong>TCP 的拥塞控制（congestion control）</strong> 这类难题，以及<strong>连接管理</strong>（连接的中断在什么时候就该被判定为中断）。</p>
 <p>在这个基础上，上面的世界变了很多：</p>
@@ -799,10 +906,7 @@
 <li><strong>Android</strong>（讲者有一讲会专门讲它）；</li>
 <li><strong>Kubernetes</strong>（云原生）。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_03_40.png" alt="Systems：每一轮浪潮的新抽象" loading="lazy">
-  <p class="video-caption">📷 Systems：每一轮浪潮的新抽象<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3820" target="_blank" rel="noopener">回到原视频 (01:03:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_03_40.png" alt="Systems：每一轮浪潮的新抽象" loading="lazy">   <p class="video-caption">📷 Systems：每一轮浪潮的新抽象<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3820" target="_blank" rel="noopener">回到原视频 (01:03:40)</a></p> </div>
 
 <p>那为什么要在大学里学这些课程？当然你要学一些具体的技术——有一天你真会出去写 SQL，真拖网的时候真的需要一个 SQL 的时候，你得有概念才能写出来。但另一方面，<strong>你更多的是看到这些沉淀下来的经典，它为什么能成为经典</strong>：这些偏软件架构的系统，是<strong>怎么样应对变化的</strong>；你可以体会，为什么一个好的设计能够支撑起一个生态、应对这些变化。</p>
 <h2 id="7-sql-mvc">7. 从"一个页面一段 SQL"到 MVC</h2>
@@ -812,10 +916,7 @@
 <p><em>(参考时间: 01:04:49)</em></p>
 <p>你很自然的一个想法是：<strong>把每一个页面、每一个功能，都做成一个 SQL transaction。</strong></p>
 <p>数据库已经完成了物理世界在信息世界里的投影——它就是一堆表的分解；数据库的事务驱动着状态的变化。把你回到 1998 年或 2000 年，要给学校或企业设计软件系统，手上只有 OS、数据库和 Internet，<strong>最直接的架构就是：每个需求点 → 一个数据库事务；当前状态 → 用各种各样的数据库视图去呈现。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_04_16.png" alt="如果是面向客户需求的软件呢？" loading="lazy">
-  <p class="video-caption">📷 如果是面向客户需求的软件呢？<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3856" target="_blank" rel="noopener">回到原视频 (01:04:16)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_04_16.png" alt="如果是面向客户需求的软件呢？" loading="lazy">   <p class="video-caption">📷 如果是面向客户需求的软件呢？<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=3856" target="_blank" rel="noopener">回到原视频 (01:04:16)</a></p> </div>
 
 <p>比如一个选课请求：</p>
 <ol>
@@ -844,10 +945,7 @@
 <li><strong>Servlet</strong>：在 Java 中输出 HTML；</li>
 <li><strong>JSP 1.0</strong>（1999）：反过来，在 HTML 中嵌入 Java，由容器把页面翻译成 Servlet 执行。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_07_16.png" alt="Java Web：直接在 HTML 里写代码" loading="lazy">
-  <p class="video-caption">📷 Java Web：直接在 HTML 里写代码<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4036" target="_blank" rel="noopener">回到原视频 (01:07:16)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_07_16.png" alt="Java Web：直接在 HTML 里写代码" loading="lazy">   <p class="video-caption">📷 Java Web：直接在 HTML 里写代码<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4036" target="_blank" rel="noopener">回到原视频 (01:07:16)</a></p> </div>
 
 <p>讲者特别用"拼 prompt"打了个比方：如果你要定制一个 prompt，<strong>别用 <code>A + B + C</code> 这样拼字符串</strong>：</p>
 <div class="highlight"><pre><span></span><code>&lt;不好的写法&gt;
@@ -882,19 +980,13 @@ prompt = system_prompt + "
 <span class="nt">&lt;/body&gt;&lt;/html&gt;</span>
 </code></pre></div>
 
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_08_41.png" alt="JSP：从 Java 片段到表达式与标签" loading="lazy">
-  <p class="video-caption">📷 JSP：从 Java 片段到表达式与标签<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4121" target="_blank" rel="noopener">回到原视频 (01:08:41)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_08_41.png" alt="JSP：从 Java 片段到表达式与标签" loading="lazy">   <p class="video-caption">📷 JSP：从 Java 片段到表达式与标签<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4121" target="_blank" rel="noopener">回到原视频 (01:08:41)</a></p> </div>
 
 <p>这在当时是非常直接、实用的改进：<strong>页面仍然长得像页面</strong>。但"能直接写进去"，也意味着<strong>业务规则很容易被顺手塞进页面</strong>：学生选课页检查一次课程容量，管理员补选页再写一次，批量导入又补一份；以后再改容量规则，就要找到所有入口。<strong>把脚本换成标签，也不会自动得到 MVC——业务规则仍然需要独立的归属。</strong></p>
 <h3 id="74-mvc">7.4 MVC：让不同的变化各有归属</h3>
 <p><em>(参考时间: 01:10:40)</em></p>
-<p><strong>MVC（Model–View–Controller）</strong> 提供了<strong>关注点分离（Separation of Concerns）</strong>的思路。它在 <strong>1979 年的早期设计</strong>中面向<strong>交互式界面</strong>：同一个业务对象，可以有不同的展示和操作方式。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_10_40.png" alt="MVC：让不同的变化各有归属" loading="lazy">
-  <p class="video-caption">📷 MVC：让不同的变化各有归属<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4240" target="_blank" rel="noopener">回到原视频 (01:10:40)</a></p>
-</div>
+<p><strong>MVC（Model–View–Controller）</strong> 提供了<strong>关注点分离（Separation of Concerns）<strong>的思路。它在 <strong>1979 年的早期设计</strong>中面向</strong>交互式界面</strong>：同一个业务对象，可以有不同的展示和操作方式。</p>
+<div class="video-card screenshot-card">   <img src="images/shot_01_10_40.png" alt="MVC：让不同的变化各有归属" loading="lazy">   <p class="video-caption">📷 MVC：让不同的变化各有归属<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4240" target="_blank" rel="noopener">回到原视频 (01:10:40)</a></p> </div>
 
 <p>原始描述的三句话，讲者逐条读了：</p>
 <ul>
@@ -902,7 +994,7 @@ prompt = system_prompt + "
 <li><strong>View</strong> 是 "a visual representation of its model" —— 所谓 View 就是我们要看到的东西，是 model 的一个 <strong>function</strong>，而且是一个 <strong>pure function</strong>。所以你不希望 View 有任何改变世界的能力。</li>
 <li><strong>Controller</strong> 是 "the link between a user and the system"：它把用户的输入<strong>翻译</strong>成对 Model 的相关调用，再把输出<strong>呈现</strong>给用户。</li>
 </ul>
-<p>用讲者的话总结：MVC 把<strong>"需求里可以被修改的点"翻译成 transaction</strong>，把<strong>"你看到的东西"变成状态的一个投射</strong>——非常干净的一个架构，因此它会自然而然地成为<strong>任何信息系统的标准架构</strong>。</p>
+<p>用讲者的话总结：MVC 把**"需求里可以被修改的点"翻译成 transaction**，把**"你看到的东西"变成状态的一个投射**——非常干净的一个架构，因此它会自然而然地成为<strong>任何信息系统的标准架构</strong>。</p>
 <p>在教务系统里就是：</p>
 <ul>
 <li><strong>Model</strong>：课程、选课记录、容量与冲突规则——<strong>不只是数据库里的几张表</strong>；</li>
@@ -913,10 +1005,7 @@ prompt = system_prompt + "
 <h3 id="75">7.5 一次选课请求</h3>
 <p><em>(参考时间: 01:12:47)</em></p>
 <p>Web MVC 中的业务流程与界面非常清晰：<strong>Controller 组织请求，Model 执行业务规则，View 呈现结果。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_12_47.png" alt="MVC：一次选课请求" loading="lazy">
-  <p class="video-caption">📷 MVC：一次选课请求<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4367" target="_blank" rel="noopener">回到原视频 (01:12:47)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_12_47.png" alt="MVC：一次选课请求" loading="lazy">   <p class="video-caption">📷 MVC：一次选课请求<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4367" target="_blank" rel="noopener">回到原视频 (01:12:47)</a></p> </div>
 
 <div class="highlight"><pre><span></span><code>graph LR
     U["学生&lt;br/&gt;点击"选课""] --&gt; C["Controller&lt;br/&gt;接收输入 · 组织请求"]
@@ -944,10 +1033,7 @@ prompt = system_prompt + "
 <p>所以可以写出一个概念上的关系：</p>
 <p><code>View = render(Model, ViewState)</code></p>
 <p>其中 <code>ViewState</code> 表示界面自身的状态。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_13_13.png" alt="把 ViewState 也当成 Model" loading="lazy">
-  <p class="video-caption">📷 把 ViewState 也当成 Model<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4393" target="_blank" rel="noopener">回到原视频 (01:13:13)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_13_13.png" alt="把 ViewState 也当成 Model" loading="lazy">   <p class="video-caption">📷 把 ViewState 也当成 Model<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4393" target="_blank" rel="noopener">回到原视频 (01:13:13)</a></p> </div>
 
 <p>这就引出 Fowler 在 2004 年提出的 <strong>Presentation Model</strong>：把<strong>界面状态与行为从具体控件中提取出来</strong>。一句很关键的判断是：</p>
 <blockquote>
@@ -962,10 +1048,7 @@ prompt = system_prompt + "
 <li><strong>View</strong>：筛选框与课程列表；</li>
 <li><strong>ViewModel</strong>：筛选词 <code>query</code>、派生列表 <code>visibleCourses</code> 及相关行为。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_14_45.png" alt="MVVM：让界面绑定状态" loading="lazy">
-  <p class="video-caption">📷 MVVM：让界面绑定状态<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4485" target="_blank" rel="noopener">回到原视频 (01:14:45)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_14_45.png" alt="MVVM：让界面绑定状态" loading="lazy">   <p class="video-caption">📷 MVVM：让界面绑定状态<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4485" target="_blank" rel="noopener">回到原视频 (01:14:45)</a></p> </div>
 
 <p>用 <strong>Vue</strong> 来理解就是：</p>
 <ul>
@@ -992,10 +1075,7 @@ prompt = system_prompt + "
 <h3 id="83-react">8.3 React：用状态快照描述界面</h3>
 <p><em>(参考时间: 01:15:19)</em></p>
 <p>讲者坦承<strong>自己更偏向 React</strong>——因为 React <strong>对开发者比较直观、也更纯净一点</strong>。React 采用另一种表达方式：组件根据当前的属性与状态描述界面，用户事件通过状态更新函数请求下一次渲染。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_15_19.png" alt="React：用状态快照描述界面" loading="lazy">
-  <p class="video-caption">📷 React：用状态快照描述界面<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4519" target="_blank" rel="noopener">回到原视频 (01:15:19)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_15_19.png" alt="React：用状态快照描述界面" loading="lazy">   <p class="video-caption">📷 React：用状态快照描述界面<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4519" target="_blank" rel="noopener">回到原视频 (01:15:19)</a></p> </div>
 
 <div class="highlight"><pre><span></span><code><span class="c1">// React：每次 Render 都描述"此刻应该显示什么"</span>
 <span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">query</span><span class="p">,</span><span class="w"> </span><span class="nx">setQuery</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">(</span><span class="s1">''</span><span class="p">)</span>
@@ -1017,10 +1097,7 @@ prompt = system_prompt + "
 <h3 id="84-vue-react">8.4 Vue 与 React：同一个课程筛选框</h3>
 <p><em>(参考时间: 01:17:30)</em></p>
 <p>Vue 则更像<strong>帮你组建了一个依赖关系图</strong>：你写 <code>:value="query"</code>、<code>@input=...</code> 这样的绑定，它就建立一个依赖关系，帮你保持同步。<strong>两者其实差不多</strong>，而且随着 Vue 新版本的发布，它们<strong>好像变得更像了</strong>。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_17_30.png" alt="Vue 与 React：同一个课程筛选框" loading="lazy">
-  <p class="video-caption">📷 Vue 与 React：同一个课程筛选框<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4650" target="_blank" rel="noopener">回到原视频 (01:17:30)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_17_30.png" alt="Vue 与 React：同一个课程筛选框" loading="lazy">   <p class="video-caption">📷 Vue 与 React：同一个课程筛选框<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4650" target="_blank" rel="noopener">回到原视频 (01:17:30)</a></p> </div>
 
 <p>但这两套框架的设计思路是共通的，都需要你<strong>隔离复杂性</strong>：</p>
 <ul>
@@ -1036,10 +1113,7 @@ prompt = system_prompt + "
 <p><em>(参考时间: 01:19:01)</em></p>
 <p>MVC 和 CRUD 对许多信息管理功能非常有效：<strong>业务对象比较稳定，一次请求完成一小段局部操作，页面展示已有信息，再提供新增、修改或删除入口。</strong> 个人博客、课程信息查询，以及社交网络中的许多基础功能，都能从中受益。</p>
 <p><strong>但业务一旦跨越很长的时间，情况就变了。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_19_01.png" alt="应对复杂性：MVC / CRUD 解决了许多业务系统，但没有解决 essential complexity" loading="lazy">
-  <p class="video-caption">📷 应对复杂性：MVC / CRUD 解决了许多业务系统，但没有解决 essential complexity<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4741" target="_blank" rel="noopener">回到原视频 (01:19:01)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_19_01.png" alt="应对复杂性：MVC / CRUD 解决了许多业务系统，但没有解决 essential complexity" loading="lazy">   <p class="video-caption">📷 应对复杂性：MVC / CRUD 解决了许多业务系统，但没有解决 essential complexity<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=4741" target="_blank" rel="noopener">回到原视频 (01:19:01)</a></p> </div>
 
 <h3 id="91">9.1 长流程与强规则</h3>
 <p><strong>长流程</strong>：电商的一笔订单可能经历——</p>
@@ -1071,10 +1145,7 @@ prompt = system_prompt + "
 <li>复式记账可以<strong>试算平衡</strong>。</li>
 </ul>
 <p><strong>人类发明这种东西，正是因为"一个当前状态很可能是 corrupted、是不对的"</strong>——所以要把"它为什么不对"在一定程度上找出来。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_23_25.png" alt="复式记账：同一笔业务，保持会计等式" loading="lazy">
-  <p class="video-caption">📷 复式记账：同一笔业务，保持会计等式<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5005" target="_blank" rel="noopener">回到原视频 (01:23:25)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_23_25.png" alt="复式记账：同一笔业务，保持会计等式" loading="lazy">   <p class="video-caption">📷 复式记账：同一笔业务，保持会计等式<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5005" target="_blank" rel="noopener">回到原视频 (01:23:25)</a></p> </div>
 
 <p>会计等式是：</p>
 <p><code>资产 (Assets) = 负债 (Liabilities) + 所有者权益 (Equity)</code></p>
@@ -1089,16 +1160,10 @@ prompt = system_prompt + "
 <li>从最终要交付的资产负债表<strong>所有可能的条目</strong>里，提取出一组<strong>记账动作</strong>；</li>
 <li>每发生一笔业务，就用这组动作去描述："货币资金会怎么样、所有者权益会怎么样、应付款会怎么样，现金流量表上会发生什么"。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_25_03.png" alt="会计规则表：每一种记账动作如何影响各张报表" loading="lazy">
-  <p class="video-caption">📷 会计规则表：每一种记账动作如何影响各张报表<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5103" target="_blank" rel="noopener">回到原视频 (01:25:03)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_25_03.png" alt="会计规则表：每一种记账动作如何影响各张报表" loading="lazy">   <p class="video-caption">📷 会计规则表：每一种记账动作如何影响各张报表<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5103" target="_blank" rel="noopener">回到原视频 (01:25:03)</a></p> </div>
 
 <p><strong>这些表格完全是 AI 生成的。</strong> 讲者的选择是：<strong>选择相信 AI，以及相信最终的校验能找出问题。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_25_31.png" alt="记账架构：Event Sourcing & LLM as a Compiler" loading="lazy">
-  <p class="video-caption">📷 记账架构：Event Sourcing & LLM as a Compiler<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5131" target="_blank" rel="noopener">回到原视频 (01:25:31)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_25_31.png" alt="记账架构：Event Sourcing &amp; LLM as a Compiler" loading="lazy">   <p class="video-caption">📷 记账架构：Event Sourcing &amp; LLM as a Compiler<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5131" target="_blank" rel="noopener">回到原视频 (01:25:31)</a></p> </div>
 
 <p>然后就是核心的架构：<strong>LLM as a Compiler</strong>。</p>
 <ul>
@@ -1106,10 +1171,7 @@ prompt = system_prompt + "
 <li>这样的流水账条目，会用 <strong>LLM 编译成许多小的操作</strong>；</li>
 <li><strong>当前的状态，是由所有操作 reduce 得到的</strong>——每个操作都说明资产负债表要怎么改、第二张表要怎么改、现金流量表要怎么改；把它们 reduce 一遍，就得到<strong>当前可以提交出去的资产负债表</strong>。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_27_11.png" alt="AI 生成的记账动作与报表推导" loading="lazy">
-  <p class="video-caption">📷 AI 生成的记账动作与报表推导<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5231" target="_blank" rel="noopener">回到原视频 (01:27:11)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_27_11.png" alt="AI 生成的记账动作与报表推导" loading="lazy">   <p class="video-caption">📷 AI 生成的记账动作与报表推导<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5231" target="_blank" rel="noopener">回到原视频 (01:27:11)</a></p> </div>
 
 <p>里面还有很多小的架构。比如 <strong>GPT 一开始写的代码非常糟糕、非常非常长</strong>，讲者就用了一个小 trick：给函数加上参数、把 <code>state</code> 确定下来，得到一个 <strong>curry</strong> 之后的函数——这是<strong>函数式编程里非常常用的小技巧</strong>。好处就是：<strong>记账不再有任何问题</strong>，一笔业务在报表上的所有 side effect 都会被体现出来，按时间顺序推一遍，就得到当前的报表。</p>
 <p>教学材料里给出的一个 payroll 实现片段是这样的（它依赖项目内的金额类型、分类表和账本操作，<strong>不能脱离这些定义单独运行</strong>）：</p>
@@ -1137,10 +1199,7 @@ prompt = system_prompt + "
 <p><strong>模型在这里像一个编译器前端</strong>：把人的材料（原始凭证、发生的业务）翻译成系统可以<strong>检查和执行</strong>的表示。例如 <code>报表_支出_财务费用(CNY(75))</code> 表达的是一项具体记账动作，<code>CNY</code> 则把金额放进"人民币的金额表示"里。<strong>语言模型负责提出符合材料的动作，账本代码负责这些动作的确定含义和约束；编译出来的动作是否符合真实业务，仍然是需要审查的环节。</strong></p>
 <h3 id="103">10.3 从分录到报表</h3>
 <p><em>(参考时间: 01:28:38)</em></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_28_38.png" alt="从分录到报表" loading="lazy">
-  <p class="video-caption">📷 从分录到报表<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5318" target="_blank" rel="noopener">回到原视频 (01:28:38)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_28_38.png" alt="从分录到报表" loading="lazy">   <p class="video-caption">📷 从分录到报表<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5318" target="_blank" rel="noopener">回到原视频 (01:28:38)</a></p> </div>
 
 <p>举个具体的例子。银行收支记录包含两笔动作：</p>
 <ul>
@@ -1153,10 +1212,7 @@ prompt = system_prompt + "
 <li>利润表上相应记录费用与收益，<strong>净利润减少 52.93 元</strong>；</li>
 <li>相关权益和现金流量项目，也按这套工具的规则得到结果。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_29_19.png" alt="从分录到报表：报表上的许多数字共同变化，但它们来自同一组动作" loading="lazy">
-  <p class="video-caption">📷 从分录到报表：报表上的许多数字共同变化，但它们来自同一组动作<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5359" target="_blank" rel="noopener">回到原视频 (01:29:19)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_29_19.png" alt="从分录到报表：报表上的许多数字共同变化，但它们来自同一组动作" loading="lazy">   <p class="video-caption">📷 从分录到报表：报表上的许多数字共同变化，但它们来自同一组动作<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5359" target="_blank" rel="noopener">回到原视频 (01:29:19)</a></p> </div>
 
 <p><strong>报表上的许多数字共同变化，但我们不希望让模型逐格填写这些数字，而希望它们来自同一组动作及其计算规则。</strong></p>
 <h3 id="104">10.4 记账为什么麻烦？"当前状态"编码了过去、现在与未来</h3>
@@ -1168,10 +1224,7 @@ prompt = system_prompt + "
 <li>这个学期有哪些课程。</li>
 </ul>
 <p>它代表一个<strong>当前的事实</strong>。<strong>而这个状态是可变的</strong>——状态可变就意味着：<strong>一旦你的逻辑有错、或者逻辑改变，状态就很容易造成不一致，你就会从一个对的状态走到一个错的状态。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_29_49.png" alt="记账为什么麻烦？"当前状态"同时编码了过去、现在和未来" loading="lazy">
-  <p class="video-caption">📷 记账为什么麻烦？"当前状态"同时编码了过去、现在和未来<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5389" target="_blank" rel="noopener">回到原视频 (01:29:49)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_29_49.png" alt="记账为什么麻烦？&quot;当前状态&quot;同时编码了过去、现在和未来" loading="lazy">   <p class="video-caption">📷 记账为什么麻烦？&quot;当前状态&quot;同时编码了过去、现在和未来<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5389" target="_blank" rel="noopener">回到原视频 (01:29:49)</a></p> </div>
 
 <p>而"当前状态"这种表示，往往同时背负着三样东西：</p>
 <ul>
@@ -1183,10 +1236,7 @@ prompt = system_prompt + "
 <h3 id="105-event-sourcing">10.5 Event Sourcing 和复杂性分解</h3>
 <p><em>(参考时间: 01:30:44)</em></p>
 <p><strong>Event Sourcing 提供了一种重新分解问题的方法：保存已经发生的事件，再从事件计算需要的状态。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_30_44.png" alt="Event Sourcing 和复杂性分解" loading="lazy">
-  <p class="video-caption">📷 Event Sourcing 和复杂性分解<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5444" target="_blank" rel="noopener">回到原视频 (01:30:44)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_30_44.png" alt="Event Sourcing 和复杂性分解" loading="lazy">   <p class="video-caption">📷 Event Sourcing 和复杂性分解<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5444" target="_blank" rel="noopener">回到原视频 (01:30:44)</a></p> </div>
 
 <p>它把三样东西分开了：</p>
 <ul>
@@ -1241,7 +1291,7 @@ prompt = system_prompt + "
 <blockquote>
 <p><strong>现在是过去的结果。</strong></p>
 </blockquote>
-<p>于是你有一个<strong>可查证、可溯源的计算过程</strong>，你就<strong>显式地建模了系统里各种各样的 data dependency</strong>。所有的计算逻辑都是<strong>可以溯源</strong>的：计算机系统基础课的学分可能是变的，但只要你有 event sourcing，你就知道<strong>"在当前这个时刻，计算机系统基础课的学分是几"</strong>——你就不会出现"确实减了学分，那你学分还够不够毕业"这种无从下手的问题。</p>
+<p>于是你有一个<strong>可查证、可溯源的计算过程</strong>，你就<strong>显式地建模了系统里各种各样的 data dependency</strong>。所有的计算逻辑都是<strong>可以溯源</strong>的：计算机系统基础课的学分可能是变的，但只要你有 event sourcing，你就知道**"在当前这个时刻，计算机系统基础课的学分是几"**——你就不会出现"确实减了学分，那你学分还够不够毕业"这种无从下手的问题。</p>
 <h2 id="11_1">11. 教务系统：让毕业结论有一条可追溯的计算路径</h2>
 <p><em>(参考时间: 01:33:26)</em></p>
 <h3 id="111-data-dependency">11.1 显式建模 Data Dependency</h3>
@@ -1254,10 +1304,7 @@ prompt = system_prompt + "
 <li>"是否满足毕业条件"。</li>
 </ul>
 <p><strong>如果把这些都当作可以各自修改的独立事实</strong>，那么更正一门课的成绩时，就必须记得去修改后面的每一项。<strong>遗漏一处，系统里便同时存在几个互相矛盾的"现在"。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_33_26.png" alt="跳出问题看问题："现在"是"过去"的结果，显式建模 data dependency" loading="lazy">
-  <p class="video-caption">📷 跳出问题看问题："现在"是"过去"的结果，显式建模 data dependency<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5606" target="_blank" rel="noopener">回到原视频 (01:33:26)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_33_26.png" alt="跳出问题看问题：&quot;现在&quot;是&quot;过去&quot;的结果，显式建模 data dependency" loading="lazy">   <p class="video-caption">📷 跳出问题看问题：&quot;现在&quot;是&quot;过去&quot;的结果，显式建模 data dependency<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5606" target="_blank" rel="noopener">回到原视频 (01:33:26)</a></p> </div>
 
 <p><strong>其实，其中许多状态本来就是别的信息的结果。</strong> 这是一条<strong>显式的数据依赖链</strong>：</p>
 <div class="highlight"><pre><span></span><code>graph TD
@@ -1287,12 +1334,9 @@ prompt = system_prompt + "
 <p><em>(参考时间: 01:37:56)</em></p>
 <p>看到这里，可以对 SQL 提出一个带点挑衅的批评：<strong>它没有把跨数据的任意计算关系，充分作为一等公民（first-class citizen）来表达和维护。</strong> 这也算一个 "Billion Dollar Mistake" 吧。</p>
 <blockquote>
-<p><strong>编者说明</strong>："Billion Dollar Mistake" 是 Tony Hoare 对自己发明<strong>空指针（null pointer）</strong>的自嘲——空指针让程序 crash，甚至可能让火箭爆炸。讲者在这里是<strong>借这个说法</strong>来调侃关系数据库的一个设计取向。</p>
+<p><strong>编者说明</strong>："Billion Dollar Mistake" 是 Tony Hoare 对自己发明<strong>空指针（null pointer）<strong>的自嘲——空指针让程序 crash，甚至可能让火箭爆炸。讲者在这里是</strong>借这个说法</strong>来调侃关系数据库的一个设计取向。</p>
 </blockquote>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_37_56.png" alt="SQL 的 Billion Dollar Mistake" loading="lazy">
-  <p class="video-caption">📷 SQL 的 Billion Dollar Mistake<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5876" target="_blank" rel="noopener">回到原视频 (01:37:56)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_37_56.png" alt="SQL 的 Billion Dollar Mistake" loading="lazy">   <p class="video-caption">📷 SQL 的 Billion Dollar Mistake<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5876" target="_blank" rel="noopener">回到原视频 (01:37:56)</a></p> </div>
 
 <p>所谓<strong>一等公民</strong>，是说这类关系应当成为<strong>可以直接声明、组合、检查和追踪的对象</strong>，而不只是散落在应用代码里的一些约定。</p>
 <p><strong>SQL 当然能够表达查询</strong>，数据库也有视图、约束和物化视图；例如 <strong>PostgreSQL 的物化视图</strong>可以保存查询结果，并通过刷新重新生成。这里批评的焦点是：<strong>跨过数据库、应用逻辑、缓存乃至界面的计算依赖</strong>——一条基础记录变了，所有依赖它的结果由谁负责更新，怎样判断哪些结果已经失效，又怎样追溯一个结果的来源？</p>
@@ -1311,10 +1355,7 @@ prompt = system_prompt + "
 <blockquote>
 <p><strong>系统应保存足以重建其余信息的事实依据（source of truth），其他状态尽可能成为计算的结果。</strong></p>
 </blockquote>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_38_45.png" alt="从状态一致性到计算正确性" loading="lazy">
-  <p class="video-caption">📷 从状态一致性到计算正确性<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5925" target="_blank" rel="noopener">回到原视频 (01:38:45)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_38_45.png" alt="从状态一致性到计算正确性" loading="lazy">   <p class="video-caption">📷 从状态一致性到计算正确性<br><a href="https://www.bilibili.com/video/BV1JGap6LE74/?t=5925" target="_blank" rel="noopener">回到原视频 (01:38:45)</a></p> </div>
 
 <p>为了性能，可以保存汇总、索引和缓存，<strong>但应当清楚它们从哪里来、何时失效，以及怎样重建</strong>。一个业务决定如果必须由人作出，就<strong>把决定及其依据保存下来</strong>；能够推导的东西，则<strong>尽量不要再引入一份独立的决定</strong>。</p>
 <p><strong>复杂性仍然存在，却从"怎样保证许多份状态永远一致"，转移到了"这段计算是否正确"。</strong> 而<strong>后一个问题往往更容易管理</strong>：</p>
@@ -1380,13 +1421,23 @@ prompt = system_prompt + "
 <hr />
 <p><em>本电子书由 <a href="https://github.com/Luke-Evan/videobook">videobook</a> 流水线生成。课程讲义与幻灯片版权归讲师 © 蒋炎岩 所有，依 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> 发布。</em></p>
     </article>
+    </div>
+    <script>
+        const tocDetails = document.querySelector('.book-toc details');
+        if (tocDetails && window.matchMedia('(max-width: 1099px)').matches) {
+            tocDetails.open = false;
+            tocDetails.addEventListener('click', function(event) {
+                if (event.target.closest('a')) tocDetails.open = false;
+            });
+        }
+    </script>
 
     <!-- Mermaid 图表引擎初始化 -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             mermaid.initialize({ startOnLoad: false, theme: 'default' });
-            
+
             // 兼容普通代码块以及丢失 language-mermaid 类名的情况 (CodeHilite 干扰)
             const codeNodes = document.querySelectorAll('pre code, .highlight code');
             codeNodes.forEach(function(node) {
@@ -1396,13 +1447,13 @@ prompt = system_prompt + "
                     const tempDiv = document.createElement('div');
                     tempDiv.className = 'mermaid';
                     tempDiv.textContent = text;
-                    
+
                     // 获取需要替换的最外层父节点 (比如 div.highlight 或者 pre)
                     const wrapper = node.closest('.highlight') || node.parentNode;
-                    wrapper.replaceWith(tempDiv); 
+                    wrapper.replaceWith(tempDiv);
                 }
             });
-            
+
             // 所有节点转换完成，统一进行图表动态绘制
             mermaid.run();
         });

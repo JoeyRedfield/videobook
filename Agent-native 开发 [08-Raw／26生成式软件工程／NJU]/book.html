@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agent Native 开发：从 Ralph Loop 到"把工程知识放进环境"</title>
+    <title>Agent Native 开发：从 Ralph Loop 到&quot;把工程知识放进环境&quot;</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -42,9 +42,40 @@
 
         /* ── 文章容器 ── */
         .book-content {
+            width: 100%;
+            min-width: 0;
             max-width: 780px;
             margin: 0 auto;
             padding: 60px 32px 120px;
+        }
+
+        /* ── 章节目录 ── */
+        .book-toc {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            margin: 16px 16px 0;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 14px;
+        }
+        .book-toc summary { cursor: pointer; font-weight: 600; }
+        .book-toc nav { max-height: 55vh; overflow-y: auto; overflow-wrap: anywhere; }
+        .book-toc ul { list-style: none; margin: 8px 0; padding: 0; }
+        .book-toc ul ul { padding-left: 16px; }
+        .book-toc a { display: block; padding: 3px 0; }
+        .book-content :is(h2, h3) { scroll-margin-top: 88px; }
+        @media (min-width: 1100px) {
+            .reader-layout { display: flex; align-items: flex-start; max-width: 1120px; margin: 0 auto; }
+            .book-toc { flex: 0 0 280px; top: 24px; margin: 60px 0 24px 24px; }
+            .book-toc nav { max-height: calc(100vh - 140px); }
+            .book-content :is(h2, h3) { scroll-margin-top: 24px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
         }
 
         /* ── 标题 ── */
@@ -289,6 +320,77 @@
     </style>
 </head>
 <body>
+    <div class="reader-layout">
+    <aside class="book-toc"><details open><summary>目录</summary><nav aria-label="章节目录"><div class="toc">
+<ul>
+<li><a href="#_1">目录</a></li>
+<li><a href="#1">1. 回顾与开场：从"实验二"说起</a><ul>
+<li><a href="#11-job-agent">1.1 开场：把日常 job 交给 Agent</a></li>
+<li><a href="#12">1.2 软件工程解决的是一类搜索问题</a></li>
+<li><a href="#13-ai">1.3 AI 给我们的最大能力：随时可以开始</a></li>
+</ul>
+</li>
+<li><a href="#2-agent-loop-150">2. Agent Loop：从一个 150 行的原型开始</a><ul>
+<li><a href="#21-ai">2.1 AI 越来越自主，也还没有"万能"</a></li>
+<li><a href="#22">2.2 模型为什么不会一直尝试下去</a></li>
+<li><a href="#23-150-react-agentbash-tool">2.3 一个 150 行的 ReAct Agent：bash tool 就是全部接口</a></li>
+<li><a href="#24-while">2.4 主循环就是一个 while</a></li>
+<li><a href="#25-ralph-loop">2.5 Ralph Loop：三行脚本，和一个笨拙却不放弃的名字</a></li>
+<li><a href="#26">2.6 会漂移的模型：舔狗、屎山与"扶起来"</a></li>
+<li><a href="#27-everything-is-a-state-machineagent">2.7 Everything is a state machine：工作区是状态，Agent 是状态迁移</a></li>
+<li><a href="#28-ralph-loop">2.8 我也实现了一个 Ralph Loop，以及一个对照实验</a></li>
+<li><a href="#29-design-space">2.9 这个 design space，地球人都不知道</a></li>
+</ul>
+</li>
+<li><a href="#3-cicd">3. 每一次迁移都检查：重新发现 CI/CD</a><ul>
+<li><a href="#31">3.1 那条最重要的提示词</a></li>
+<li><a href="#32">3.2 开发者是不可信的：两条公理与人的投机</a></li>
+<li><a href="#33-cicd">3.3 祝贺你，重新发明了 CI/CD</a></li>
+<li><a href="#34-hook">3.4 Hook：事件发生，执行指定动作</a></li>
+<li><a href="#35-cicd-spec">3.5 把 CI/CD 写成 Spec</a></li>
+<li><a href="#36-ci-agentic-ai">3.6 CI 在 Agentic AI 时代的含金量</a></li>
+</ul>
+</li>
+<li><a href="#4-agent-native">4. Agent Native：把工程知识放进环境</a><ul>
+<li><a href="#41-harness-engineering">4.1 Harness engineering：从空仓库开始</a></li>
+<li><a href="#42">4.2 把品味做成机制</a></li>
+<li><a href="#43-closedai">4.3 落差：ClosedAI 与三层门控</a></li>
+<li><a href="#44-stripe-minions">4.4 别人的经验：Stripe 的 Minions 与混合工作流</a></li>
+<li><a href="#45-agent-bug-anthropic-16-agent">4.5 并行 Agent 会卡在同一个 Bug 上：Anthropic 的 16 个 Agent</a></li>
+<li><a href="#46">4.6 我们自己的做法：把进展画在架构图上</a></li>
+</ul>
+</li>
+<li><a href="#5-deepseek-harness">5. DeepSeek Harness：一个把经验写成门禁的项目</a><ul>
+<li><a href="#51">5.1 第一眼就不一样：为什么要用中文写文档</a></li>
+<li><a href="#52">5.2 三套件 + 一个门禁：中英文文档如何保持一致</a></li>
+<li><a href="#53">5.3 人感是可校准的规范</a></li>
+<li><a href="#54-git">5.4 从 git 历史看经验是怎么长出来的</a></li>
+<li><a href="#55">5.5 还有哪些门禁</a></li>
+<li><a href="#56">5.6 代价与"监工"的位置</a></li>
+<li><a href="#57">5.7 这些东西是怎么学会的</a></li>
+</ul>
+</li>
+<li><a href="#6">6. 真正的经验</a><ul>
+<li><a href="#61">6.1 很难"凭空想出"</a></li>
+<li><a href="#62">6.2 垃圾回收解决不了的问题</a></li>
+<li><a href="#63-friendster">6.3 Friendster：看出怎么改，还要改得动</a></li>
+</ul>
+</li>
+<li><a href="#7">7. 一个社会性的威胁</a><ul>
+<li><a href="#71-slop">7.1 好想法也会 slop 化</a></li>
+<li><a href="#72-token">7.2 没有 token，就没有做很多次尝试的机会</a></li>
+<li><a href="#73">7.3 斩杀线：从博士生到本科生</a></li>
+<li><a href="#74">7.4 大学、资本与新的教育形态</a></li>
+<li><a href="#75">7.5 这不就斩杀了吗……</a></li>
+</ul>
+</li>
+<li><a href="#8">8. 结语：让下一次尝试比上一次更有价值</a></li>
+<li><a href="#_2">附：官方参考与延伸阅读</a></li>
+<li><a href="#_3">后记：本书是如何生成的</a></li>
+<li><a href="#_4">附录：课堂未展示的幻灯片</a></li>
+</ul>
+</div>
+</nav></details></aside>
     <article class="book-content">
         <h1 id="agent-native-ralph-loop">Agent Native 开发：从 Ralph Loop 到"把工程知识放进环境"</h1>
 <blockquote>
@@ -298,19 +400,76 @@
 </blockquote>
 <hr />
 <h2 id="_1">目录</h2>
-<ol>
-<li><a href="#1">回顾与开场：从"实验二"说起</a></li>
-<li><a href="#2-agent-loop-150">Agent Loop：从一个 150 行的原型开始</a></li>
-<li><a href="#3-cicd">每一次迁移都检查：重新发现 CI/CD</a></li>
-<li><a href="#4-agent-native">Agent Native：把工程知识放进环境</a></li>
-<li><a href="#5-deepseek-harness">DeepSeek Harness：一个把经验写成门禁的项目</a></li>
-<li><a href="#6">真正的经验</a></li>
-<li><a href="#7">一个社会性的威胁</a></li>
-<li><a href="#8">结语：让下一次尝试比上一次更有价值</a></li>
+<div class="toc">
+<ul>
+<li><a href="#_1">目录</a></li>
+<li><a href="#1">1. 回顾与开场：从"实验二"说起</a><ul>
+<li><a href="#11-job-agent">1.1 开场：把日常 job 交给 Agent</a></li>
+<li><a href="#12">1.2 软件工程解决的是一类搜索问题</a></li>
+<li><a href="#13-ai">1.3 AI 给我们的最大能力：随时可以开始</a></li>
+</ul>
+</li>
+<li><a href="#2-agent-loop-150">2. Agent Loop：从一个 150 行的原型开始</a><ul>
+<li><a href="#21-ai">2.1 AI 越来越自主，也还没有"万能"</a></li>
+<li><a href="#22">2.2 模型为什么不会一直尝试下去</a></li>
+<li><a href="#23-150-react-agentbash-tool">2.3 一个 150 行的 ReAct Agent：bash tool 就是全部接口</a></li>
+<li><a href="#24-while">2.4 主循环就是一个 while</a></li>
+<li><a href="#25-ralph-loop">2.5 Ralph Loop：三行脚本，和一个笨拙却不放弃的名字</a></li>
+<li><a href="#26">2.6 会漂移的模型：舔狗、屎山与"扶起来"</a></li>
+<li><a href="#27-everything-is-a-state-machineagent">2.7 Everything is a state machine：工作区是状态，Agent 是状态迁移</a></li>
+<li><a href="#28-ralph-loop">2.8 我也实现了一个 Ralph Loop，以及一个对照实验</a></li>
+<li><a href="#29-design-space">2.9 这个 design space，地球人都不知道</a></li>
+</ul>
+</li>
+<li><a href="#3-cicd">3. 每一次迁移都检查：重新发现 CI/CD</a><ul>
+<li><a href="#31">3.1 那条最重要的提示词</a></li>
+<li><a href="#32">3.2 开发者是不可信的：两条公理与人的投机</a></li>
+<li><a href="#33-cicd">3.3 祝贺你，重新发明了 CI/CD</a></li>
+<li><a href="#34-hook">3.4 Hook：事件发生，执行指定动作</a></li>
+<li><a href="#35-cicd-spec">3.5 把 CI/CD 写成 Spec</a></li>
+<li><a href="#36-ci-agentic-ai">3.6 CI 在 Agentic AI 时代的含金量</a></li>
+</ul>
+</li>
+<li><a href="#4-agent-native">4. Agent Native：把工程知识放进环境</a><ul>
+<li><a href="#41-harness-engineering">4.1 Harness engineering：从空仓库开始</a></li>
+<li><a href="#42">4.2 把品味做成机制</a></li>
+<li><a href="#43-closedai">4.3 落差：ClosedAI 与三层门控</a></li>
+<li><a href="#44-stripe-minions">4.4 别人的经验：Stripe 的 Minions 与混合工作流</a></li>
+<li><a href="#45-agent-bug-anthropic-16-agent">4.5 并行 Agent 会卡在同一个 Bug 上：Anthropic 的 16 个 Agent</a></li>
+<li><a href="#46">4.6 我们自己的做法：把进展画在架构图上</a></li>
+</ul>
+</li>
+<li><a href="#5-deepseek-harness">5. DeepSeek Harness：一个把经验写成门禁的项目</a><ul>
+<li><a href="#51">5.1 第一眼就不一样：为什么要用中文写文档</a></li>
+<li><a href="#52">5.2 三套件 + 一个门禁：中英文文档如何保持一致</a></li>
+<li><a href="#53">5.3 人感是可校准的规范</a></li>
+<li><a href="#54-git">5.4 从 git 历史看经验是怎么长出来的</a></li>
+<li><a href="#55">5.5 还有哪些门禁</a></li>
+<li><a href="#56">5.6 代价与"监工"的位置</a></li>
+<li><a href="#57">5.7 这些东西是怎么学会的</a></li>
+</ul>
+</li>
+<li><a href="#6">6. 真正的经验</a><ul>
+<li><a href="#61">6.1 很难"凭空想出"</a></li>
+<li><a href="#62">6.2 垃圾回收解决不了的问题</a></li>
+<li><a href="#63-friendster">6.3 Friendster：看出怎么改，还要改得动</a></li>
+</ul>
+</li>
+<li><a href="#7">7. 一个社会性的威胁</a><ul>
+<li><a href="#71-slop">7.1 好想法也会 slop 化</a></li>
+<li><a href="#72-token">7.2 没有 token，就没有做很多次尝试的机会</a></li>
+<li><a href="#73">7.3 斩杀线：从博士生到本科生</a></li>
+<li><a href="#74">7.4 大学、资本与新的教育形态</a></li>
+<li><a href="#75">7.5 这不就斩杀了吗……</a></li>
+</ul>
+</li>
+<li><a href="#8">8. 结语：让下一次尝试比上一次更有价值</a></li>
 <li><a href="#_2">附：官方参考与延伸阅读</a></li>
 <li><a href="#_3">后记：本书是如何生成的</a></li>
 <li><a href="#_4">附录：课堂未展示的幻灯片</a></li>
-</ol>
+</ul>
+</div>
+
 <hr />
 <h2 id="1">1. 回顾与开场：从"实验二"说起</h2>
 <p><em>(参考时间: 00:00)</em></p>
@@ -325,10 +484,7 @@
 <li>每天收到 morning paper 推送，比如 arXiv 上的论文，提示词是他调过的——如果直接让 AI 去总结同一篇论文，结果会不太一样；</li>
 <li>还有 GitHub trending 之类的内容。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_01_40.png" alt="讲师自己的 Agent 看板：Master Bot、Claude Code Agent 的额度、Morning Paper 与 Kid's Daily News" loading="lazy">
-  <p class="video-caption">📷 讲师自己的 Agent 看板：Master Bot、Claude Code Agent 的额度、Morning Paper 与 Kid's Daily News<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=100" target="_blank" rel="noopener">回到原视频 (00:01:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_01_40.png" alt="讲师自己的 Agent 看板：Master Bot、Claude Code Agent 的额度、Morning Paper 与 Kid&#x27;s Daily News" loading="lazy">   <p class="video-caption">📷 讲师自己的 Agent 看板：Master Bot、Claude Code Agent 的额度、Morning Paper 与 Kid&#x27;s Daily News<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=100" target="_blank" rel="noopener">回到原视频 (00:01:40)</a></p> </div>
 
 <p>这里有一个判断值得记住：<strong>Agent 虽然具备长程任务的完成能力，但它解决问题的直觉其实稍微差一点。</strong> 讲者觉得这跟博士生很像。</p>
 <h3 id="12">1.2 软件工程解决的是一类搜索问题</h3>
@@ -345,10 +501,7 @@
 <p><strong>你会产生很多不同的想法，最终收敛到很不一样的方案上</strong>；而一条线走到黑的那个方案，其可维护性、可观测性可能就差十万八千里。</p>
 <p>软件工程解决的正是这件事。用 UML 建模的时候，它约束的是这个空间里的行为，让你在项目早期就能和别人达成一致。工具层面也一样：从 IDE、VS Code，到管理版本状态的 Git worktree，再到 jj 这样更先进的工具，还有无数讲不过来的东西。</p>
 <p>讲者顺带给了学生们一个可执行的习惯：如果你的 Agent 每天给你推一个 GitHub trending 项目，你就花几分钟进去看一看、追问一下——你会发现每个项目都用了不同的技术栈，里面都有好东西。<strong>每天几分钟，就是在积累技术的厚度和品味。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_05_40.png" alt="Review & Comments：软件工程的两个主题，与需求和架构应对复杂性的方式" loading="lazy">
-  <p class="video-caption">📷 Review & Comments：软件工程的两个主题，与需求和架构应对复杂性的方式<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=340" target="_blank" rel="noopener">回到原视频 (00:05:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_05_40.png" alt="Review &amp; Comments：软件工程的两个主题，与需求和架构应对复杂性的方式" loading="lazy">   <p class="video-caption">📷 Review &amp; Comments：软件工程的两个主题，与需求和架构应对复杂性的方式<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=340" target="_blank" rel="noopener">回到原视频 (00:05:40)</a></p> </div>
 
 <h3 id="13-ai">1.3 AI 给我们的最大能力：随时可以开始</h3>
 <p><em>(参考时间: 00:08:46)</em></p>
@@ -366,10 +519,7 @@
 </ul>
 <p>所以当成本足够低的时候，就应该让 AI 先承担一部分"预测"：<strong>这个架构如果换一个人来用会怎么样？用户多了以后会怎么样？两个模块之间有没有我未曾想过的交互？</strong> 很多问题只有你真的把它实现出来以后，才会意识到"这个地方的设计出了一个小问题"。</p>
 <p>于是就有了那句很形象的说法："我现在没想清楚，不要紧，你给我搓一个；搓完了以后拿我的 use case 去评审一下。" <strong>构建原型的能力，是 AI 给我们的一件非常好的礼物。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_09_00.png" alt="开始：构建原型。幻灯片举的例子是 1901 年莱特兄弟的滑翔机——升力只有预测的三分之一，他们随后自建风洞重新测量翼型（来源：NASA）" loading="lazy">
-  <p class="video-caption">📷 开始：构建原型。幻灯片举的例子是 1901 年莱特兄弟的滑翔机——升力只有预测的三分之一，他们随后自建风洞重新测量翼型（来源：NASA）<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=540" target="_blank" rel="noopener">回到原视频 (00:09:00)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_09_00.png" alt="开始：构建原型。幻灯片举的例子是 1901 年莱特兄弟的滑翔机——升力只有预测的三分之一，他们随后自建风洞重新测量翼型（来源：NASA）" loading="lazy">   <p class="video-caption">📷 开始：构建原型。幻灯片举的例子是 1901 年莱特兄弟的滑翔机——升力只有预测的三分之一，他们随后自建风洞重新测量翼型（来源：NASA）<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=540" target="_blank" rel="noopener">回到原视频 (00:09:00)</a></p> </div>
 
 <hr />
 <h2 id="2-agent-loop-150">2. Agent Loop：从一个 150 行的原型开始</h2>
@@ -379,10 +529,7 @@
 <p>往回看这条产品线：ChatGPT、AutoGPT、Devin、Claude Code……<strong>AI 越来越自主。</strong> 2023 年你们还在上初中或高中，可能留意到社交媒体上的新闻：有人在说"模型是有幻觉的"，模型很强但不能完全相信它。Devin 是最早一批 coding agent，号称可以解决数学问题等等；但那时候 GPT-4 的幻觉其实非常严重，说着说着就不知道在说什么，也没有今天这样的思维链模型，所以大家还在观望：到底行不行？</p>
 <p>理论上说，如果模型"足够好"，给它一个 bash 工具就够了：它可以用 bash 编辑文档、用 bash 看文档，可以去造芯片、证明黎曼猜想。想一想早期 UNIX 时代——还没有今天图形界面的时候，那些大师就是在 shell 里和其他工具交互的，Knuth 写《计算机程序设计艺术》时也是如此。<strong>如果把我蒸馏了、给我一个 bash，我确实可以干几乎所有我能干的事情。</strong></p>
 <p>但现实是：<strong>今天的模型还没有万能到和最好的人一样好</strong>，尤其是"品味"这件事还有点难学。既然一次回答不能解决全部问题，能不能让它不断尝试？</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_11_20.png" alt="Agent Loop：从 ChatGPT 到 Claude Code，理论上一个 bash tool 就够了" loading="lazy">
-  <p class="video-caption">📷 Agent Loop：从 ChatGPT 到 Claude Code，理论上一个 bash tool 就够了<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=680" target="_blank" rel="noopener">回到原视频 (00:11:20)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_11_20.png" alt="Agent Loop：从 ChatGPT 到 Claude Code，理论上一个 bash tool 就够了" loading="lazy">   <p class="video-caption">📷 Agent Loop：从 ChatGPT 到 Claude Code，理论上一个 bash tool 就够了<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=680" target="_blank" rel="noopener">回到原视频 (00:11:20)</a></p> </div>
 
 <h3 id="22">2.2 模型为什么不会一直尝试下去</h3>
 <p><em>(参考时间: 00:12:29)</em></p>
@@ -416,10 +563,7 @@
 </code></pre></div>
 
 <p>它是一个合法的 Python object，可以 serialize 成 JSON：type 是 function、name 是 bash、有一个 description、一个叫 command 的参数。执行侧对应一个 <code>run_bash</code>。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_16_00.png" alt="150 行 ReAct Agent 与它的 bash tool 定义" loading="lazy">
-  <p class="video-caption">📷 150 行 ReAct Agent 与它的 bash tool 定义<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=960" target="_blank" rel="noopener">回到原视频 (00:16:00)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_16_00.png" alt="150 行 ReAct Agent 与它的 bash tool 定义" loading="lazy">   <p class="video-caption">📷 150 行 ReAct Agent 与它的 bash tool 定义<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=960" target="_blank" rel="noopener">回到原视频 (00:16:00)</a></p> </div>
 
 <p><strong>这里就能看到一个 toy project 和真实 project 的差别。</strong> 他在这个小 Agent 里 hardcode 了一个 timeout。而真实的软件工程里，我们观察到 coding agent 常常会因为对环境的感知不够好而设出不合适的 timeout：</p>
 <p>比如我们在墙内访问 GitHub——你的教育网确实可以访问，但它的速度和 agent 认为的 GitHub 速度是不一样的。讲者说他第一次"肉身到墙外"，看着 git clone 能跑满网卡带宽时，还是很震惊的："我的世界观一直是在这个地方，所以我 overfit 了这个环境。"而 Agent 会给出一个不合适的 timeout，然后被杀掉，然后要换一个 timeout——<strong>而"我这样的一个软件"其实并不支持这个 feature。</strong></p>
@@ -446,10 +590,7 @@
 
 <p>就这么简单，150 行，"这个 Agent 真的是能用的"。</p>
 <p>现场它接到的任务是：<strong>为我生成一个生成式软件工程的简介 HTML 卡片。</strong> 因为它有 bash，它就可以在 bash 里写字符串，所以理论上完全做得到——只是输出 token 会比较长，会花一点时间。它写了很久。讲者让它在浏览器里打开，它会 prop（打开）环境。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_20_00.png" alt="让 Agent 用 bash 写出一张 HTML 简介卡片" loading="lazy">
-  <p class="video-caption">📷 让 Agent 用 bash 写出一张 HTML 简介卡片<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=1200" target="_blank" rel="noopener">回到原视频 (00:20:00)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_20_00.png" alt="让 Agent 用 bash 写出一张 HTML 简介卡片" loading="lazy">   <p class="video-caption">📷 让 Agent 用 bash 写出一张 HTML 简介卡片<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=1200" target="_blank" rel="noopener">回到原视频 (00:20:00)</a></p> </div>
 
 <p>观察这段演示很有意思，因为它是一个"白板模型"——所有 prompt 都是讲者给的：</p>
 <ul>
@@ -461,10 +602,7 @@
 <h3 id="25-ralph-loop">2.5 Ralph Loop：三行脚本，和一个笨拙却不放弃的名字</h3>
 <p><em>(参考时间: 00:22:20)</em></p>
 <p>为什么要叫 Ralph？Geoffrey Huntley 借用了《辛普森一家》里 Ralph Wiggum 的名字——<strong>有点笨、有点可爱，但从来不放弃。</strong> 讲者开玩笑说，这件事也没什么道理可讲："地球人都开始用第一个提出它的人给它取的名字。"</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_22_20.png" alt="Ralph Wiggum Loop：命名的由来" loading="lazy">
-  <p class="video-caption">📷 Ralph Wiggum Loop：命名的由来<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=1340" target="_blank" rel="noopener">回到原视频 (00:22:20)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_22_20.png" alt="Ralph Wiggum Loop：命名的由来" loading="lazy">   <p class="video-caption">📷 Ralph Wiggum Loop：命名的由来<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=1340" target="_blank" rel="noopener">回到原视频 (00:22:20)</a></p> </div>
 
 <p>Ralph Loop 简单到只有三行：</p>
 <div class="highlight"><pre><span></span><code><span class="k">while</span><span class="w"> </span>true<span class="p">;</span><span class="w"> </span><span class="k">do</span>
@@ -478,10 +616,7 @@
 </blockquote>
 <p>也就是说，每轮提示词都没变，变的是工作区：上一轮实现了功能、留下了测试结果、记录了失败原因，下一轮就接着这些状态继续。</p>
 <p>这个循环的前提是那个基本假设：<strong>如果模型足够好、又给它一个 bash，它自己就会去探索搜索空间。</strong> 但如果你假设现在的模型还是会漂移——那你就需要把"一把头向下做完"改成"一步一步来"。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_23_40.png" alt="Ralph Loop：同一个任务、检查、修改，直到无法改进" loading="lazy">
-  <p class="video-caption">📷 Ralph Loop：同一个任务、检查、修改，直到无法改进<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=1420" target="_blank" rel="noopener">回到原视频 (00:23:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_23_40.png" alt="Ralph Loop：同一个任务、检查、修改，直到无法改进" loading="lazy">   <p class="video-caption">📷 Ralph Loop：同一个任务、检查、修改，直到无法改进<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=1420" target="_blank" rel="noopener">回到原视频 (00:23:40)</a></p> </div>
 
 <p>幻灯片上还留了一条必须记住的话：<strong><code>while true</code> 本身不会判断"无法改进"</strong>；何时停止，需要另行约定。循环本身没有魔法，实际使用时必须另外定义验收条件、预算或停止条件。</p>
 <h3 id="26">2.6 会漂移的模型：舔狗、屎山与"扶起来"</h3>
@@ -507,10 +642,7 @@
 <li><strong>迁移</strong>就是一轮工作：同一个任务（比如同一个 <code>SPEC.md</code> 或 prompt）做一轮，把状态变成下一份状态——顺手做一个 git commit。</li>
 </ul>
 <p>于是，一次开发就是一次状态迁移：从"这个功能尚未实现"，到"已有实现但测试失败"，再到"失败原因已定位，修复通过了检查"。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_27_40.png" alt="Everything Is a State Machine：Workspace = State，Agent = Transition" loading="lazy">
-  <p class="video-caption">📷 Everything Is a State Machine：Workspace = State，Agent = Transition<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=1660" target="_blank" rel="noopener">回到原视频 (00:27:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_27_40.png" alt="Everything Is a State Machine：Workspace = State，Agent = Transition" loading="lazy">   <p class="video-caption">📷 Everything Is a State Machine：Workspace = State，Agent = Transition<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=1660" target="_blank" rel="noopener">回到原视频 (00:27:40)</a></p> </div>
 
 <p>你还可以在 loop 的提示词里加要求：<strong>每次不要做太多；做完以后要检查；还要 review——可以让另外一个 Agent 来做 review。</strong> 这就是 Ralph Loop 的好处：它把"模型一把头向下把任务做完"分成了好多小步。</p>
 <p>而分成小步之后，它其实是一个 <strong>non-deterministic 的状态机</strong>：</p>
@@ -542,20 +674,14 @@
 <li>只有整个任务确认完成以后，才输出一个 <code>ralph done</code>；看到 <code>ralph done</code>，循环就结束，否则无限循环下去。</li>
 </ul>
 <p>现场跑的任务是"调研一下什么是世界上最好的编程语言"。它估计要跑相对比较长的时间，尤其是它试图去 arXiv 下载论文的时候；它还会去访问 Google，而这台机器上会 timeout——但它至少可以在长时间的任务里跑一段时间、停下来做一个总结、把总结写进状态、再继续一轮一轮。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_34_20.png" alt="运行中的 Ralph Loop：轮次之间把状态写回工作区" loading="lazy">
-  <p class="video-caption">📷 运行中的 Ralph Loop：轮次之间把状态写回工作区<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=2060" target="_blank" rel="noopener">回到原视频 (00:34:20)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_34_20.png" alt="运行中的 Ralph Loop：轮次之间把状态写回工作区" loading="lazy">   <p class="video-caption">📷 运行中的 Ralph Loop：轮次之间把状态写回工作区<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=2060" target="_blank" rel="noopener">回到原视频 (00:34:20)</a></p> </div>
 
 <p>然后是那个很直观的对照实验：<strong>同一个任务——"给我做一个属于我的名片卡片"</strong>，一个交给 Ralph Loop，一个交给"直出"的 Agent。</p>
 <ul>
 <li>直出版本非常 fancy：玻璃动效、一个小巧的 Mac OS 终端。但它<strong>把主页邮箱写错了</strong>，还把讲者标注成一个他并不属于的机构；</li>
 <li>Loop 版本朴素多了："计算机学院副教授"，邮箱是对的，还找到了他的 GitHub，也是对的。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_36_40.png" alt="同一个任务的两种产物：Ralph Loop（右）与一次直出（左）" loading="lazy">
-  <p class="video-caption">📷 同一个任务的两种产物：Ralph Loop（右）与一次直出（左）<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=2200" target="_blank" rel="noopener">回到原视频 (00:36:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_36_40.png" alt="同一个任务的两种产物：Ralph Loop（右）与一次直出（左）" loading="lazy">   <p class="video-caption">📷 同一个任务的两种产物：Ralph Loop（右）与一次直出（左）<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=2200" target="_blank" rel="noopener">回到原视频 (00:36:40)</a></p> </div>
 
 <p>讲者很清楚地提醒：<strong>这肯定有随机性</strong>，不能断言谁绝对更好；但可以看到，同一个模型，你投入算力、投入 prompt，最后得到的结果差别会非常非常大。</p>
 <p>他还有一句给所有人的建议：</p>
@@ -583,10 +709,7 @@
 </blockquote>
 <p>为什么要这样？前提还是那个基本假设：<strong>Agent 训练得不够好</strong>，或者在你当前的上下文下<strong>可能发生漂移</strong>——它自己的思路、想法可能会漂移，去做不应该做的事。</p>
 <p>所以就让它先往前做一小步，做一个相对比较小的状态迁移；然后在这个状态迁移处把它停下来：<strong>wait</strong>，然后做检查。检查可以是让另外一个 Agent（另一个模型）来 review 这次提交，也可以是跑一些测试、检查脚本。<strong>这样就可以在一定程度上阻止状态漂移</strong>，而且这些检查对整个项目的推进也是会有进展的。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_41_00.png" alt="每次 Transition，都检查" loading="lazy">
-  <p class="video-caption">📷 每次 Transition，都检查<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=2460" target="_blank" rel="noopener">回到原视频 (00:41:00)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_41_00.png" alt="每次 Transition，都检查" loading="lazy">   <p class="video-caption">📷 每次 Transition，都检查<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=2460" target="_blank" rel="noopener">回到原视频 (00:41:00)</a></p> </div>
 
 <h3 id="32">3.2 开发者是不可信的：两条公理与人的投机</h3>
 <p><em>(参考时间: 00:42:16)</em></p>
@@ -618,10 +741,7 @@
 <p>所以如果你不相信实习生，你就把所有的门控全部写在脚本上；而且非但要写在脚本里，<strong>你还要不让他去运行它</strong>——因为你也不相信他会运行。于是你发明了一个东西叫 <code>.github</code>：范围一动就要过 <code>.github</code>，里面一大堆运行的配置和脚本，你都看不懂。</p>
 <p>讲者解释了为什么 Pre-LLM 时代的学生往往不理解 CI/CD：<strong>因为它通常被集成到一个生产流程里。</strong> 那就涉及容器的创建、需要一个独立于你机器（"你的机器实际不可信"）的环境、跑完所有流程以后还要把结果同步到整个企业的流程里、可能还要在一个页面上看到。这些复杂性都是你需要学、需要了解这个软件系统的设计才能去做的——所以同学之间用得相对比较少。</p>
 <p>但它的想法真的就是这样：<strong>在适当的时候做适当的检查，你就可以自动地去推下面的步骤。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_44_20.png" alt="祝贺你，发明了 CI/CD" loading="lazy">
-  <p class="video-caption">📷 祝贺你，发明了 CI/CD<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=2660" target="_blank" rel="noopener">回到原视频 (00:44:20)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_44_20.png" alt="祝贺你，发明了 CI/CD" loading="lazy">   <p class="video-caption">📷 祝贺你，发明了 CI/CD<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=2660" target="_blank" rel="noopener">回到原视频 (00:44:20)</a></p> </div>
 
 <p>幻灯片上给了这条脉络的更完整版本：</p>
 <ul>
@@ -665,10 +785,7 @@
 <p>你需要把动作落实到明确的事件上，<strong>而不能只是期待它记得做。</strong></p>
 </blockquote>
 <p>你可以把 hook 加在一个 transition 之前，也可以加在之后。而今天，你不再需要去接触那些复杂的配置：以前 <code>.github/workflows</code> 里那一堆 <code>rust ci</code>、<code>repository-name</code> 之类的配置都是人手写的，写起来很麻烦；现在<strong>你只要有一个清楚的概念：在什么样的状态迁移时、做什么事。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_46_40.png" alt="Hook-Based CI/CD：事件发生，执行指定动作" loading="lazy">
-  <p class="video-caption">📷 Hook-Based CI/CD：事件发生，执行指定动作<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=2800" target="_blank" rel="noopener">回到原视频 (00:46:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_46_40.png" alt="Hook-Based CI/CD：事件发生，执行指定动作" loading="lazy">   <p class="video-caption">📷 Hook-Based CI/CD：事件发生，执行指定动作<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=2800" target="_blank" rel="noopener">回到原视频 (00:46:40)</a></p> </div>
 
 <p>幻灯片上还补了两个关键区分：</p>
 <ul>
@@ -683,10 +800,7 @@
 </blockquote>
 <p>他也提到今天"薅算力羊毛"的便利：GitHub Actions 每月大概有 2000 分钟的 CPU 时间；国内一些代码托管平台也提供免费容器（虽然排队比较长、跑得比较慢）。甚至<strong>可以在 GitHub Actions 里面"养"一个 Claude Code</strong>：你 push 一个"我要做什么"，用这个 push 事件拉起一个 Claude Code 去修改、再提交、再次触发 hook——可能需要两个流程来衔接，边界要小心，但真的可以做，于是你就得到一个"云上的 Claude Code"。</p>
 <p>前提还是那句话：<strong>你要有一个软件工程的概念——什么时候应该跑什么。</strong> 需要跑 lint 吗？需要跑单元测试吗？需要跑系统集成测试吗？需要有一个 long-running 的长程模糊测试吗？</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_50_00.png" alt="把 CI/CD 配置交给 codex：现场演示" loading="lazy">
-  <p class="video-caption">📷 把 CI/CD 配置交给 codex：现场演示<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3000" target="_blank" rel="noopener">回到原视频 (00:50:00)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_50_00.png" alt="把 CI/CD 配置交给 codex：现场演示" loading="lazy">   <p class="video-caption">📷 把 CI/CD 配置交给 codex：现场演示<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3000" target="_blank" rel="noopener">回到原视频 (00:50:00)</a></p> </div>
 
 <h3 id="35-cicd-spec">3.5 把 CI/CD 写成 Spec</h3>
 <p><em>(参考时间: 00:52:40)</em></p>
@@ -704,10 +818,7 @@
 </ol>
 <p>这样检验的是"门是否真的关得住"，而不只是"配置文件看起来像那么回事"。</p>
 <p>幻灯片上还专门强调：<strong>Lint 与测试承担不同职责，不能因为其中一项通过，就省掉另一项。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_52_40.png" alt="把 CI/CD 写成 Spec：合并条件与发布条件" loading="lazy">
-  <p class="video-caption">📷 把 CI/CD 写成 Spec：合并条件与发布条件<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3160" target="_blank" rel="noopener">回到原视频 (00:52:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_52_40.png" alt="把 CI/CD 写成 Spec：合并条件与发布条件" loading="lazy">   <p class="video-caption">📷 把 CI/CD 写成 Spec：合并条件与发布条件<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3160" target="_blank" rel="noopener">回到原视频 (00:52:40)</a></p> </div>
 
 <h3 id="36-ci-agentic-ai">3.6 CI 在 Agentic AI 时代的含金量</h3>
 <p><em>(参考时间: 00:52:44)</em></p>
@@ -724,10 +835,7 @@
 </ul>
 <p>讲者的判断很直接：<strong>如果这个项目今天还需要人共同维护，你就必须强行阻止 AI 做这些事。</strong> 因为一旦中间某一件事情发生了，就永远无法回头：一旦这个东西成为 AI slop，人就再也无法维护它——那个文档你能改吗？你不可能改，你想在文档里定位到你想改的地方都不可能；你唯一的可能，就是让 Agent 继续改，直到这个项目维护不下去。</p>
 <p>于是就有了那句很有力量的话：<strong>CI 阻止，Agent 修正。</strong> 幻灯片把它类比为丰田的 jidoka：发现异常就停线，把质量检查放进生产过程。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_53_00.png" alt="CI 在 Agentic AI 时代的含金量：开发者是不可信的" loading="lazy">
-  <p class="video-caption">📷 CI 在 Agentic AI 时代的含金量：开发者是不可信的<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3180" target="_blank" rel="noopener">回到原视频 (00:53:00)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_53_00.png" alt="CI 在 Agentic AI 时代的含金量：开发者是不可信的" loading="lazy">   <p class="video-caption">📷 CI 在 Agentic AI 时代的含金量：开发者是不可信的<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3180" target="_blank" rel="noopener">回到原视频 (00:53:00)</a></p> </div>
 
 <p><strong>具体怎么做？</strong> 讲者给了一个非常小的例子：在 CI 里创建一个硬条件——<strong>文档不能超过 1000 字</strong>。这是代码就能判定的：把字符串量一下，超过就直接 fail，你永远不可能把这个东西合到主要分支上。</p>
 <p>有意思的是 Agent 的反应：<strong>Agent 是可以看到这些检查的</strong>，它可以自己在本地运行 pre-commit hook；文档超过 1000 字，很可能一个本地 pre-commit 就能检查出来。这时它马上发现失败，然后想起来 <code>README.md</code> 或 <code>AGENTS.md</code> 里写着"文档禁止膨胀"。</p>
@@ -779,10 +887,7 @@
 </tbody>
 </table>
 <p>最后一行的阈值按项目约定：<strong>CI 拦住可判定的问题，例外由人批准。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_57_40.png" alt="把 Agent 的偏执变成可执行的约束：哪些交给自动检查，哪些留给人判断" loading="lazy">
-  <p class="video-caption">📷 把 Agent 的偏执变成可执行的约束：哪些交给自动检查，哪些留给人判断<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3460" target="_blank" rel="noopener">回到原视频 (00:57:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_57_40.png" alt="把 Agent 的偏执变成可执行的约束：哪些交给自动检查，哪些留给人判断" loading="lazy">   <p class="video-caption">📷 把 Agent 的偏执变成可执行的约束：哪些交给自动检查，哪些留给人判断<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3460" target="_blank" rel="noopener">回到原视频 (00:57:40)</a></p> </div>
 
 <p>这里还有一条不能越过的边界：<strong>负责修改代码的 Agent，不能因为过不了检查，就单方面把标准调低。</strong> 测试确实可能过时，架构规则也可能需要改变，但修改这些规则要回到需求和设计理由上去——<strong>删掉失败断言得到的绿色，与修复程序得到的绿色，颜色相同，含义完全不同。</strong></p>
 <hr />
@@ -805,10 +910,7 @@
 <li><strong>让 Agent 找得到</strong>：人类脑中的工程知识必须外部化，并组织成 Agent 能发现的、版本化的状态；<code>AGENTS.md</code> 做目录，设计、计划和决策放进仓库，按需查阅（不必把所有知识一次塞进去）。"我们一直这样做"对刚开始一轮工作的 Agent 没有意义。</li>
 <li><strong>让 Agent 看得见</strong>：让 Agent 能直接观察程序行为，而不是依赖人类描述结果；每份工作区能独立启动应用，Agent 自己操作页面、查日志、复现 bug。如果每次都等人转述"按钮好像没反应"，反馈既慢又容易丢信息。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_00_59_40.png" alt="Agent Native 开发：harness engineering，从空仓库开始" loading="lazy">
-  <p class="video-caption">📷 Agent Native 开发：harness engineering，从空仓库开始<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3580" target="_blank" rel="noopener">回到原视频 (00:59:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_00_59_40.png" alt="Agent Native 开发：harness engineering，从空仓库开始" loading="lazy">   <p class="video-caption">📷 Agent Native 开发：harness engineering，从空仓库开始<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3580" target="_blank" rel="noopener">回到原视频 (00:59:40)</a></p> </div>
 
 <h3 id="42">4.2 把品味做成机制</h3>
 <p><em>(参考时间: 01:03:00)</em></p>
@@ -819,10 +921,7 @@
 <li><strong>让修复持续发生</strong>：技术债不是等到代码无法维护才清理，而是持续进行小规模修复；后台 Agent 定期扫描偏离规则的代码，提交小规模重构 PR。如果生成代码不断复制已有的不良模式，等到全仓库都长成同一种坏样子再修，成本就高了。</li>
 </ul>
 <p>（讲者也提醒这条路的边界：<strong>哪些规则值得固定下来，本身仍然需要判断</strong>——不能把"文件短"简单等同于"设计好"。）</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_03_00.png" alt="Agent Native 开发：把品味做成机制" loading="lazy">
-  <p class="video-caption">📷 Agent Native 开发：把品味做成机制<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3780" target="_blank" rel="noopener">回到原视频 (01:03:00)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_03_00.png" alt="Agent Native 开发：把品味做成机制" loading="lazy">   <p class="video-caption">📷 Agent Native 开发：把品味做成机制<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3780" target="_blank" rel="noopener">回到原视频 (01:03:00)</a></p> </div>
 
 <h3 id="43-closedai">4.3 落差：ClosedAI 与三层门控</h3>
 <p><em>(参考时间: 01:01:40)</em></p>
@@ -834,10 +933,7 @@
 <li><strong>发布</strong>时再打标签。</li>
 </ul>
 <p>而 PR 那一层主要是 lint 与格式类的工具（cargo、format、拼写、bad smell 比如文件太大或函数太大、大文件策略、依赖），可以说是非常基础的一层。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_02_00.png" alt="Codex 仓库的三层门控：PR 快速门禁 / main 全量认证 / 发布" loading="lazy">
-  <p class="video-caption">📷 Codex 仓库的三层门控：PR 快速门禁 / main 全量认证 / 发布<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3720" target="_blank" rel="noopener">回到原视频 (01:02:00)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_02_00.png" alt="Codex 仓库的三层门控：PR 快速门禁 / main 全量认证 / 发布" loading="lazy">   <p class="video-caption">📷 Codex 仓库的三层门控：PR 快速门禁 / main 全量认证 / 发布<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3720" target="_blank" rel="noopener">回到原视频 (01:02:00)</a></p> </div>
 
 <h3 id="44-stripe-minions">4.4 别人的经验：Stripe 的 Minions 与混合工作流</h3>
 <p><em>(参考时间: 01:04:00)</em></p>
@@ -849,10 +945,7 @@
 </ul>
 <p>以及一条很克制的预算规则：<strong>完整 CI 最多跑两轮。</strong> 先在本地修 lint，再推送、跑 CI；无法自动修复的失败，交给 Agent 再修一次；第二次推送、CI 之后，分支就交回人类审查——团队认为继续重试的收益会递减。</p>
 <p>这里能给出一条直接的设计思路：<strong>如果某一步每次都必须执行、且执行方式已经明确，就把它写进流程。</strong> 模型适合处理需要理解和选择的问题，固定工序可以由程序可靠地完成。重试也有成本：连续失败时，应该判断反馈是否带来了新信息，而不是把"再试一次"当作永远正确的回答。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_04_00.png" alt="Stripe Minions：把固定工序写进工作流，完整 CI 最多跑两轮" loading="lazy">
-  <p class="video-caption">📷 Stripe Minions：把固定工序写进工作流，完整 CI 最多跑两轮<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3840" target="_blank" rel="noopener">回到原视频 (01:04:00)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_04_00.png" alt="Stripe Minions：把固定工序写进工作流，完整 CI 最多跑两轮" loading="lazy">   <p class="video-caption">📷 Stripe Minions：把固定工序写进工作流，完整 CI 最多跑两轮<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3840" target="_blank" rel="noopener">回到原视频 (01:04:00)</a></p> </div>
 
 <h3 id="45-agent-bug-anthropic-16-agent">4.5 并行 Agent 会卡在同一个 Bug 上：Anthropic 的 16 个 Agent</h3>
 <p><em>(参考时间: 01:04:04)</em></p>
@@ -864,10 +957,7 @@
 <li>于是不同 Agent 能去修不同文件暴露的问题——<strong>验证方式改变了任务的可分性</strong>：原来只知道"整个内核编译失败"，大家只能涌向同一个入口；有了可信的参照和可缩小的失败集合，就能把大问题拆成可以分别推进的工作；</li>
 <li>仍需检查文件组合：<strong>有些文件分别过关，放在一起却失败。</strong></li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_04_20.png" alt="Anthropic：16 个 Agent 卡在同一个 Bug——用 GCC 构造可独立验证的子任务" loading="lazy">
-  <p class="video-caption">📷 Anthropic：16 个 Agent 卡在同一个 Bug——用 GCC 构造可独立验证的子任务<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3860" target="_blank" rel="noopener">回到原视频 (01:04:20)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_04_20.png" alt="Anthropic：16 个 Agent 卡在同一个 Bug——用 GCC 构造可独立验证的子任务" loading="lazy">   <p class="video-caption">📷 Anthropic：16 个 Agent 卡在同一个 Bug——用 GCC 构造可独立验证的子任务<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=3860" target="_blank" rel="noopener">回到原视频 (01:04:20)</a></p> </div>
 
 <p>结论有两条：</p>
 <ol>
@@ -888,10 +978,7 @@
 <h2 id="5-deepseek-harness">5. DeepSeek Harness：一个把经验写成门禁的项目</h2>
 <p><em>(参考时间: 01:07:00)</em></p>
 <p>和 ClosedAI 比起来，讲者认为 <strong>DeepSeek Harness 在 Agent-native 开发领域是一个标杆性质的项目</strong>——"里面藏了非常非常多的好东西"。而且它是开源的。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_07_00.png" alt="DeepSeek Harness" loading="lazy">
-  <p class="video-caption">📷 DeepSeek Harness<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=4020" target="_blank" rel="noopener">回到原视频 (01:07:00)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_07_00.png" alt="DeepSeek Harness" loading="lazy">   <p class="video-caption">📷 DeepSeek Harness<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=4020" target="_blank" rel="noopener">回到原视频 (01:07:00)</a></p> </div>
 
 <h3 id="51">5.1 第一眼就不一样：为什么要用中文写文档</h3>
 <p><em>(参考时间: 01:07:36)</em></p>
@@ -929,10 +1016,7 @@ foo.i18n.yaml   # 配对记录：两侧内容的哈希
 <p>当发现新旧版本不匹配（<code>git</code> 的历史里谁新谁旧是明确的，就像 <code>git rebase</code> 里那样：没见过的新 hash 就是新的），就需要用 AI 帮忙翻译——<strong>而且是 patch-based 的</strong>：看这份文档改了什么，把另一份文档对应位置的部分也改掉，其他地方保持一致。<strong>最小补丁，不重新翻译。</strong></p>
 </li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_11_00.png" alt="DeepSeek Harness 的文档三套件与一致性门禁" loading="lazy">
-  <p class="video-caption">📷 DeepSeek Harness 的文档三套件与一致性门禁<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=4260" target="_blank" rel="noopener">回到原视频 (01:11:00)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_11_00.png" alt="DeepSeek Harness 的文档三套件与一致性门禁" loading="lazy">   <p class="video-caption">📷 DeepSeek Harness 的文档三套件与一致性门禁<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=4260" target="_blank" rel="noopener">回到原视频 (01:11:00)</a></p> </div>
 
 <div class="highlight"><pre><span></span><code>graph TD
     A["改动一侧文档&lt;br/&gt;例如 foo.md"] --&gt; B["git 历史判定谁新谁旧"]
@@ -965,10 +1049,7 @@ foo.i18n.yaml   # 配对记录：两侧内容的哈希
 <li><strong>7 月 3 日</strong>：引入<strong>对等权威</strong>（两侧权威对等），随后引入<strong>配对契约</strong>——"这是一个非常酷的设计"；</li>
 <li>而且在很短的时间内，他们就发现这个机制<strong>必须强行进入自动化的流水线</strong>，而不是停留在人的约定上。</li>
 </ul>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_18_10.png" alt="从 git 历史看文档一致性机制的引入过程" loading="lazy">
-  <p class="video-caption">📷 从 git 历史看文档一致性机制的引入过程<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=4690" target="_blank" rel="noopener">回到原视频 (01:18:10)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_18_10.png" alt="从 git 历史看文档一致性机制的引入过程" loading="lazy">   <p class="video-caption">📷 从 git 历史看文档一致性机制的引入过程<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=4690" target="_blank" rel="noopener">回到原视频 (01:18:10)</a></p> </div>
 
 <p>讲者还猜到了这个设计的来源：<strong>在 Pre-LLM 时代，我们也有类似的方式维护文档——比如 Python 的 docstring 生成 pydoc</strong>：你的注释和你的文档、代码永远保持一致；Java 有 JavaDoc，C++ 原生不支持但 Doxygen 也有自己的规范，照这个语法写注释就能被提取出来。这样<strong>代码和 API reference 就可以保持百分之百的一致性</strong>。受到这些启发，在 Agent-native 时代要把人的工作迁移给 Agent 时，<strong>配对契约 + 门禁</strong>就是一个非常酷的机制。</p>
 <h3 id="55">5.5 还有哪些门禁</h3>
@@ -986,10 +1067,7 @@ foo.i18n.yaml   # 配对记录：两侧内容的哈希
 <li><strong>代码块一致性</strong>：如果文章里有一个代码块是个 interface，它会检查这个 interface <strong>原封不动、每一个字符</strong>都逐字出现在某个文件里——这样就杜绝了"代码改了接口、文档没有跟上"或者"文档改了接口设计、代码没有跟上"。</li>
 </ul>
 <p>讲者说他们把这个想法<strong>又做了一点扩展</strong>：在他们的 Agent-native 项目里，<strong>代码块是带执行语义的</strong>——可以在 Markdown 的 fenced code block 语法上做轻量级扩展，"specify"这段东西是干什么用的：需要它出现在某一个位置，或者希望它以某一种形式和另外的东西关联起来；然后有轻量级的 check 去检查它。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_25_30.png" alt="代码块与源码接口的一致性门禁" loading="lazy">
-  <p class="video-caption">📷 代码块与源码接口的一致性门禁<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5130" target="_blank" rel="noopener">回到原视频 (01:25:30)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_25_30.png" alt="代码块与源码接口的一致性门禁" loading="lazy">   <p class="video-caption">📷 代码块与源码接口的一致性门禁<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5130" target="_blank" rel="noopener">回到原视频 (01:25:30)</a></p> </div>
 
 <h3 id="56">5.6 代价与"监工"的位置</h3>
 <p><em>(参考时间: 01:26:30)</em></p>
@@ -1023,10 +1101,7 @@ foo.i18n.yaml   # 配对记录：两侧内容的哈希
 <li>你很难凭空想到所有这些有效的边界和反馈方式；只有真的做过、失败过、修正过，才会知道"这里必须有一道门"。</li>
 </ul>
 <p>这也是这一讲标题（DeepSeek Harness）真正的着眼点：模型之外，还有一整套让工作得以推进的装备。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_28_40.png" alt="真正的经验：很难"凭空想出"" loading="lazy">
-  <p class="video-caption">📷 真正的经验：很难"凭空想出"<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5320" target="_blank" rel="noopener">回到原视频 (01:28:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_28_40.png" alt="真正的经验：很难&quot;凭空想出&quot;" loading="lazy">   <p class="video-caption">📷 真正的经验：很难&quot;凭空想出&quot;<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5320" target="_blank" rel="noopener">回到原视频 (01:28:40)</a></p> </div>
 
 <h3 id="62">6.2 垃圾回收解决不了的问题</h3>
 <p><em>(参考时间: 01:29:51)</em></p>
@@ -1044,10 +1119,7 @@ foo.i18n.yaml   # 配对记录：两侧内容的哈希
 <p><em>(参考时间: 01:30:17)</em></p>
 <p>历史上真实的失败一点也不少。社交网络先驱 <strong>Friendster</strong> 迅速吸引了大量用户，随后延迟、宕机频发，在竞争中掉队，架构的瓶颈也就暴露了出来。</p>
 <p>亲历工程师 Dathan Pattishall 在 2006 年的复盘里讨论了这套设计的实际问题：<strong>单主库带多个完整副本，每个副本都要重放写入</strong>，I/O 压力导致复制延迟。他提出<strong>按用户拆分数据</strong>，让不同服务器只承担部分数据与相应负载；但据他的叙述，这个方案没有在 Friendster 顺利推进，容量问题的根因并没有被解决。<strong>这套设计后来在 Flickr 落地。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_30_20.png" alt="Friendster：重构没赶上用户离开" loading="lazy">
-  <p class="video-caption">📷 Friendster：重构没赶上用户离开<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5420" target="_blank" rel="noopener">回到原视频 (01:30:20)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_30_20.png" alt="Friendster：重构没赶上用户离开" loading="lazy">   <p class="video-caption">📷 Friendster：重构没赶上用户离开<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5420" target="_blank" rel="noopener">回到原视频 (01:30:20)</a></p> </div>
 
 <p>课堂推论很清楚：<strong>看出架构应该怎样改，和组织真的能够把它改掉，是两件事。</strong></p>
 <p>及时重构既要求技术判断，也要求团队有能力调整分工、迁移数据、安排上线，并承担变化过程中的成本。一直修补局部症状，可能只是在<strong>更认真地维护一个已经不合适的前提</strong>。</p>
@@ -1065,10 +1137,7 @@ foo.i18n.yaml   # 配对记录：两侧内容的哈希
 <li><strong>Quibi</strong>：尝试为移动设备提供精品短视频，2020 年宣布结束业务；管理层提出两种可能原因——想法本身不足以支撑独立流媒体服务，或者推出时机不合适。这提醒我们：<strong>有内容、有技术、有产品形态，并不等于用户需要这样一个独立服务。</strong></li>
 </ul>
 <p>Agent 让实现更便宜，却不会使这些问题消失：一个好想法可以迅速生成许多页面、文档和功能，也可能逐步"slop 化"——看起来越来越像成品，重复、冗余和未经验证的假设却越来越多。<strong>局部测试不断通过，真实用户仍然可能不愿意用；代码越写越多，原先需要检验的关键假设反而被埋住了。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_30_40.png" alt="一个社会性的威胁：想法的失败与尝试的机会" loading="lazy">
-  <p class="video-caption">📷 一个社会性的威胁：想法的失败与尝试的机会<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5440" target="_blank" rel="noopener">回到原视频 (01:30:40)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_30_40.png" alt="一个社会性的威胁：想法的失败与尝试的机会" loading="lazy">   <p class="video-caption">📷 一个社会性的威胁：想法的失败与尝试的机会<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5440" target="_blank" rel="noopener">回到原视频 (01:30:40)</a></p> </div>
 
 <h3 id="72-token">7.2 没有 token，就没有做很多次尝试的机会</h3>
 <p><em>(参考时间: 01:31:20)</em></p>
@@ -1077,10 +1146,7 @@ foo.i18n.yaml   # 配对记录：两侧内容的哈希
 <p>我开学的时候随口一说："没有 token 的学生应该立即退学"——这只是跟大家开个玩笑。但真实发生的事是：<strong>你如果没有 Token，你尝试的机会就不如别人多。</strong></p>
 </blockquote>
 <p><strong>Token 是模型处理和生成内容所消耗的基本计量单位，也代表了一部分实际试错成本。</strong> 你不去经历这个试错的过程，就只能看别人：现在开源社区还是有好的东西可以学，最后就看你的悟性——你能不能通过"看别人 open source"学会 agent-native 开发应该怎么做。<strong>即便如此，你还是需要做很多的尝试、去失败。</strong></p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_31_20.png" alt="推论：尝试的机会与学习好的设计" loading="lazy">
-  <p class="video-caption">📷 推论：尝试的机会与学习好的设计<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5480" target="_blank" rel="noopener">回到原视频 (01:31:20)</a></p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/shot_01_31_20.png" alt="推论：尝试的机会与学习好的设计" loading="lazy">   <p class="video-caption">📷 推论：尝试的机会与学习好的设计<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5480" target="_blank" rel="noopener">回到原视频 (01:31:20)</a></p> </div>
 
 <p>幻灯片把这一节的推论写成了两条：</p>
 <ul>
@@ -1131,11 +1197,8 @@ foo.i18n.yaml   # 配对记录：两侧内容的哈希
 <p><em>(参考时间: 01:35:20)</em></p>
 <p>最后这一页幻灯片没有文字，只有一张图：一个学生站在"尝试"、"失败"的台阶上，头顶的 Token 槽是 <strong>0</strong>；前方的桥断开了，断口上盖着一个红色的印章——</p>
 <p><strong>"学习机会被斩断"</strong></p>
-<p>而断桥的另一侧，是"反馈"、"重构"两级台阶，通向远处的<strong>"未来的大学"</strong>。</p>
-<div class="video-card screenshot-card">
-  <img src="images/shot_01_35_20.png" alt="这不就斩杀了吗……：Token 为 0 的人停在"尝试/失败"，而"反馈/重构"通向未来的大学" loading="lazy">
-  <p class="video-caption">📷 这不就斩杀了吗……：Token 为 0 的人停在"尝试/失败"，而"反馈/重构"通向未来的大学<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5720" target="_blank" rel="noopener">回到原视频 (01:35:20)</a></p>
-</div>
+<p>而断桥的另一侧，是"反馈"、"重构"两级台阶，通向远处的**"未来的大学"**。</p>
+<div class="video-card screenshot-card">   <img src="images/shot_01_35_20.png" alt="这不就斩杀了吗……：Token 为 0 的人停在&quot;尝试/失败&quot;，而&quot;反馈/重构&quot;通向未来的大学" loading="lazy">   <p class="video-caption">📷 这不就斩杀了吗……：Token 为 0 的人停在&quot;尝试/失败&quot;，而&quot;反馈/重构&quot;通向未来的大学<br><a href="https://www.bilibili.com/video/BV11LWw6VEHW/?t=5720" target="_blank" rel="noopener">回到原视频 (01:35:20)</a></p> </div>
 
 <hr />
 <h2 id="8">8. 结语：让下一次尝试比上一次更有价值</h2>
@@ -1202,26 +1265,30 @@ foo.i18n.yaml   # 配对记录：两侧内容的哈希
 <p>与视频逐句对照的订正稿见 <code>transcript.corrected.txt</code>：先由脚本按本讲错词 MAP 修正明显的 ASR 识别错误，再由 AI 通读全文做一轮行级订正（保留讲师原始字词与有意重复，仅修明显识别错误）。</p>
 <hr />
 <h2 id="_4">附录：课堂未展示的幻灯片</h2>
-<div class="video-card screenshot-card">
-  <img src="images/slide_010.png" alt="第 10 页幻灯片 · 简单的机制，琐碎的业务规则" loading="lazy">
-  <p class="video-caption">🖼️ 第 10 页幻灯片 · 简单的机制，琐碎的业务规则</p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/slide_010.png" alt="第 10 页幻灯片 · 简单的机制，琐碎的业务规则" loading="lazy">   <p class="video-caption">🖼️ 第 10 页幻灯片 · 简单的机制，琐碎的业务规则</p> </div>
 
-<div class="video-card screenshot-card">
-  <img src="images/slide_018.png" alt="第 18 页幻灯片 · StrongDM：把验收环境也造出来" loading="lazy">
-  <p class="video-caption">🖼️ 第 18 页幻灯片 · StrongDM：把验收环境也造出来</p>
-</div>
+<div class="video-card screenshot-card">   <img src="images/slide_018.png" alt="第 18 页幻灯片 · StrongDM：把验收环境也造出来" loading="lazy">   <p class="video-caption">🖼️ 第 18 页幻灯片 · StrongDM：把验收环境也造出来</p> </div>
 
 <hr />
 <p><em>本电子书由 <a href="https://github.com/Luke-Evan/videobook">videobook</a> 流水线生成。课程讲义与幻灯片版权归讲师 © 蒋炎岩 所有，依 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> 发布。</em></p>
     </article>
+    </div>
+    <script>
+        const tocDetails = document.querySelector('.book-toc details');
+        if (tocDetails && window.matchMedia('(max-width: 1099px)').matches) {
+            tocDetails.open = false;
+            tocDetails.addEventListener('click', function(event) {
+                if (event.target.closest('a')) tocDetails.open = false;
+            });
+        }
+    </script>
 
     <!-- Mermaid 图表引擎初始化 -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             mermaid.initialize({ startOnLoad: false, theme: 'default' });
-            
+
             // 兼容普通代码块以及丢失 language-mermaid 类名的情况 (CodeHilite 干扰)
             const codeNodes = document.querySelectorAll('pre code, .highlight code');
             codeNodes.forEach(function(node) {
@@ -1231,13 +1298,13 @@ foo.i18n.yaml   # 配对记录：两侧内容的哈希
                     const tempDiv = document.createElement('div');
                     tempDiv.className = 'mermaid';
                     tempDiv.textContent = text;
-                    
+
                     // 获取需要替换的最外层父节点 (比如 div.highlight 或者 pre)
                     const wrapper = node.closest('.highlight') || node.parentNode;
-                    wrapper.replaceWith(tempDiv); 
+                    wrapper.replaceWith(tempDiv);
                 }
             });
-            
+
             // 所有节点转换完成，统一进行图表动态绘制
             mermaid.run();
         });

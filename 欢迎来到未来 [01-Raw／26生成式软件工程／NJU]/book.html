@@ -42,9 +42,40 @@
 
         /* ── 文章容器 ── */
         .book-content {
+            width: 100%;
+            min-width: 0;
             max-width: 780px;
             margin: 0 auto;
             padding: 60px 32px 120px;
+        }
+
+        /* ── 章节目录 ── */
+        .book-toc {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            margin: 16px 16px 0;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-size: 14px;
+        }
+        .book-toc summary { cursor: pointer; font-weight: 600; }
+        .book-toc nav { max-height: 55vh; overflow-y: auto; overflow-wrap: anywhere; }
+        .book-toc ul { list-style: none; margin: 8px 0; padding: 0; }
+        .book-toc ul ul { padding-left: 16px; }
+        .book-toc a { display: block; padding: 3px 0; }
+        .book-content :is(h2, h3) { scroll-margin-top: 88px; }
+        @media (min-width: 1100px) {
+            .reader-layout { display: flex; align-items: flex-start; max-width: 1120px; margin: 0 auto; }
+            .book-toc { flex: 0 0 280px; top: 24px; margin: 60px 0 24px 24px; }
+            .book-toc nav { max-height: calc(100vh - 140px); }
+            .book-content :is(h2, h3) { scroll-margin-top: 24px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
         }
 
         /* ── 标题 ── */
@@ -289,6 +320,90 @@
     </style>
 </head>
 <body>
+    <div class="reader-layout">
+    <aside class="book-toc"><details open><summary>目录</summary><nav aria-label="章节目录"><div class="toc">
+<ul>
+<li><a href="#_2">目录</a></li>
+<li><a href="#f5">一、开场：一个 F5、一个浏览器，与四次"能力日用品化"</a><ul>
+<li><a href="#_3">一个按键</a></li>
+<li><a href="#altair-8800-chatgpt">从 Altair 8800 到 ChatGPT</a></li>
+<li><a href="#_4">为什么此刻要开这门课</a></li>
+</ul>
+</li>
+<li><a href="#ai">二、三种焦虑：AI 替我上大学、零分简历与被抹平的区别</a><ul>
+<li><a href="#_5">两种反噬</a></li>
+<li><a href="#_6">一份零分简历</a></li>
+<li><a href="#_7">区别被抹平之后</a></li>
+</ul>
+</li>
+<li><a href="#ai_1">三、这门课讲什么：让软件不失败，以及驾驭 AI 的能力</a><ul>
+<li><a href="#_8">软件工程的定义</a></li>
+<li><a href="#ai_2">人相对 AI 的两样东西</a></li>
+<li><a href="#_9">课程组织与"禁止古法编程"</a></li>
+</ul>
+</li>
+<li><a href="#agent">四、课程的"元演示"：用 Agent 上这门课</a><ul>
+<li><a href="#source-of-truth">讲义是 source of truth</a></li>
+<li><a href="#make-slides">make slides：用算力换智力</a></li>
+<li><a href="#_10">上课是一种表演</a></li>
+<li><a href="#_11">把课程沉淀成程序</a></li>
+</ul>
+</li>
+<li><a href="#token">五、课程政策：Token、通过与不通过，以及一个恐怖的想象</a><ul>
+<li><a href="#token_1">Token 自费</a></li>
+<li><a href="#_12">通过 / 不通过</a></li>
+<li><a href="#_13">分数不重要，简历重要</a></li>
+</ul>
+</li>
+<li><a href="#_14">六、大语言模型：一个概率分布，以及它如何走进我们的世界</a><ul>
+<li><a href="#_15">它就是一个概率分布</a></li>
+<li><a href="#_16">给五岁孩子解释扫描电子显微镜</a></li>
+<li><a href="#agent_1">Agent 是怎么出现的</a></li>
+</ul>
+</li>
+<li><a href="#agent-pi">七、普通人的 Agent 第一课：一个白板的 Pi</a><ul>
+<li><a href="#_17">两个原则</a></li>
+<li><a href="#u-debian">U 盘里的 Debian：装机仙人被取代</a></li>
+<li><a href="#_18">平铺窗口管理器与那个危险</a></li>
+</ul>
+</li>
+<li><a href="#agent_2">八、从邮件到论文：把日常流程交给 Agent</a><ul>
+<li><a href="#_19">邮件、发票与打印机</a></li>
+<li><a href="#ai_3">读书：让 AI 梗同学当审稿人</a></li>
+<li><a href="#_20">读论文：把已知的全部减掉</a></li>
+<li><a href="#b">读 B 站：图文时间轴与十倍效率</a></li>
+</ul>
+</li>
+<li><a href="#apidevtools">九、把浏览器变成 API：DevTools、教务系统与二维码</a><ul>
+<li><a href="#usb">USB 采集卡断了</a></li>
+<li><a href="#_21">浏览器是人类软件工程的奇迹</a></li>
+<li><a href="#f12">F12 之后</a></li>
+<li><a href="#_22">教务系统：一次翻车，一次成功</a></li>
+</ul>
+</li>
+<li><a href="#skill-11-2">十、Skill 生态与飞轮：1+1 可以大于 2</a><ul>
+<li><a href="#unix">Unix 管道哲学与飞轮</a></li>
+<li><a href="#_23">统分流水线</a></li>
+<li><a href="#_24">二维码动画：一个"合法"的数据搬运</a></li>
+</ul>
+</li>
+<li><a href="#gap">十一、回到软件工程：三个空间与那道 gap</a><ul>
+<li><a href="#_25">一个字段引发的血案</a></li>
+<li><a href="#qr">QR 是怎么暴毙的</a></li>
+<li><a href="#dsl">我为什么先写一个 DSL</a></li>
+<li><a href="#intention-specification-implementation">intention / specification / implementation</a></li>
+<li><a href="#_26">梗图与人月神话</a></li>
+</ul>
+</li>
+<li><a href="#_27">十二、结语：古法编程已死，软件工程未死</a><ul>
+<li><a href="#_28">教育体系训练的是"五分钟"</a></li>
+<li><a href="#_29">品味能不能被训练出来</a></li>
+<li><a href="#_30">最后一页：为什么导师要招你</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav></details></aside>
     <article class="book-content">
         <h1 id="_1">欢迎来到未来：生成式软件工程第一讲</h1>
 <blockquote>
@@ -301,31 +416,96 @@
 <p><strong>关于文本</strong>：原字幕为 B 站 AI 自动生成，存在同音错词（如 ICQ 被识别成 ICU、Neovim 被识别成 NEVim、computer science 被识别成 comcomputer science）。本书按上下文做了术语规范化，不能确证处保留谨慎表述或以「编者说明」标出，不替讲师补充字幕中不存在的事实。</p>
 </blockquote>
 <h2 id="_2">目录</h2>
-<ol>
-<li><a href="#一开场一个-f5一个浏览器与四次能力日用品化">开场：一个 F5、一个浏览器，与四次"能力日用品化"</a></li>
-<li><a href="#二三种焦虑ai-替我上大学零分简历与被抹平的区别">三种焦虑：AI 替我上大学、零分简历与被抹平的区别</a></li>
-<li><a href="#三这门课讲什么让软件不失败以及驾驭-ai-的能力">这门课讲什么：让软件不失败，以及驾驭 AI 的能力</a></li>
-<li><a href="#四课程的元演示用-agent-上这门课">课程的"元演示"：用 Agent 上这门课</a></li>
-<li><a href="#五课程政策token通过与不通过以及一个恐怖的想象">课程政策：Token、通过与不通过，以及一个恐怖的想象</a></li>
-<li><a href="#六大语言模型一个概率分布以及它如何走进我们的世界">大语言模型：一个概率分布，以及它如何走进我们的世界</a></li>
-<li><a href="#七普通人的-agent-第一课一个白板的-pi">普通人的 Agent 第一课：一个白板的 Pi</a></li>
-<li><a href="#八从邮件到论文把日常流程交给-agent">从邮件到论文：把日常流程交给 Agent</a></li>
-<li><a href="#九把浏览器变成-apidevtools教务系统与二维码">把浏览器变成 API：DevTools、教务系统与二维码</a></li>
-<li><a href="#十skill-生态与飞轮11-可以大于-2">Skill 生态与飞轮：1+1 可以大于 2</a></li>
-<li><a href="#十一回到软件工程三个空间与那道-gap">回到软件工程：三个空间与那道 gap</a></li>
-<li><a href="#十二结语古法编程已死软件工程未死">结语：古法编程已死，软件工程未死</a></li>
-</ol>
+<div class="toc">
+<ul>
+<li><a href="#_2">目录</a></li>
+<li><a href="#f5">一、开场：一个 F5、一个浏览器，与四次"能力日用品化"</a><ul>
+<li><a href="#_3">一个按键</a></li>
+<li><a href="#altair-8800-chatgpt">从 Altair 8800 到 ChatGPT</a></li>
+<li><a href="#_4">为什么此刻要开这门课</a></li>
+</ul>
+</li>
+<li><a href="#ai">二、三种焦虑：AI 替我上大学、零分简历与被抹平的区别</a><ul>
+<li><a href="#_5">两种反噬</a></li>
+<li><a href="#_6">一份零分简历</a></li>
+<li><a href="#_7">区别被抹平之后</a></li>
+</ul>
+</li>
+<li><a href="#ai_1">三、这门课讲什么：让软件不失败，以及驾驭 AI 的能力</a><ul>
+<li><a href="#_8">软件工程的定义</a></li>
+<li><a href="#ai_2">人相对 AI 的两样东西</a></li>
+<li><a href="#_9">课程组织与"禁止古法编程"</a></li>
+</ul>
+</li>
+<li><a href="#agent">四、课程的"元演示"：用 Agent 上这门课</a><ul>
+<li><a href="#source-of-truth">讲义是 source of truth</a></li>
+<li><a href="#make-slides">make slides：用算力换智力</a></li>
+<li><a href="#_10">上课是一种表演</a></li>
+<li><a href="#_11">把课程沉淀成程序</a></li>
+</ul>
+</li>
+<li><a href="#token">五、课程政策：Token、通过与不通过，以及一个恐怖的想象</a><ul>
+<li><a href="#token_1">Token 自费</a></li>
+<li><a href="#_12">通过 / 不通过</a></li>
+<li><a href="#_13">分数不重要，简历重要</a></li>
+</ul>
+</li>
+<li><a href="#_14">六、大语言模型：一个概率分布，以及它如何走进我们的世界</a><ul>
+<li><a href="#_15">它就是一个概率分布</a></li>
+<li><a href="#_16">给五岁孩子解释扫描电子显微镜</a></li>
+<li><a href="#agent_1">Agent 是怎么出现的</a></li>
+</ul>
+</li>
+<li><a href="#agent-pi">七、普通人的 Agent 第一课：一个白板的 Pi</a><ul>
+<li><a href="#_17">两个原则</a></li>
+<li><a href="#u-debian">U 盘里的 Debian：装机仙人被取代</a></li>
+<li><a href="#_18">平铺窗口管理器与那个危险</a></li>
+</ul>
+</li>
+<li><a href="#agent_2">八、从邮件到论文：把日常流程交给 Agent</a><ul>
+<li><a href="#_19">邮件、发票与打印机</a></li>
+<li><a href="#ai_3">读书：让 AI 梗同学当审稿人</a></li>
+<li><a href="#_20">读论文：把已知的全部减掉</a></li>
+<li><a href="#b">读 B 站：图文时间轴与十倍效率</a></li>
+</ul>
+</li>
+<li><a href="#apidevtools">九、把浏览器变成 API：DevTools、教务系统与二维码</a><ul>
+<li><a href="#usb">USB 采集卡断了</a></li>
+<li><a href="#_21">浏览器是人类软件工程的奇迹</a></li>
+<li><a href="#f12">F12 之后</a></li>
+<li><a href="#_22">教务系统：一次翻车，一次成功</a></li>
+</ul>
+</li>
+<li><a href="#skill-11-2">十、Skill 生态与飞轮：1+1 可以大于 2</a><ul>
+<li><a href="#unix">Unix 管道哲学与飞轮</a></li>
+<li><a href="#_23">统分流水线</a></li>
+<li><a href="#_24">二维码动画：一个"合法"的数据搬运</a></li>
+</ul>
+</li>
+<li><a href="#gap">十一、回到软件工程：三个空间与那道 gap</a><ul>
+<li><a href="#_25">一个字段引发的血案</a></li>
+<li><a href="#qr">QR 是怎么暴毙的</a></li>
+<li><a href="#dsl">我为什么先写一个 DSL</a></li>
+<li><a href="#intention-specification-implementation">intention / specification / implementation</a></li>
+<li><a href="#_26">梗图与人月神话</a></li>
+</ul>
+</li>
+<li><a href="#_27">十二、结语：古法编程已死，软件工程未死</a><ul>
+<li><a href="#_28">教育体系训练的是"五分钟"</a></li>
+<li><a href="#_29">品味能不能被训练出来</a></li>
+<li><a href="#_30">最后一页：为什么导师要招你</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
 <hr />
 <h2 id="f5">一、开场：一个 F5、一个浏览器，与四次"能力日用品化"</h2>
 <h3 id="_3">一个按键</h3>
 <p>课是这样开始的：他打开自己的 Neovim，按下 F5，一个浏览器弹了出来。"然后我们就可以正式地开始上课了。"</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_00_07.png" alt="Neovim 中按下 F5 后自动弹出浏览器窗口，屏幕上同时出现编辑器与渲染后的页面" loading="lazy">
-<br />
-<p class="video-caption">📷 Neovim 中按下 F5 后自动弹出浏览器窗口，屏幕上同时出现编辑器与渲染后的页面<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=7" target="_blank" rel="noopener">回到原视频 (00:00:07)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_00_07.png" alt="Neovim 中按下 F5 后自动弹出浏览器窗口，屏幕上同时出现编辑器与渲染后的页面" loading="lazy">   <p class="video-caption">📷 Neovim 中按下 F5 后自动弹出浏览器窗口，屏幕上同时出现编辑器与渲染后的页面<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=7" target="_blank" rel="noopener">回到原视频 (00:00:07)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 00:00:08)</em></p>
 <h3 id="altair-8800-chatgpt">从 Altair 8800 到 ChatGPT</h3>
 <p>在场的同学是 computer science 的学生，而计算机史上经历过很多次非常重要的变革。在他看来，这些变革的主线只有一条：<strong>把昂贵的能力变成日用品。</strong></p>
@@ -353,12 +533,8 @@
 <h3 id="_6">一份零分简历</h3>
 <p>第三种最切实：保研。海投出去很多简历，而他也收到很多。他当场展示了一份。展示前有个细节：这份简历的全部处理都是 AI 做的，他只告诉 AI"我有一份简历，需要在课上展示，请把个人信息去掉"，于是 AI 把那些字符替换成 Unicode 方块——复制粘贴出来就是一串黑色方块。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_05_00.png" alt="投影上展示的简历：姓名等隐私字段被替换成一排黑色 Unicode 方块字符" loading="lazy">
-<br />
-<p class="video-caption">📷 投影上展示的简历：姓名等隐私字段被替换成一排黑色 Unicode 方块字符<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=300" target="_blank" rel="noopener">回到原视频 (00:05:00)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_05_00.png" alt="投影上展示的简历：姓名等隐私字段被替换成一排黑色 Unicode 方块字符" loading="lazy">   <p class="video-caption">📷 投影上展示的简历：姓名等隐私字段被替换成一排黑色 Unicode 方块字符<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=300" target="_blank" rel="noopener">回到原视频 (00:05:00)</a></p> </div></p>
 </blockquote>
-</div>
 <p>这份简历"非常完美"：CCF 期刊列表上的论文，状态 accepted。他顺口讲了个圈子里的梗——"再投就等于不存在"，因为你根本看不到它。但这样一份简历在他眼里是<strong>零分</strong>：没有额外信息，没有 GitHub 链接，没有个人主页，没有一篇 preprint。他不知道这位同学发生了什么，但这样的简历非常糟糕，而更糟糕的是他收到过无数份。</p>
 <p><em>(参考时间: 00:05:29)</em></p>
 <h3 id="_7">区别被抹平之后</h3>
@@ -384,12 +560,8 @@
 <h3 id="source-of-truth">讲义是 source of truth</h3>
 <p>他对比屏幕上的两份东西：左边是上课前写好的讲义（Markdown），右边是按 F5 播放的幻灯片，两者"有点不一样"。不一样的地方用颜色标了出来——<strong>紫色的部分，是模型加上去的</strong>。他有一个提示词，一个叫 make slides 的 skill，可以从写好的演讲稿里"添油加醋地去做点有趣的事情"。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_09_27.png" alt="F5 播放幻灯片时，页面上用紫色标出由模型扩写生成的内容" loading="lazy">
-<br />
-<p class="video-caption">📷 F5 播放幻灯片时，页面上用紫色标出由模型扩写生成的内容<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=567" target="_blank" rel="noopener">回到原视频 (00:09:27)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_09_27.png" alt="F5 播放幻灯片时，页面上用紫色标出由模型扩写生成的内容" loading="lazy">   <p class="video-caption">📷 F5 播放幻灯片时，页面上用紫色标出由模型扩写生成的内容<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=567" target="_blank" rel="noopener">回到原视频 (00:09:27)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 00:09:53)</em></p>
 <h3 id="make-slides">make slides：用算力换智力</h3>
 <p>这个 skill 里最有效的一招，是让模型生成三个 sub agent，给它们不同的 personality，让它们各自干活，而且都在<strong>隔离的上下文</strong>里跑，最后由主 agent 汇总。他的总结是六个字：<strong>用算力换智力</strong>。</p>
@@ -425,12 +597,8 @@
 <h3 id="_16">给五岁孩子解释扫描电子显微镜</h3>
 <p>2023 年，GPT-4 的时代，那是一个幻觉非常严重的模型，但他要它给五岁的孩子解释什么是扫描电子显微镜，prompt 大概是"用朴素的语言打一个合适的比方"。起因很日常：他给孩子讲故事，不知怎么就讲到了扫描电子显微镜，然后他讲不下去了。GPT-4 给了这样一个比方：你现在有一座山，山的形状你看不到，因为你闭着眼睛；但你想知道它是什么形状，那你就朝那座山扔石头——有的方向石头直接穿过去了，有的方向弹回来、你能听到声音。于是通过"哪些地方穿过去了、哪些地方没穿过去"，就可以推测出这座山的形状。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_22_48.png" alt="幻灯片上展示用&quot;闭眼向山扔石头&quot;比喻扫描电子显微镜成像原理的那一页" loading="lazy">
-<br />
-<p class="video-caption">📷 幻灯片上展示用&quot;闭眼向山扔石头&quot;比喻扫描电子显微镜成像原理的那一页<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=1368" target="_blank" rel="noopener">回到原视频 (00:22:48)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_22_48.png" alt="幻灯片上展示用&quot;闭眼向山扔石头&quot;比喻扫描电子显微镜成像原理的那一页" loading="lazy">   <p class="video-caption">📷 幻灯片上展示用&quot;闭眼向山扔石头&quot;比喻扫描电子显微镜成像原理的那一页<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=1368" target="_blank" rel="noopener">回到原视频 (00:22:48)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 00:23:36)</em></p>
 <h3 id="agent_1">Agent 是怎么出现的</h3>
 <p>随着模型能输出越来越长的文本、接受越来越长的上下文，<strong>agent</strong> 出现了。机制其实很简洁：模型可以输出一个<strong>特殊的 token</strong>，意思是"能不能调用一个 bash 程序"；这个程序运行，结果被重新送回给 agent，落在一个 loop 里。这样 agent 就可以自主运行——你给它一个复杂的任务，它可以不断地尝试、尝试、尝试。而在 GPT-4 的年代，他们还在用模型生成奇怪的东西：一个 prompt 生成上百张图、还得反复调整；今天这就是"一句话的事情"。</p>
@@ -451,12 +619,8 @@
 <h3 id="_17">两个原则</h3>
 <p>作为 AI native 的一代人，第一件要知道的事是：<strong>给它一个合适的指令</strong>。他在课上选的是一个叫 Pi 的工具（字幕作"派"），用法极简——你只要跟它说就可以了；此外还可以写配置文件，比如仓库根目录下的 <code>AGENTS.md</code>。他先问"你是谁"，它回答：我是生成式软件工程的教学辅助。他追问："你不就是个模型吗？为什么还知道生成式软件工程？"它说，之所以知道这门课，是因为仓库里 <code>AGENTS.md</code> 的配置——"这部分是临时的基因"。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_30_59.png" alt="Pi 的对话界面中，助手回答自己&quot;知道这门课&quot;是因为读到了仓库里的 AGENTS.md 配置" loading="lazy">
-<br />
-<p class="video-caption">📷 Pi 的对话界面中，助手回答自己&quot;知道这门课&quot;是因为读到了仓库里的 AGENTS.md 配置<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=1859" target="_blank" rel="noopener">回到原视频 (00:30:59)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_30_59.png" alt="Pi 的对话界面中，助手回答自己&quot;知道这门课&quot;是因为读到了仓库里的 AGENTS.md 配置" loading="lazy">   <p class="video-caption">📷 Pi 的对话界面中，助手回答自己&quot;知道这门课&quot;是因为读到了仓库里的 AGENTS.md 配置<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=1859" target="_blank" rel="noopener">回到原视频 (00:30:59)</a></p> </div></p>
 </blockquote>
-</div>
 <p>于是第一条原则落地：<strong>现在就开始用</strong>；第二条紧随其后：<strong>随时问它</strong>。在这个意义上，<strong>是你的想象力限制了 agent 的上限</strong>——他让大家课间想一想：你用 agent 做过的最酷的一件事是什么？</p>
 <blockquote>
 <p><strong>编者说明</strong>：讲师把这个工具读作"派"，字幕也写作"派"，本书统一记作 Pi；该产品的确切名称与版本未能从字幕中确证，读者可对照课程主页。</p>
@@ -471,22 +635,14 @@
 
 <p>点睛之笔是最后一句"用模拟器验证"。他有相应的知识，所以知道这个安装是怎么完成的：agent 装完之后真的在 QEMU 里启动，看到登录界面，告诉他确实可以登录了；他要创建一个用户，用户名是什么、密码是什么，agent 全部做好、验证完成再交给他。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_33_49.png" alt="QEMU 窗口中 U 盘上的 Debian 启动到登录界面，验证安装可以正常引导" loading="lazy">
-<br />
-<p class="video-caption">📷 QEMU 窗口中 U 盘上的 Debian 启动到登录界面，验证安装可以正常引导<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2029" target="_blank" rel="noopener">回到原视频 (00:33:49)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_33_49.png" alt="QEMU 窗口中 U 盘上的 Debian 启动到登录界面，验证安装可以正常引导" loading="lazy">   <p class="video-caption">📷 QEMU 窗口中 U 盘上的 Debian 启动到登录界面，验证安装可以正常引导<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2029" target="_blank" rel="noopener">回到原视频 (00:33:49)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 00:34:04)</em></p>
 <h3 id="_18">平铺窗口管理器与那个危险</h3>
 <p>U 盘启动后，他说要装一个 tile-based 的窗口管理器。于是有了课上那段顺滑的操作：按 Win+Enter 产生一个新窗口出现在右边，按 Win+Space 可以把它挪出来。不会用怎么办？他让模型自己看系统设置、生成一份文档：Super+Enter 打开终端，Super+D 打开 app launcher。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_34_59.png" alt="屏幕上展示由模型生成的快捷键速查文档，列出 Super+Enter、Super+D 等操作" loading="lazy">
-<br />
-<p class="video-caption">📷 屏幕上展示由模型生成的快捷键速查文档，列出 Super+Enter、Super+D 等操作<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2099" target="_blank" rel="noopener">回到原视频 (00:34:59)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_34_59.png" alt="屏幕上展示由模型生成的快捷键速查文档，列出 Super+Enter、Super+D 等操作" loading="lazy">   <p class="video-caption">📷 屏幕上展示由模型生成的快捷键速查文档，列出 Super+Enter、Super+D 等操作<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2099" target="_blank" rel="noopener">回到原视频 (00:34:59)</a></p> </div></p>
 </blockquote>
-</div>
 <p>"所有的文档，包括你看到的终端、Neovim 的现代配置，我没有看过任何一眼配置文件。"他有一层感慨：作为教 computer science 的老师，他大四时和大家一样在看 Intel 那几千页的 CPU specification；而现在有一个人可以把这些东西全看了、都懂、还能做对，他需要做的只是<strong>解锁它的能力</strong>。所以你看到，今天学习知识的方式变了：你更多时候需要知道<strong>它能做什么</strong>，感知它做到什么程度，然后带着它去做一件更大的、它现在还做不到的事。</p>
 <blockquote>
 <p>人现在唯一的功能，就是带着 AI 做 AI 现在做不到的事情。一旦你没有这个能力，你就立即已经被淘汰了。</p>
@@ -496,73 +652,45 @@
 <h3 id="_19">邮件、发票与打印机</h3>
 <p>第二个例子是收发邮件、写草稿。他有一个 skill：数据库里有他历史上回过的所有邮件。所以每当收到一封邮件，它会自动把它变成已读，然后自动用他的口吻写好回复草稿。他很诚实地评价：除了少数 routine 的东西可以直接用，大部分时候他还得改。但这个 bot 还处理附件：收到一张发票，它会自动归档到指定位置，当然这都是他写好的 instructions。更有意思的是任务闭环：他用苹果的 Reminders，在"bot"列表里加一条"把我收到的上一张发票打印出来"，点一下勾就等于 commit 了一个 to-do；之后只要等——它在后台处理，弄好之后推送通知，通知通过 Reminders 送到手表上，手表告诉他可以去取打印件了。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_39_25.png" alt="Reminders 的 bot 列表中新增一条&quot;打印上一张发票&quot;的待办事项" loading="lazy">
-<br />
-<p class="video-caption">📷 Reminders 的 bot 列表中新增一条&quot;打印上一张发票&quot;的待办事项<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2365" target="_blank" rel="noopener">回到原视频 (00:39:25)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_39_25.png" alt="Reminders 的 bot 列表中新增一条&quot;打印上一张发票&quot;的待办事项" loading="lazy">   <p class="video-caption">📷 Reminders 的 bot 列表中新增一条&quot;打印上一张发票&quot;的待办事项<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2365" target="_blank" rel="noopener">回到原视频 (00:39:25)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 00:39:30)</em></p>
 <h3 id="ai_3">读书：让 AI 梗同学当审稿人</h3>
 <p>"你们还在读书吗？还看论文吗？看论文痛苦吗？"他连问三句，然后自答：我是一个很喜欢看书的人，在你们这么大的时候每年教科书要看几十本；<strong>而我今天已经不看书了。</strong> 但他还是买了几本，因为要上这门课。第一本是 Fred Brooks 的《The Mythical Man-Month》，中译《人月神话》。他说这个标题起得非常 misleading："人月"——你想到的是人和月亮吗？每到月亮出来就会变成狼的人吗？其实是 myth 被听成了 mammoth（猛犸象），那就好理解了，"人力神话"；而"神话"也不对，你想到的是盘古开天地，有那种美好的意思，这本书其实应该叫"人月鬼话"，因为这个 myth 是一个鬼话。第二本是 John Ousterhout 的《A Philosophy of Software Design》，他评价它非常紧凑，里面有很多真正的软件工程智慧。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_42_01.png" alt="讲台上摊开的几本书：其中一本是《The Mythical Man-Month》" loading="lazy">
-<br />
-<p class="video-caption">📷 讲台上摊开的几本书：其中一本是《The Mythical Man-Month》<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2521" target="_blank" rel="noopener">回到原视频 (00:42:01)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_42_01.png" alt="讲台上摊开的几本书：其中一本是《The Mythical Man-Month》" loading="lazy">   <p class="video-caption">📷 讲台上摊开的几本书：其中一本是《The Mythical Man-Month》<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2521" target="_blank" rel="noopener">回到原视频 (00:42:01)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 00:43:38)</em></p>
 <h3 id="_20">读论文：把已知的全部减掉</h3>
 <p>他用这套东西审稿、读论文。方法很明确，他把它当成一句 prompt："从人类已有的知识开始。假设人类已有的所有东西都已经固定下来、都是已知的，然后把这篇论文里<strong>新的、最少的那部分</strong>剥离出来。"这样一剥，一篇 12 页的论文基本就剩不下多少，会变得非常短。所以他现在读论文效率非常高，而且他会 chat：拿着原文、拿着总结、拿着深层次的总结，和模型对话。"我仍然是读论文的，所以我不是那种只看微信公众号的老登。"</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_44_45.png" alt="手表上弹出的通知：发票已打印完成" loading="lazy">
-<br />
-<p class="video-caption">📷 手表上弹出的通知：发票已打印完成<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2685" target="_blank" rel="noopener">回到原视频 (00:44:45)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_44_45.png" alt="手表上弹出的通知：发票已打印完成" loading="lazy">   <p class="video-caption">📷 手表上弹出的通知：发票已打印完成<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2685" target="_blank" rel="noopener">回到原视频 (00:44:45)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 00:44:51)</em></p>
 <h3 id="b">读 B 站：图文时间轴与十倍效率</h3>
 <p>他不仅用 AI 读书读论文，还用 AI 上 B 站。先划了条边界：如果你们是那样娱乐的——看一个"华强买瓜"的衍生视频——那就不要用 AI 了，那剥夺了你们的娱乐。怎么读？给一个 BVID，比如他上学期的课程，一小时二十七分钟；流程是把视频总结成一个自动的图文时间轴。整理过的文本比字幕质量高一些，图片会稍少，因为他实际截图密度更大——当两帧图片的间隔大到一定程度他就截图，这样就得到了"这个视频说的 ground truth"。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_46_06.png" alt="B 站视频被整理成带时间戳的图文时间轴，左侧为文字摘要，右侧为关键帧截图" loading="lazy">
-<br />
-<p class="video-caption">📷 B 站视频被整理成带时间戳的图文时间轴，左侧为文字摘要，右侧为关键帧截图<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2766" target="_blank" rel="noopener">回到原视频 (00:46:06)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_46_06.png" alt="B 站视频被整理成带时间戳的图文时间轴，左侧为文字摘要，右侧为关键帧截图" loading="lazy">   <p class="video-caption">📷 B 站视频被整理成带时间戳的图文时间轴，左侧为文字摘要，右侧为关键帧截图<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2766" target="_blank" rel="noopener">回到原视频 (00:46:06)</a></p> </div></p>
 </blockquote>
-</div>
 <h2 id="apidevtools">九、把浏览器变成 API：DevTools、教务系统与二维码</h2>
 <h3 id="usb">USB 采集卡断了</h3>
 <p>下半场从一个真实故障开始。直播时他的 USB 摄像头卡住了。教室里的方案大概是：有一个视频采集卡，可能从网络过来，因为这边还有好几台机器。他顺便吐槽：不知道为什么学校用了一个成本那么大的方案，他觉得 500 到 1000 块应该就能解决整个问题。故障表现是采集卡的 USB 断开了：画面里他挥手，左边的画面是在动的，但 USB 掉了。他当场让 agent 修，就是一个 prompt：</p>
 <blockquote>
 <p>先看系统里 USB 设备的情况，找出设备。我的 UVC video 有问题，能不能 reconnect。</p>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_49_35.png" alt="终端中 agent 依次执行命令查看 USB 设备，并用软件方式重置 UVC 采集卡" loading="lazy">
-<br />
-<p class="video-caption">📷 终端中 agent 依次执行命令查看 USB 设备，并用软件方式重置 UVC 采集卡<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2975" target="_blank" rel="noopener">回到原视频 (00:49:35)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_49_35.png" alt="终端中 agent 依次执行命令查看 USB 设备，并用软件方式重置 UVC 采集卡" loading="lazy">   <p class="video-caption">📷 终端中 agent 依次执行命令查看 USB 设备，并用软件方式重置 UVC 采集卡<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=2975" target="_blank" rel="noopener">回到原视频 (00:49:35)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 00:50:14)</em></p>
 <h3 id="_21">浏览器是人类软件工程的奇迹</h3>
 <p>他强调：刚才展示的还只是一个"白板的 Pi"——你在官网下载安装，配置一个 DeepSeek V4 Flash 的 API，立即就得到刚才所有那些东西。但 agent 远不止于此，它拥有一个完整的生态系统。当一个领域特定的任务出现时，他说了一条"计算机科学的定律"，也是他上课一直会讲的："如果有一件事情它是合理的，并且你想做，那么百分之百一定也有别人会想做。"在 AI 时代，<strong>复用别人的能力变得前所未有的轻松</strong>：可以往 Skill Hub 上发一个 skill，也可以在 Pi 的插件生态里找到插件。所以作为一个普通人，下一步应该做什么？<strong>用插件把浏览器管控起来，用插件把电脑管控起来。</strong></p>
 <h3 id="f12">F12 之后</h3>
 <p>你们应该都用过：打开 Chromium，按 F12。他当场演示了最朴素的一件事：把页面上一个很讨厌的元素删掉——选中它，按 delete，它就没了。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_52_43.png" alt="Chrome DevTools 打开后，用元素选择器选中页面中的一块内容并按下 Delete 删除" loading="lazy">
-<br />
-<p class="video-caption">📷 Chrome DevTools 打开后，用元素选择器选中页面中的一块内容并按下 Delete 删除<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=3163" target="_blank" rel="noopener">回到原视频 (00:52:43)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_52_43.png" alt="Chrome DevTools 打开后，用元素选择器选中页面中的一块内容并按下 Delete 删除" loading="lazy">   <p class="video-caption">📷 Chrome DevTools 打开后，用元素选择器选中页面中的一块内容并按下 Delete 删除<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=3163" target="_blank" rel="noopener">回到原视频 (00:52:43)</a></p> </div></p>
 </blockquote>
-</div>
 <p>一般来说，网站都会在 console 上嵌入招聘广告——他顺手打开 B 站按 F12，还嘀咕了一句"它没有招聘广告的吗"。在 Network 面板里能看到 HTTP 头，也可以把某个请求"copy as cURL"，带着浏览器的 cookie 和全部状态用 curl 去取数据；这些在 pre-LLM 时代是开发者才做的事。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_53_56.png" alt="在 DevTools 的 Network 面板中右键请求，选择 Copy as cURL" loading="lazy">
-<br />
-<p class="video-caption">📷 在 DevTools 的 Network 面板中右键请求，选择 Copy as cURL<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=3236" target="_blank" rel="noopener">回到原视频 (00:53:56)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_53_56.png" alt="在 DevTools 的 Network 面板中右键请求，选择 Copy as cURL" loading="lazy">   <p class="video-caption">📷 在 DevTools 的 Network 面板中右键请求，选择 Copy as cURL<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=3236" target="_blank" rel="noopener">回到原视频 (00:53:56)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 00:54:57)</em></p>
 <h3 id="_22">教务系统：一次翻车，一次成功</h3>
 <p>今天要干的是大家都讨厌的事：<strong>教务系统</strong>。他提前声明：讲到软件工程时他还会专门讲，教务系统是一个软件工程非常反面的例子。他扫码登录，叮嘱全场"你们不要扫"，登录后指出：现在的教学周历是空的。顺便解释：刚才他在 Pi 里说"帮我打开浏览器"，这个浏览器是属于 Pi 的。于是他给出那条指令，用语音说的——这也是他日常做杂事的方式：按一个键，打开豆包输入法，和它对话。</p>
@@ -571,20 +699,12 @@
 
 <p>"不要看任何东西"是有原因的：如果 agent 知道当前目录是这门课的 repo，它就会去读他的 lecture notes，而这些他不要。然后是翻车现场：它还在干这件事——"你看他就是不听指令"。他想让它填 N/A，它偏不。他点评："这是 DeepSeek V4 Flash 的麻烦，如果是更强的模型，它会知道。"翻车也是经常有的；他用 Flash 还有一个原因——在课上更快。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_56_37.png" alt="教务系统&quot;教学周历&quot;页面，表格中所有单元格仍为空" loading="lazy">
-<br />
-<p class="video-caption">📷 教务系统&quot;教学周历&quot;页面，表格中所有单元格仍为空<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=3397" target="_blank" rel="noopener">回到原视频 (00:56:37)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_56_37.png" alt="教务系统&quot;教学周历&quot;页面，表格中所有单元格仍为空" loading="lazy">   <p class="video-caption">📷 教务系统&quot;教学周历&quot;页面，表格中所有单元格仍为空<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=3397" target="_blank" rel="noopener">回到原视频 (00:56:37)</a></p> </div></p>
 </blockquote>
-</div>
 <p>但接下来是转机。他看着 agent 不断反思自己做的事合不合理，然后找到应该怎么办。刚开始的尝试是失败的——它发现直接注入一个事件的方式不行，但<strong>点鼠标是可以的</strong>。这意味着它已经开始可以填写那些"AI slop"了，他完全可以不需要值守。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_00_59_06.png" alt="教务系统表格中逐格出现被 agent 填入的占位文本，鼠标指针在单元格上移动" loading="lazy">
-<br />
-<p class="video-caption">📷 教务系统表格中逐格出现被 agent 填入的占位文本，鼠标指针在单元格上移动<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=3546" target="_blank" rel="noopener">回到原视频 (00:59:06)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_00_59_06.png" alt="教务系统表格中逐格出现被 agent 填入的占位文本，鼠标指针在单元格上移动" loading="lazy">   <p class="video-caption">📷 教务系统表格中逐格出现被 agent 填入的占位文本，鼠标指针在单元格上移动<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=3546" target="_blank" rel="noopener">回到原视频 (00:59:06)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 00:57:52)</em></p>
 <h2 id="skill-11-2">十、Skill 生态与飞轮：1+1 可以大于 2</h2>
 <h3 id="unix">Unix 管道哲学与飞轮</h3>
@@ -623,29 +743,15 @@
 
 <p>他在办公桌上装了一个从顶向下的摄像头，先调好，让它拍到试卷的一个固定位置。按一个回车，它就拍一张照；拍完回后台离线处理，用 Qwen 识别姓名、学号和小分，往一个文本文件里写一行。所以他的动作是"一张卷子、一个回车"，两只手都不用写字。第二阶段按<strong>反序</strong>处理：还是按回车，但左右手换了——左手按回车，右手拿笔。按下回车，系统就用语音播报：谁、学号是多少、每个小分是多少，一边报他一边核对。为什么要核对？"因为 OCR 会有错，我不信任它。我要对我班上的每一个同学负责。"核对没问题，他才把播报的最终分数抄到卷面上。这个分数是脚本算的，<strong>他没有让大模型做加法</strong>，所以不会因为幻觉算错。最后分数自动汇总到教务处的 Excel 模板上，他再抽样检查，确保没有问题才提交。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_01_07_05.png" alt="俯拍摄像头对准桌面上的试卷，屏幕上显示刚拍下的一张试卷照片与识别出的分数" loading="lazy">
-<br />
-<p class="video-caption">📷 俯拍摄像头对准桌面上的试卷，屏幕上显示刚拍下的一张试卷照片与识别出的分数<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4025" target="_blank" rel="noopener">回到原视频 (01:07:05)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_01_07_05.png" alt="俯拍摄像头对准桌面上的试卷，屏幕上显示刚拍下的一张试卷照片与识别出的分数" loading="lazy">   <p class="video-caption">📷 俯拍摄像头对准桌面上的试卷，屏幕上显示刚拍下的一张试卷照片与识别出的分数<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4025" target="_blank" rel="noopener">回到原视频 (01:07:05)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 01:09:22)</em></p>
 <h3 id="_24">二维码动画：一个"合法"的数据搬运</h3>
 <p>回到软件工程的话题。他先讲了一个真实场景：群里闲聊时说"机器被管控了，很讨厌"。于是他们设想：假设你在一个金融公司，数据可以带进去，但出不来。你插一个 U 盘可以把 Word 或 Excel 拷进去，但没有任何文件可以拷出来；这台机器不能执行不信任的程序，不能显示不信任的网页；你唯一能做的，是在远处悄悄射频。可是你想把一个很大的文件偷出来，怎么办？"这就是 computer science 的人才能想到的事情。"他做了这样一个程序：界面是一个二维码，你可以把任何一个文件的内容放进去——他现场输入 <code>hello world</code>，二维码就变了；再换成一个很长的字符串，它就被编码成一个二维码的<strong>动画</strong>，按住 F9 刷新，它就在循环播放。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_01_11_02.png" alt="Excel 表格中，随着输入内容从 hello world 变成更长的字符串，旁边的二维码图案随之改变" loading="lazy">
-<br />
-<p class="video-caption">📷 Excel 表格中，随着输入内容从 hello world 变成更长的字符串，旁边的二维码图案随之改变<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4262" target="_blank" rel="noopener">回到原视频 (01:11:02)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_01_11_02.png" alt="Excel 表格中，随着输入内容从 hello world 变成更长的字符串，旁边的二维码图案随之改变" loading="lazy">   <p class="video-caption">📷 Excel 表格中，随着输入内容从 hello world 变成更长的字符串，旁边的二维码图案随之改变<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4262" target="_blank" rel="noopener">回到原视频 (01:11:02)</a></p> </div></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_01_12_17.png" alt="Excel 的公式编辑栏中，一长串嵌套公式正在逐像素生成二维码图案" loading="lazy">   <p class="video-caption">📷 Excel 的公式编辑栏中，一长串嵌套公式正在逐像素生成二维码图案<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4337" target="_blank" rel="noopener">回到原视频 (01:12:17)</a></p> </div></p>
 </blockquote>
-</div>
-<blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_01_12_17.png" alt="Excel 的公式编辑栏中，一长串嵌套公式正在逐像素生成二维码图案" loading="lazy">
-<br />
-<p class="video-caption">📷 Excel 的公式编辑栏中，一长串嵌套公式正在逐像素生成二维码图案<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4337" target="_blank" rel="noopener">回到原视频 (01:12:17)</a></p></p>
-</blockquote>
-</div>
 <p><em>(参考时间: 01:13:15)</em></p>
 <h2 id="gap">十一、回到软件工程：三个空间与那道 gap</h2>
 <h3 id="_25">一个字段引发的血案</h3>
@@ -661,30 +767,18 @@
 <p><em>(参考时间: 01:18:38)</em></p>
 <p>然后他做了一个受控实验：第一个版本是他带着 AI 做 vibe coding 做出来的，所以还比较顺利；后来他直接把 specification 告诉 AI，看它能不能自己搞定。结果：一个模型第一次思考了 25 分钟，然后开始疯狂输出，写了超过 32K 的 output token，直接把 Claude Code 的输出限制打爆了、被截断；再跑，总共跑了六个小时（他没有监管），但结果是对的。所以那个模型说自己厉害的地方是能做 long-horizon 的任务，是对的。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_01_19_00.png" alt="终端中显示模型长时间运行后因输出超过 32K token 上限而被截断的报错" loading="lazy">
-<br />
-<p class="video-caption">📷 终端中显示模型长时间运行后因输出超过 32K token 上限而被截断的报错<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4740" target="_blank" rel="noopener">回到原视频 (01:19:00)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_01_19_00.png" alt="终端中显示模型长时间运行后因输出超过 32K token 上限而被截断的报错" loading="lazy">   <p class="video-caption">📷 终端中显示模型长时间运行后因输出超过 32K token 上限而被截断的报错<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4740" target="_blank" rel="noopener">回到原视频 (01:19:00)</a></p> </div></p>
 </blockquote>
-</div>
 <p>另一个模型是晚上放着跑的。第二天早上他一看：<strong>是硬编码的</strong>。这明显不符合指令——"把一个输入的任意字符串先用 Base64 编码"，正常人的理解应该是 Base64 要用 Excel 公式来编码；而它是用 Python 算了一个 Base64，直接贴到公式框里。输入字符串一改，那个 Base64 是不会改的。他骂了它，它回了一句话，大意是"这是一个关键的设计缺陷，请重新思考"。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_01_20_03.png" alt="代码编辑器中大量硬编码的 Base64 字符串常量，而非由公式在运行时计算" loading="lazy">
-<br />
-<p class="video-caption">📷 代码编辑器中大量硬编码的 Base64 字符串常量，而非由公式在运行时计算<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4803" target="_blank" rel="noopener">回到原视频 (01:20:03)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_01_20_03.png" alt="代码编辑器中大量硬编码的 Base64 字符串常量，而非由公式在运行时计算" loading="lazy">   <p class="video-caption">📷 代码编辑器中大量硬编码的 Base64 字符串常量，而非由公式在运行时计算<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4803" target="_blank" rel="noopener">回到原视频 (01:20:03)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 01:21:04)</em></p>
 <h3 id="dsl">我为什么先写一个 DSL</h3>
 <p>那他本人是怎么做到的？他先抛了一个 quick quiz：如果你们要实现这个 QR 的 Excel，会怎么写？怎么 prompt AI？他的答案是：只用了少量 prompt，就让模型在 200K 上下文里完成了第一个正确的版本。当时他刚升级到那一代模型，想测试一下它的能力，于是让它设计一系列 Python 类，"有点像编译器一样"。具体说，他要设计一套符号系统，里面有 XOR、concat 这样的位运算；这个东西既可以翻译成 Python（直接执行），又可以翻译成 Excel。也就是说，他先做了一套<strong>像编译器一样的基础设施</strong>，定义了一个<strong>中间语言</strong>——它既对 Python 友好，也对 Excel 友好。于是验证的负担被拆开了：他只需要验证每一个翻译是对的——翻译到 Excel 的公式是对的，翻译到 Python 的结果是对的；然后单独验证每个东西与 Excel 公式之间翻译的正确性。验证完之后，"最后一把头生成就直接正确"，代码非常干净，也不长，但维护性远比那些硬编码的产物好。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_01_23_07.png" alt="代码编辑器中由模型生成的 build_excel 模块，按中间语言逐层翻译成 Excel 公式" loading="lazy">
-<br />
-<p class="video-caption">📷 代码编辑器中由模型生成的 build_excel 模块，按中间语言逐层翻译成 Excel 公式<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4987" target="_blank" rel="noopener">回到原视频 (01:23:07)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_01_23_07.png" alt="代码编辑器中由模型生成的 build_excel 模块，按中间语言逐层翻译成 Excel 公式" loading="lazy">   <p class="video-caption">📷 代码编辑器中由模型生成的 build_excel 模块，按中间语言逐层翻译成 Excel 公式<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=4987" target="_blank" rel="noopener">回到原视频 (01:23:07)</a></p> </div></p>
 </blockquote>
-</div>
 <p><em>(参考时间: 01:24:16)</em></p>
 <h3 id="intention-specification-implementation">intention / specification / implementation</h3>
 <p>核心问题是什么？他给出一个三空间模型：</p>
@@ -708,12 +802,8 @@
 <h3 id="_26">梗图与人月神话</h3>
 <p>他放了一张软件工程很早以前的梗图，讲的就是这个 gap：客户是这样解释他的需求的，项目负责人是这样理解它的，分析的人又是这样想的，宣传的人又是这样宣传的，最后客户实际要的是这个——而造出来的是那个。</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_01_28_01.png" alt="经典软件工程梗图：客户描述、项目负责人理解、分析师设计、宣传口径与实际交付物逐层偏离" loading="lazy">
-<br />
-<p class="video-caption">📷 经典软件工程梗图：客户描述、项目负责人理解、分析师设计、宣传口径与实际交付物逐层偏离<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=5281" target="_blank" rel="noopener">回到原视频 (01:28:01)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_01_28_01.png" alt="经典软件工程梗图：客户描述、项目负责人理解、分析师设计、宣传口径与实际交付物逐层偏离" loading="lazy">   <p class="video-caption">📷 经典软件工程梗图：客户描述、项目负责人理解、分析师设计、宣传口径与实际交付物逐层偏离<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=5281" target="_blank" rel="noopener">回到原视频 (01:28:01)</a></p> </div></p>
 </blockquote>
-</div>
 <p>而造成这一切的根本原因，就是这些 space 之间的 gap。所以当我们谈软件工程——不管是软件工程还是生成式软件工程——要做的事情就是补上这些 gap。那今天这些 gap 是怎么补的？<strong>模型用的是猜。</strong> 你既然说了这句话，那我就猜应该是这个吧，我就去实现。为什么？因为后训练时模型是有 reward 的：任务做对了、测试通过了就会得到奖励。所以它形成了一种倾向：疯狂地立即上手，尽可能快地完成任务。这当然让它能越来越多地做一些简单任务，是好事；但和人解决问题的方式还是不一样的。人怎么弥补这个 gap？作为计算机或软件工程的学生，你大一第一门课是 C 语言程序设计——你先学的是 implementation space 里有什么，把这里的东西弄得非常熟练；然后你再去上软件工程课，一点一点把理解补全。在 AI 时代，这件事发生了变化：<strong>你既要阻止 AI 去乱猜，又要尽可能发挥 AI 从 A 到 B 的能力。</strong> 这就是这门课要讨论的问题。</p>
 <p><em>(参考时间: 01:30:33)</em></p>
 <p><em>(参考时间: 01:32:24)</em></p>
@@ -733,20 +823,26 @@
 </blockquote>
 <p>怎么解这个问题？他觉得在这个问题上，那个前沿模型回答得还挺好的——虽然它自己做不到。它的回答是：他能找到值得解决的问题；把未知拆成便宜的实验；用证据让坏方向及时停下；并对长期结果负责。"这是一个好的回答。但是我发现它自己还做不到。"</p>
 <blockquote>
-<p><div class="video-card screenshot-card">
-  <img src="images/shot_01_39_22.png" alt="最后一页幻灯片上并列的三句话：古法编程已死、AI 在单个任务上无人能敌、软件工程暂时未死" loading="lazy">
-<br />
-<p class="video-caption">📷 最后一页幻灯片上并列的三句话：古法编程已死、AI 在单个任务上无人能敌、软件工程暂时未死<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=5962" target="_blank" rel="noopener">回到原视频 (01:39:22)</a></p></p>
+<p><div class="video-card screenshot-card">   <img src="images/shot_01_39_22.png" alt="最后一页幻灯片上并列的三句话：古法编程已死、AI 在单个任务上无人能敌、软件工程暂时未死" loading="lazy">   <p class="video-caption">📷 最后一页幻灯片上并列的三句话：古法编程已死、AI 在单个任务上无人能敌、软件工程暂时未死<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=5962" target="_blank" rel="noopener">回到原视频 (01:39:22)</a></p> </div></p>
 </blockquote>
-</div>
     </article>
+    </div>
+    <script>
+        const tocDetails = document.querySelector('.book-toc details');
+        if (tocDetails && window.matchMedia('(max-width: 1099px)').matches) {
+            tocDetails.open = false;
+            tocDetails.addEventListener('click', function(event) {
+                if (event.target.closest('a')) tocDetails.open = false;
+            });
+        }
+    </script>
 
     <!-- Mermaid 图表引擎初始化 -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             mermaid.initialize({ startOnLoad: false, theme: 'default' });
-            
+
             // 兼容普通代码块以及丢失 language-mermaid 类名的情况 (CodeHilite 干扰)
             const codeNodes = document.querySelectorAll('pre code, .highlight code');
             codeNodes.forEach(function(node) {
@@ -756,13 +852,13 @@
                     const tempDiv = document.createElement('div');
                     tempDiv.className = 'mermaid';
                     tempDiv.textContent = text;
-                    
+
                     // 获取需要替换的最外层父节点 (比如 div.highlight 或者 pre)
                     const wrapper = node.closest('.highlight') || node.parentNode;
-                    wrapper.replaceWith(tempDiv); 
+                    wrapper.replaceWith(tempDiv);
                 }
             });
-            
+
             // 所有节点转换完成，统一进行图表动态绘制
             mermaid.run();
         });
