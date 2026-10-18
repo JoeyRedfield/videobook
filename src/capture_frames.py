@@ -42,7 +42,6 @@ original tagged draft is kept as book.tagged.md.
 import argparse
 import os
 import re
-import subprocess
 import sys
 
 from extract_frames import materialize
@@ -114,7 +113,7 @@ def find_chrome_exe():
             if base:
                 candidates.append(os.path.join(base, "Google", "Chrome", "Application", "chrome.exe"))
     elif sys.platform == "darwin":
-        candidates.append("/Applications/Google Chrome.app/Contents/Google Chrome")
+        candidates.append("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
     else:
         import shutil
         for name in ("google-chrome", "google-chrome-stable"):
@@ -128,7 +127,19 @@ def find_chrome_exe():
 
 
 def setup_profile(profile_dir: str, open_url: str = "https://www.bilibili.com") -> None:
-    """One-time init: open Chrome with the dedicated profile for manual login."""
+    """One-time init: open Chrome with the dedicated profile for manual login.
+
+    Launch through Playwright (not a plain Chrome subprocess) so cookies are
+    encrypted with the same keychain backend used by export_cookies() and the
+    capture pipeline. On macOS a plain-Chrome login uses the real Keychain,
+    while Playwright launches Chrome with --use-mock-keychain; mixing them makes
+    Chrome drop the login cookies.
+    """
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        sys.exit("Playwright not installed (python -m pip install playwright)")
+
     exe = find_chrome_exe()
     if not exe:
         sys.exit("Chrome executable not found")
@@ -136,7 +147,21 @@ def setup_profile(profile_dir: str, open_url: str = "https://www.bilibili.com") 
     print("opening Chrome with the dedicated capture profile ...")
     print("log in to the platforms you need (bilibili / YouTube) in that window,")
     print("then CLOSE the window to finish setup.")
-    subprocess.run([exe, f"--user-data-dir={profile_dir}", open_url])
+    with sync_playwright() as p:
+        ctx = p.chromium.launch_persistent_context(
+            profile_dir, channel="chrome", headless=False)
+        try:
+            page = ctx.pages[0] if ctx.pages else ctx.new_page()
+            page.goto(open_url, wait_until="domcontentloaded", timeout=60000)
+            while True:  # wait until the user closes the window
+                page.wait_for_timeout(1000)
+        except Exception:
+            pass
+        finally:
+            try:
+                ctx.close()
+            except Exception:
+                pass
     print("setup finished; cookies are persisted in", profile_dir)
 
 

@@ -4,6 +4,7 @@ post_process.py
 并将 SCREENSHOT 占位符替换为嵌入式视频播放器卡片。
 """
 import argparse
+import html
 import os
 import re
 import urllib.parse as urlparse
@@ -57,18 +58,20 @@ def make_video_card(platform: str, video_id: str, video_url: str, timestamp: str
         query["t"] = [str(seconds)]
     open_url = urlparse.urlunsplit(parsed._replace(query=urlparse.urlencode(query, doseq=True)))
     page = query.get("p", ["1"])[0]  # B 站分 P 页码
+    # 描述来自 AI 生成的字幕，可能包含引号/HTML；必须转义后再拼进属性与正文
+    safe_desc = html.escape(description or "", quote=True)
 
     # 若已提供页内截图，则渲染静态截图卡片（真·截图模式）
     if image_rel:
         if timestamp is None:
             # 官方课件图：无视频时间锚点，仅图片 + 点击放大
             return f'''<div class="video-card screenshot-card">
-  <img src="{image_rel}" alt="{description}" loading="lazy">
-  <p class="video-caption">🖼️ {description}</p>
+  <img src="{image_rel}" alt="{safe_desc}" loading="lazy">
+  <p class="video-caption">🖼️ {safe_desc}</p>
 </div>'''
         return f'''<div class="video-card screenshot-card">
-  <img src="{image_rel}" alt="{description}" loading="lazy">
-  <p class="video-caption">📷 {description}<br><a href="{open_url}" target="_blank" rel="noopener">回到原视频 ({timestamp})</a></p>
+  <img src="{image_rel}" alt="{safe_desc}" loading="lazy">
+  <p class="video-caption">📷 {safe_desc}<br><a href="{html.escape(open_url, quote=True)}" target="_blank" rel="noopener">回到原视频 ({timestamp})</a></p>
 </div>'''
 
     if platform == "youtube":
@@ -79,7 +82,7 @@ def make_video_card(platform: str, video_id: str, video_url: str, timestamp: str
   <div class="video-wrapper">
     <iframe src="{embed_url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
   </div>
-  <p class="video-caption">▶ {description}<br><a href="{open_url}" target="_blank" rel="noopener">在 YouTube 中打开 ({timestamp})</a></p>
+  <p class="video-caption">▶ {safe_desc}<br><a href="{html.escape(open_url, quote=True)}" target="_blank" rel="noopener">在 YouTube 中打开 ({timestamp})</a></p>
 </div>'''
 
     elif platform == "bilibili":
@@ -89,11 +92,11 @@ def make_video_card(platform: str, video_id: str, video_url: str, timestamp: str
   <div class="video-wrapper">
     <iframe src="{embed_url}" frameborder="0" allowfullscreen scrolling="no" loading="lazy"></iframe>
   </div>
-  <p class="video-caption">▶ {description}<br><a href="{open_url}" target="_blank" rel="noopener">在 B 站中打开 ({timestamp})</a></p>
+  <p class="video-caption">▶ {safe_desc}<br><a href="{html.escape(open_url, quote=True)}" target="_blank" rel="noopener">在 B 站中打开 ({timestamp})</a></p>
 </div>'''
 
     # 未知平台，返回纯文本提示
-    return f'<div class="video-card fallback"><p>⚠️ 视频参考：{description}（{timestamp}）—— <a href="{video_url}" target="_blank">{video_url}</a></p></div>'
+    return f'<div class="video-card fallback"><p>⚠️ 视频参考：{safe_desc}（{timestamp}）—— <a href="{html.escape(video_url, quote=True)}" target="_blank">{html.escape(video_url)}</a></p></div>'
 
 
 # ─────────────────────────────────────────────
@@ -153,7 +156,7 @@ def md_to_html(md_content: str, title: str) -> str:
         }
     )
 
-    return HTML_TEMPLATE.replace("{title}", title).replace("{content}", body_html)
+    return HTML_TEMPLATE.replace("{title}", html.escape(title)).replace("{content}", body_html)
 
 
 # ─────────────────────────────────────────────
