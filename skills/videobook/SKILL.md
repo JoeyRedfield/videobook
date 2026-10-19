@@ -23,7 +23,7 @@ metadata:
    所有相对路径（`output/<video_id>/...`）都相对它解析。仓库不在本地时先
    `git clone https://github.com/Luke-Evan/videobook.git` 到用户存放代码项目的目录
    （不要放临时目录，也不要另建 projects 目录），再 `cd` 进去。
-2. Python >= 3.10（推荐 3.12）。装依赖：`uv sync`（用 uv 时）或 `pip install -r requirements.txt`。
+2. Python >= 3.12。装依赖：`uv sync`（用 uv 时）或 `pip install -r requirements.txt`。
    执行统一走仓库环境的解释器：`uv run python src/xxx.py` 或 `.venv/Scripts/python.exe src/xxx.py`。
 3. **一次性登录**：`python src/capture_frames.py --setup-profile` 弹出专用 Chrome（数据目录 `.capture-profile/`），
    扫码登录 B 站 / YouTube 后关窗即可，登录态长期复用。登录账号的会员档位 = 截图清晰度上限。
@@ -59,6 +59,7 @@ metadata:
 9. **删除大文件（`audio.m4a`、`video_source.mp4` 等）前必须问用户**，得到确认再删。
 10. 生成或修改 HTML 时，文本与背景对比度不低于 WCAG AA 的 4.5:1。
 11. 各步幂等可重跑：占位符物化前脚本自动备份 `book.tagged.md`，只要它还在，重跑第三步即可恢复截图。
+12. **完整性与浏览器 QA**：默认生成覆盖全片的详细笔记；只有用户明确要求时才生成“提炼核心观点”摘要。`book.md` 定稿后再截帧和物化，交付前按仓库 `docs/quality-checklist.md` 检查实际截图、Mermaid SVG、懒加载图片、目录/lightbox、移动端布局，并在 Pages 更新后核对线上文件。
 
 ## 交付（第五步要一次性说清）
 

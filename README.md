@@ -6,7 +6,7 @@
 
 ## 环境准备
 
-1. `Python >= 3.10`，克隆本仓库
+1. `Python >= 3.12`，克隆本仓库
 2. 安装依赖：`pip install -r requirements.txt`（或 `uv sync`）
 3. 一次性登录：`python src/capture_frames.py --setup-profile`，在弹出的 Chrome 里扫码登录 B 站 / YouTube。登录态长期复用，账号档位决定截图清晰度上限。
 
@@ -28,17 +28,19 @@
 - 或把 `skills/videobook/` 复制 / 软链到 `~/.codex/skills/`（仅 Codex）或 `~/.agents/skills/`（跨 agent）
 - 装好后新开任务发同一句话即可，也可以显式调用 `$videobook`
 
-完成后你会拿到 `output/<视频ID>/book.md`，以及本地预览地址 `http://localhost:8080/book.html`（助手会自动起服务）。
+完成后你会拿到 `output/<视频ID>/book.md`。本地预览需在仓库根目录手动启动 `python -m http.server 8080 --directory output/<视频ID>`，然后打开 `http://localhost:8080/book.html`。
 
 ## 原理
 
-五步流水线，**完整指令与全部细节见 [`instructions.md`](instructions.md)**：
+完整流水线分为字幕、课程资料、书稿、截帧、渲染和发布阶段，**完整指令与全部细节见 [`instructions.md`](instructions.md)**：
 
 1. **抓字幕**：`src/dump_transcript.py`。平台没有任何字幕时自动用本地 faster-whisper 转写兜底（`src/asr_transcript.py`），产出与平台字幕同构的文件，后续步骤零改动。
 2. **课程官方资料增强**：`src/course_assets.py` 抓取课程主页的讲义与幻灯片。讲义用于术语、章节骨架与参考链接校准；幻灯片渲染成 4K 官方图，比任何视频帧都清晰。每讲都会先确认课程是否有主页，只有确认没有才跳过本步。
 3. **改写成书**：大模型按 `prompts/stitcher_system.md` 把字幕重构成结构化 Markdown，并在关键处插入 `SCREENSHOT:` / `SLIDE:` 占位。
 4. **截帧**：`src/capture_frames.py` 用已登录的浏览器直接截取平台播放器画面（不下载任何媒体文件），把占位符物化为图片。
-5. **渲染与预览**：`src/post_process.py` 把时间锚点换成 B 站 / YouTube 原生轻量 iframe、注入暗色主题，生成 `book.html` 并起本地服务。
+5. **渲染与预览**：`src/post_process.py` 把时间锚点换成 B 站 / YouTube 原生轻量 iframe，保留浅色主题并生成 `book.html`；本地服务需要手动启动。
+
+交付前按 [`docs/quality-checklist.md`](docs/quality-checklist.md) 做完整性、截图、Mermaid、移动端和线上发布核验；详细笔记默认覆盖全片，不等同于“提炼核心观点”。
 
 ## 测试
 

@@ -82,6 +82,8 @@ python src/course_assets.py <video_id> --course-url <课程主页> [--lecture N]
 
 **关键要求：**
 - 必须将口语化内容转为书面化技术语言
+- 默认产出覆盖全片的详细笔记，不得把完整课程压缩成“提炼核心观点”；只有用户明确要求摘要时才切换产物类型。
+- 按固定时间块顺序通读字幕并做覆盖审计：每个时间块都要在书中留下章节、小节、案例、推理、操作或结果的对应内容。字数和章节数不能代替覆盖证明。
 - 必须分章节组织，使用 Markdown 标题
 - 必须在关键界面/操作步骤处插入截图占位符：`![场景描述](SCREENSHOT:HH:MM:SS)`
 - 如果原始语言不是中文，必须翻译为中文
@@ -178,6 +180,7 @@ python src/course_assets.py <video_id> --apply-map <json路径>
 
 - `images/` 下每个时间戳都有对应的 `shot_HH_MM_SS.png`，`book.md` 中不再有 `SCREENSHOT:` 占位符。
 - 第四步生成的 HTML 中，截图卡片内置点击放大（lightbox）：点击图片查看大图，点击空白处或按 Esc 关闭。
+- 交付前必须按 [`docs/quality-checklist.md`](docs/quality-checklist.md) 完成内容覆盖、实际截图画面、Mermaid SVG、懒加载图片、目录/lightbox、桌面与手机布局检查；发布后还要核对线上文件与本地成品。
 
 ### 第四步：转换 HTML + 启动预览
 

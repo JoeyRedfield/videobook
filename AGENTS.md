@@ -25,6 +25,10 @@ git diff --check
 
 修改抓取、渲染或发布逻辑时，先阅读对应的 `src/*.py`、`instructions.md` 和 `skills/videobook/` 参考文档。不要把一次性本机排障记录加入仓库；可复用的结论应改写成不含本机信息的通用说明。
 
+- 用户要求课程笔记时，默认交付覆盖全片的详细笔记；只有明确要求时才写成“提炼核心观点”的摘要。
+- `book.md` 定稿后才能生成 tagged 稿、截帧和物化图片；这些步骤不要并行修改同一个 Markdown 文件。
+- 发布前必须按 [`docs/quality-checklist.md`](docs/quality-checklist.md) 在真实浏览器检查截图、Mermaid、目录、懒加载图片和移动端布局，并在 Pages 更新后核对线上文件。
+
 添加本机笔记后，用 `git check-ignore -v <文件>` 确认它确实被忽略；提交前再次检查 `git status --short --ignored` 和 `git diff --cached`。
 
 ## 上游同步与发布
