@@ -160,6 +160,13 @@ def md_to_html(md_content: str, title: str) -> str:
 # 主流程
 # ─────────────────────────────────────────────
 
+def find_meta_sections(md_content: str) -> list:
+    """找出「后记 / 本书是如何生成的」这类元信息章节标题（只告警，不自动删）。"""
+    pat = re.compile(r"^#{2,6}\s*(后记[^\n]*|(?:关于|有关)?本书(?:是)?如何生成[^\n]*|"
+                     r"生成说明[^\n]*|整理说明[^\n]*|致谢[^\n]*)\s*$", re.MULTILINE)
+    return [m.group(1).strip() for m in pat.finditer(md_content)]
+
+
 def process_markdown(video_url: str, md_file: str):
     if not os.path.exists(md_file):
         print(f"[ERR] 找不到文件: {md_file}")
@@ -180,6 +187,13 @@ def process_markdown(video_url: str, md_file: str):
         print(">> 目录已规范化（去掉重复编号 / 重算锚点），已写回 book.md")
     elif toc_mode == "structural":
         print(">> 目录已按当前章节生成用于 HTML；源 book.md 未改动。需要保存目录时运行 src/build_toc.py")
+
+    # 0.1) 元信息章节告警：「后记 / 本书是如何生成的」这类内容不属于课程，
+    #      stitcher 指令已明确禁止；这里只告警不修改（避免误删讲师真讲过的收尾内容）。
+    meta = find_meta_sections(content)
+    if meta:
+        print(f">> [警告] book.md 含元信息章节：{'、'.join(meta)}；"
+              "书里应只有课程内容，建议删除（stitcher 指令已禁止生成这类章节）")
 
     # 从 MD 第一行提取标题
     title_match = re.search(r'^#\s+(.+)', content, re.MULTILINE)

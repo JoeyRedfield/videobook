@@ -41,3 +41,10 @@ def test_missing_slide_image_keeps_markdown(tmp_path):
     md = "![b](images/slide_009.png)\n"
     out = pp.replace_screenshots_with_embeds(md, URL, images_dir=str(tmp_path))
     assert out == md
+
+
+def test_meta_section_warning():
+    """「后记 / 本书是如何生成的」这类元信息章节要能被识别出来（只告警，不自动删）。"""
+    md = ("# 书名\n\n## 1. 第一章\n\n正文\n\n## 后记：本书是如何生成的\n\n本书由 B 站 AI 字幕…\n")
+    assert pp.find_meta_sections(md) == ["后记：本书是如何生成的"]
+    assert pp.find_meta_sections("# 书名\n\n## 附：官方参考与延伸阅读\n\n- 链接\n") == []
