@@ -87,6 +87,29 @@ def test_h2_inside_code_fence_is_ignored():
     assert changed is False
 
 
+def test_anchors_correct_on_first_generation_with_empty_slug_headings():
+    """空 slug 标题（如「附：参考资料」）在首次生成目录时，锚点就不能错位。
+
+    回归：目录标题自己也会占一个空 slug 编号，若按“还没插入目录”的文本算 id，
+    「附：…」会拿到 `_1` 而 HTML 里实际是 `_2`，链接直接指不到（写成一遍 check 仍 FAIL）。
+    """
+    import markdown
+    import re as _re
+
+    for src in (
+        "# 书名\n\n> 信息块\n\n<!--TOC-->\n\n---\n\n## 1. 第一章\n\n正文\n\n## 附：参考资料\n\n正文\n",
+        "# 书名\n\n> 信息块\n\n---\n\n## 1. 第一章\n\n正文\n\n## 附：参考资料\n\n正文\n",
+    ):
+        new, changed = bt.build_toc(src)
+        assert changed
+        html = markdown.Markdown(extensions=["toc"]).convert(new)
+        anchors = dict(_re.findall(r"\d+\. \[(.*?)\]\(#(.*?)\)", new))
+        for title, anchor in anchors.items():
+            assert f'id="{anchor}"' in html, f"{title} 的锚点 {anchor} 在 HTML 里不存在"
+        # 且一次就到位，不需要再跑一遍
+        assert bt.build_toc(new)[1] is False
+
+
 def test_check_mode_exit_code(tmp_path, capsys):
     p = tmp_path / "book.md"
     p.write_text(DOC_DUP, encoding="utf-8")

@@ -180,13 +180,28 @@ def _insert_at(lines) -> int:
     return len(lines)
 
 
+def _probe_text(lines, span, at):
+    """算锚点时要假装「## 目录」已经在文档里。
+
+    目录标题自己也会占一个标题 id（空 slug 的标题按先后编号为 `_1`、`_2`……）。
+    如果按“还没插入目录”的文本去算 id，后面所有空 slug 标题（如「## 附：…」）的编号都会整体错位
+    ，生成出来的目录锚点会在 HTML 里指不到地方（"写完一遍仍报不一致"就是这个原因）。
+    """
+    if span is not None and span[0] == "heading":
+        return lines  # 已经有目录标题，id 计算基准正确
+    if span is not None and span[0] == "marker":
+        _, i, j = span
+        return lines[:i] + [TOC_HEADING, ""] + lines[j:]
+    return lines[:at] + [TOC_HEADING, ""] + lines[at:]
+
+
 def build_toc(text: str, depth: int = 2) -> tuple[str, bool]:
     """返回 (规范化后的全文, 是否发生变化)。缺失目录时插入，已正确时原样返回。"""
-    block = render_toc(text, depth=depth).rstrip("\n")
     lines = text.split("\n")
     span = _toc_span(lines)
+    at = None if span is not None else _insert_at(lines)
+    block = render_toc("\n".join(_probe_text(lines, span, at)), depth=depth).rstrip("\n")
     if span is None:
-        at = _insert_at(lines)
         new = lines[:at] + ["", block, "", "---"] + lines[at:]
         return "\n".join(new), True
     _, start, end = span
