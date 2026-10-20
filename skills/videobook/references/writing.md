@@ -8,7 +8,11 @@
 3. 读排版指令（stitcher prompt）：仓库内存在 `prompts/stitcher_system.md` 时**以它为准**；
    否则用本 skill 自带的同源副本 `references/stitcher-prompt.md`。两者不一致时以仓库版本为准，并回头同步副本。
 4. 按其要求把字幕重构成结构化 Markdown，写入 `output/<video_id>/book.md`。
-5. 若 `course/` 存在：交稿前跑 `python src/course_assets.py <video_id> --audit`，必须 PASS（铁律 8）。
+5. **目录不要手写**：书名与信息块之后、正文之前单独写一行 `<!--TOC-->` 作占位符，
+   然后跑 `python src/build_toc.py output/<video_id>/book.md` 生成目录（`--check` 只校验）。
+   链接文字与锚点全部从 `##` 标题机械推导、并剥掉标题自带的编号，避免出现
+   「1. 1. 回顾与开场……」这种“有序列表编号 + 标题编号”叠在一起的事故（第四步渲染前还有一遭自动兜底）。
+6. 若 `course/` 存在：交稿前跑 `python src/course_assets.py <video_id> --audit`，必须 PASS（铁律 8）。
 
 ## 硬性要求
 

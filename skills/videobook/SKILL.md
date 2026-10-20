@@ -38,7 +38,8 @@ metadata:
 | 1b | 平台无字幕时本地 ASR 兜底 | `python src/asr_transcript.py <video_id>` | `references/transcript.md` | 否（耗时长） |
 | 1.5 | 课程官方讲义 + 4K 幻灯片（**默认执行**，课程无主页才跳过） | `python src/course_assets.py <video_id> --course-url <课程主页>` | `references/course-assets.md` | 渲染需 |
 | 2 | 大模型把字幕改写成 `book.md` | 按排版指令生成（`references/stitcher-prompt.md`，仓库 `prompts/stitcher_system.md` 存在时以它为准） | `references/writing.md` | 否 |
-| 2b | 字幕校订对照稿（可选） | `python src/make_corrected.py <video_id>` | `references/correction.md` | 否 |
+| 2b | 目录占位符 → 真目录 | `python src/build_toc.py output/<id>/book.md`（可 `--check` 校验；第四步渲染前也会自动兜底） | `references/writing.md` | 否 |
+| 2c | 字幕校订对照稿（可选） | `python src/make_corrected.py <video_id>` | `references/correction.md` | 否 |
 | 3 | 截帧并把占位符物化为图片 | `python src/capture_frames.py <video_id> "<URL>"` | `references/capture.md` | 是 |
 | 4 | 渲染 HTML + 起本地预览 | `python src/post_process.py "<URL>" output/<id>/book.md` 然后 `python -m http.server 8080 --directory output/<id>` | — | 否 |
 | 5 | 告知用户结果、询问大文件清理 | — | 见下方「交付」 | — |

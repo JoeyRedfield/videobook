@@ -1,4 +1,4 @@
-# 第 2b 步（可选）：字幕校订对照稿 transcript.corrected.txt
+# 第 2c 步（可选）：字幕校订对照稿 transcript.corrected.txt
 
 目的：给读者一份**可对照视频逐段核对**的字幕稿 —— 保留讲师原始字词与顺序，只修 ASR 错词和口癖，
 不改写成书面语、不做概括（书面化重构是 `book.md` 的职责）。该文件随第六步发布到 `pages`，
