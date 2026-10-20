@@ -31,3 +31,8 @@ memory/
 # exported cookies (never commit login state)
 cookies.txt
 *.cookies.txt
+cookies/
+
+# 本机专用助手：从 pi-browser-use 的浏览器 profile 里导出 yt-dlp 用的 cookies.txt
+# （与仓库流水线无关，命令行里写死了本机路径与调试端口，不进版本库）
+tools/yt-cookies.mjs
