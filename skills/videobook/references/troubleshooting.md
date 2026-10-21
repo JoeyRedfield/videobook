@@ -7,6 +7,8 @@
 - **终端走代理**：底层基于第三方库爬取时，才能拿到字幕和源信息。
 - **浏览器走全局代理**：生成的 HTML 里 YouTube iframe 是读者本机直连发出的请求；
   读者不挂梯打开这本电子书，依旧是一片黑块裂图。发布前把这点写进交付说明。
+- 若该视频**需登录**（会员/年龄限制）而终端仍抓不到字幕：登录态在 pi 浏览器里时用
+  `node tools/yt-cookies.mjs` 导出 cookie，再给 `dump_transcript.py` 加 `--cookies-file ~/cookies/yt-cookies.txt`（细节见 `transcript.md`）。
 
 ## 为什么必须起 `python -m http.server`，不能双击打开 .html
 

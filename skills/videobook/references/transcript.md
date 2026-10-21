@@ -14,6 +14,8 @@ python src/dump_transcript.py "<VIDEO_URL>"
 - 提示专用配置无登录态时：请用户先跑一次 `python src/capture_frames.py --setup-profile` 扫码登录，再重试本步。
 - cookies 来源三选一：`--cookies-from-profile <dir>`（默认 `.capture-profile`）、`--cookies-file <path>`（Netscape 格式）、
   `--cookies-from <browser>`（旧方式；Windows 主 Chrome 因 App-Bound 加密通常解不开，**不要默认使用**）。
+- 登录态只在 **pi 浏览器**里、`.capture-profile` 没登该站时：`node tools/yt-cookies.mjs` 导出到 `~/cookies/yt-cookies.txt`，
+  再 `--cookies-file ~/cookies/yt-cookies.txt`（默认只导 youtube/googlevideo 域，不碰 Gmail/Drive 的 SID/HSID）。
 - **覆盖率自检**：成功时打印「字幕覆盖率」= 末段结束时间 / `duration`。低于 50% 以退出码 3 结束并打印修复提示，
   此时**不得进入第二步**（铁律 1）。
 
