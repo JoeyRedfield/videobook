@@ -41,7 +41,7 @@ metadata:
 | 2b | 目录占位符 → 真目录 | `python src/build_toc.py output/<id>/book.md`（可 `--check` 校验；第四步渲染前也会自动兜底） | `references/writing.md` | 否 |
 | 2c | 字幕校订对照稿（可选） | `python src/make_corrected.py <video_id>` | `references/correction.md` | 否 |
 | 3 | 截帧并把占位符物化为图片 | `python src/capture_frames.py <video_id> "<URL>"` | `references/capture.md` | 是 |
-| 4 | 渲染 HTML + 起本地预览 | `python src/post_process.py "<URL>" output/<id>/book.md` 然后 `python -m http.server 8080 --directory output/<id>` | — | 否 |
+| 4 | 渲染 HTML + 起本地预览 | `python src/post_process.py "<URL>" output/<id>/book.md` 然后 `python -m http.server 8080 --directory output/<id>` | 渲染前自动兜底：目录（编号/锛点）+ 文末许可页脚 | 否 |
 | 5 | 告知用户结果、询问大文件清理 | — | 见下方「交付」 | — |
 | 6 | 发布成品到 `pages` 分支（可选） | `python src/publish.py <video_id>` 然后 `git push origin pages` | `references/publish.md` | 否（push 需网络） |
 
