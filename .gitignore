@@ -39,3 +39,6 @@ macOS运行说明.md
 运行经验-*.md
 分析报告.md
 local-notes/
+
+# 导出的 cookie 目录（只有数据，工具脚本 tools/yt-cookies.mjs 是入库的）
+cookies/

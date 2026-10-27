@@ -8,7 +8,7 @@ metadata:
 # VideoBook：把一个视频做成一本图文电子书
 
 用户给一个 YouTube / Bilibili 链接，产出一本可在线阅读的技术电子书：
-`output/<video_id>/book.md` + `book.html`（内嵌播放器卡片、截图点击放大、Mermaid 图），
+`output/<video_id>/book.md` + `book.html`（截图卡片 + 官方课件图、点击放大、Mermaid 图），
 可选 `transcript.corrected.txt` 字幕校订对照稿，并可发布到 GitHub Pages 供他人阅读。
 
 本 skill 是**编排层**，并且**自包含**：agent 需要的指令全部在本目录内（`SKILL.md` + `references/`），
@@ -27,7 +27,7 @@ metadata:
    执行统一走仓库环境的解释器：`uv run python src/xxx.py` 或 `.venv/Scripts/python.exe src/xxx.py`。
 3. **一次性登录**：`python src/capture_frames.py --setup-profile` 弹出专用 Chrome（数据目录 `.capture-profile/`），
    扫码登录 B 站 / YouTube 后关窗即可，登录态长期复用。登录账号的会员档位 = 截图清晰度上限。
-4. 海外视频：**终端要代理**（抓字幕），**浏览器也要全局代理**（否则生成页面里的 YouTube iframe 是一片黑块）。
+4. 海外视频：**终端要代理**（抓字幕），**浏览器也要全局代理**（否则第三步降级出的 YouTube iframe 卡片是一片黑块）。
 5. 需要沙箱外/提权的命令见总览表最后一列；纯本地步骤沙箱内即可。
 
 ## 流水线总览
@@ -38,9 +38,10 @@ metadata:
 | 1b | 平台无字幕时本地 ASR 兜底 | `python src/asr_transcript.py <video_id>` | `references/transcript.md` | 否（耗时长） |
 | 1.5 | 课程官方讲义 + 4K 幻灯片（**默认执行**，课程无主页才跳过） | `python src/course_assets.py <video_id> --course-url <课程主页>` | `references/course-assets.md` | 渲染需 |
 | 2 | 大模型把字幕改写成 `book.md` | 按排版指令生成（`references/stitcher-prompt.md`，仓库 `prompts/stitcher_system.md` 存在时以它为准） | `references/writing.md` | 否 |
-| 2b | 字幕校订对照稿（可选） | `python src/make_corrected.py <video_id>` | `references/correction.md` | 否 |
+| 2b | 目录占位符 → 真目录 | `python src/build_toc.py output/<id>/book.md`（可 `--check` 校验；第四步渲染前也会自动兜底） | `references/writing.md` | 否 |
+| 2c | 字幕校订对照稿（可选） | `python src/make_corrected.py <video_id>` | `references/correction.md` | 否 |
 | 3 | 截帧并把占位符物化为图片 | `python src/capture_frames.py <video_id> "<URL>"` | `references/capture.md` | 是 |
-| 4 | 渲染 HTML + 起本地预览 | `python src/post_process.py "<URL>" output/<id>/book.md` 然后 `python -m http.server 8080 --directory output/<id>` | — | 否 |
+| 4 | 渲染 HTML + 起本地预览 | `python src/post_process.py "<URL>" output/<id>/book.md` 然后 `python -m http.server 8080 --directory output/<id>` | 渲染前自动兜底：目录（编号/锛点）+ 文末许可页脚 | 否 |
 | 5 | 告知用户结果、询问大文件清理 | — | 见下方「交付」 | — |
 | 6 | 发布成品到 `pages` 分支（可选） | `python src/publish.py <video_id>` 然后 `git push origin pages` | `references/publish.md` | 否（push 需网络） |
 
@@ -67,7 +68,8 @@ metadata:
 3. YouTube 视频需浏览器能访问 YouTube（代理），B 站视频可直接看；
 4. 截图清晰度取决于 `.capture-profile/` 里登录账号的档位；要更清晰就换账号登录后重跑第三步；
 5. 用了课程官方资料时，说明书中幻灯片插图是官方 4K 渲染图（书首已注明来源与 CC 许可），演示帧仍是视频帧，`course/` 目录可整体删除不影响阅读；
-6. 询问是否删除流程中产生的大媒体文件（铁律 9）。
+6. 询问是否删除流程中产生的大文件（铁律 9）：媒体文件（`audio.m4a`、`video_source.mp4`），
+   以及 `course/_probe_frames/` 这类抽帧中间产物（一次幻灯片定位可能上百 MB）；`images/` 是成品引用，建议保留。
 
 ## 本目录内容（按需读取，不要一次性全读）
 
