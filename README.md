@@ -28,7 +28,7 @@
 - 或把 `skills/videobook/` 复制 / 软链到 `~/.codex/skills/`（仅 Codex）或 `~/.agents/skills/`（跨 agent）
 - 装好后新开任务发同一句话即可，也可以显式调用 `$videobook`
 
-完成后你会拿到 `output/<视频ID>/book.md`，以及本地预览地址 `http://localhost:8080/book.html`（助手会自动起服务）。
+完成后你会拿到 `output/<视频ID>/book.md`，以及本地预览地址 `http://localhost:12345/book.html`（助手会自动起服务）。
 
 ## 原理
 

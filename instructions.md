@@ -185,7 +185,7 @@ python src/course_assets.py <video_id> --apply-map <json路径>
 
 ```bash
 python src/post_process.py "<VIDEO_URL>" output/<video_id>/book.md
-python -m http.server 8080 --directory output/<video_id>
+python -m http.server 12345 --directory output/<video_id>
 ```
 
 ### 第五步：告知用户
@@ -193,7 +193,7 @@ python -m http.server 8080 --directory output/<video_id>
 将以下信息回复给用户：
 
 1. ✅ 电子书 Markdown 文件位置：`output/<video_id>/book.md`
-2. ✅ HTML 电子书预览地址：**http://localhost:8080/book.html**
+2. ✅ HTML 电子书预览地址：**http://localhost:12345/book.html**
 3. 提醒用户：
    - 如果是 YouTube 视频，请确保浏览器可以访问 YouTube（需要代理）
    - 如果是 B 站视频，可以直接访问
