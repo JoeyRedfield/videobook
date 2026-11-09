@@ -174,6 +174,30 @@ def md_to_html(md_content: str, title: str) -> str:
 # 主流程
 # ─────────────────────────────────────────────
 
+FOOTER = ("*本电子书由 [videobook](https://github.com/Luke-Evan/videobook) 流水线生成。"
+          "课程讲义与幻灯片版权归讲师所有，依 "
+          "[CC BY-NC 4.0](http://creativecommons.org/licenses/by-nc/4.0/) 发布。*")
+FOOTER_LINE = re.compile(r"^\*本电子书由")
+
+
+def ensure_footer(md_content: str) -> tuple:
+    """保证文末有固定的流水线 + 许可页脚（铁律 7），返回 (文本, 是否改动)。
+
+    stitcher 指令要求模型不要自己写页脚（“由流水线自己加”），所以这里把它补上：
+    已经有时不动（幂等），缺失时追加。
+    """
+    if any(FOOTER_LINE.match(l) for l in md_content.split("\n")):
+        return md_content, False
+    return md_content.rstrip("\n") + "\n\n---\n\n" + FOOTER + "\n", True
+
+
+def find_meta_sections(md_content: str) -> list:
+    """找出「后记 / 本书是如何生成的」这类元信息章节标题（只告警，不自动删）。"""
+    pat = re.compile(r"^#{2,6}\s*(后记[^\n]*|(?:关于|有关)?本书(?:是)?如何生成[^\n]*|"
+                     r"生成说明[^\n]*|整理说明[^\n]*|致谢[^\n]*)\s*$", re.MULTILINE)
+    return [m.group(1).strip() for m in pat.finditer(md_content)]
+
+
 def process_markdown(video_url: str, md_file: str):
     if not os.path.exists(md_file):
         print(f"[ERR] 找不到文件: {md_file}")
@@ -181,6 +205,33 @@ def process_markdown(video_url: str, md_file: str):
 
     with open(md_file, 'r', encoding='utf-8') as f:
         content = f.read()
+
+    # 0) 目录由标题机械生成，避免模型手写编号与 Markdown 有序列表重复。
+    #    只把显式占位符或外观修正写回源文件；章节增删导致的结构变化仅用于本次渲染。
+    from build_toc import normalize_for_render
+    normalized, toc_mode = normalize_for_render(content)
+    if toc_mode != "noop":
+        content = normalized
+    if toc_mode == "cosmetic":
+        with open(md_file, 'w', encoding='utf-8', newline='\n') as f:
+            f.write(content)
+        print(">> 目录已规范化（去掉重复编号 / 重算锚点），已写回 book.md")
+    elif toc_mode == "structural":
+        print(">> 目录已按当前章节生成用于 HTML；源 book.md 未改动。需要保存目录时运行 src/build_toc.py")
+
+    # 0.05) 文末许可页脚：stitcher 指令要求模型不写，由流水线兜底补上（铁律 7）
+    content, footer_added = ensure_footer(content)
+    if footer_added:
+        with open(md_file, 'w', encoding='utf-8', newline='\n') as f:
+            f.write(content)
+        print(">> 文末缺少许可页脚，已自动补上并写回 book.md")
+
+    # 0.1) 元信息章节告警：「后记 / 本书是如何生成的」这类内容不属于课程，
+    #      stitcher 指令已明确禁止；这里只告警不修改（避免误删讲师真讲过的收尾内容）。
+    meta = find_meta_sections(content)
+    if meta:
+        print(f">> [警告] book.md 含元信息章节：{'、'.join(meta)}；"
+              "书里应只有课程内容，建议删除（stitcher 指令已禁止生成这类章节）")
 
     # 从 MD 第一行提取标题
     title_match = re.search(r'^#\s+(.+)', content, re.MULTILINE)

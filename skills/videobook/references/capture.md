@@ -81,3 +81,7 @@ python src/extract_frames.py <video_id> "<VIDEO_URL>"
 - `images/` 下每个时间戳都有对应的 `shot_HH_MM_SS.png`，`book.md` 中不再有 `SCREENSHOT:` 占位符
   （原标签稿已自动备份为 `book.tagged.md`）。
 - 第四步生成的 HTML 中，截图卡片内置点击放大（lightbox）：点击图片看大图，点空白处或按 Esc 关闭。
+- **归一化路径**：占位符物化成真图片后，`post_process.py` 生成的是**静态截图卡片**
+  （`<img>` + 「回到原视频 (HH:MM:SS)」回链），而不是内嵌播放器：整本书 0 个 iframe 是正常结果。
+  只有没物化成功的占位符（例如截帧被跳过）才会降级成 B 站 / YouTube 的 iframe 卡片——
+  看到 HTML 里有 iframe，说明那一帧没截到。

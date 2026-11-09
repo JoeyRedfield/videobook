@@ -97,3 +97,19 @@ def test_flowchart_blocks_are_supported_by_mermaid_bootstrap():
     page = pp.md_to_html('# 书名\n\n```mermaid\nflowchart TD\n    A --> B\n```', '书名')
     assert 'text.startsWith(\'flowchart \')' in page
     assert 'flowchart TD' in page
+
+
+def test_meta_section_warning():
+    """「后记 / 本书是如何生成的」这类元信息章节要能被识别出来（只告警，不自动删）。"""
+    md = ("# 书名\n\n## 1. 第一章\n\n正文\n\n## 后记：本书是如何生成的\n\n本书由 B 站 AI 字幕…\n")
+    assert pp.find_meta_sections(md) == ["后记：本书是如何生成的"]
+    assert pp.find_meta_sections("# 书名\n\n## 附：官方参考与延伸阅读\n\n- 链接\n") == []
+
+
+def test_ensure_footer_appends_once():
+    """文末固定许可页脚（铁律 7）由流水线兜底：缺失则补，已有则不动（幂等）。"""
+    md = "# 书名\n\n## 1. 第一章\n\n正文\n"
+    fixed, changed = pp.ensure_footer(md)
+    assert changed and "本电子书由" in fixed and fixed.endswith("*\n")
+    again, changed2 = pp.ensure_footer(fixed)
+    assert again == fixed and changed2 is False
