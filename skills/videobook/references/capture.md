@@ -95,3 +95,36 @@ python src/extract_frames.py <video_id> "<VIDEO_URL>"
   （`<img>` + 「回到原视频 (HH:MM:SS)」回链），而不是内嵌播放器：整本书 0 个 iframe 是正常结果。
   只有没物化成功的占位符（例如截帧被跳过）才会降级成 B 站 / YouTube 的 iframe 卡片——
   看到 HTML 里有 iframe，说明那一帧没截到。
+
+## YouTube 画质 preflight（先测再截）
+
+`capture_frames.py` v2 的「原生分辨率探针 + 顶档流锁定」目前只对 B 站实现。YouTube 分支固定 1280×720 viewport、只截 `<video>` 元素，embed 布局会把 720p 流压到约 **830–880px 宽**（2026-11 实测 830×467 / 880×495，同一批图里两种尺寸都会出现）。若 `.capture-profile` 没有 YouTube 登录态，YouTube 只能提供匿名 720p 流，成图不会是 1080p。
+
+截帧前先确认（只读，不打印 cookie 值）：
+
+- `.capture-profile` 里有没有 YouTube 的登录 cookie（SID / SSID / SAPISID / LOGIN_INFO 之类）；没有就是匿名会话；
+- 或先跑 1 帧到 `/tmp`，用 `read_image` 看文字是否可读、尺寸多少，再决定要不要全量。
+
+结果处理：
+
+- 幻灯片文字可读时，接受 830–880px，并在交付说明里写清楚：本次是匿名 720p 流、非登录顶档；想更高清先登录再重跑。
+- 脚本「只截缺失帧」，已有图片会被跳过；确实要升画质时，先备份/删除 `images/shot_*.png` 再重跑，或换一个新的 `--profile-dir`。
+- 不要为了“更清晰”改 viewport、改用屏幕截图、下载视频源或读主 Chrome cookies——铁律 2 与上面的明确排除清单优先。
+- 用户愿意登录时：`capture_frames.py --setup-profile` 登录 YouTube 后重跑；输出宽度仍受 embed 布局限制，提升有限，别承诺 1080p。
+
+## 截帧期间不要改 book.md 正文
+
+脚本开始时从 `book.tagged.md` / `book.md` 读占位符清单，整批截完后才统一 `materialize` 写回 `book.md`。截帧中途改正文或图注，可能被最后一次写入覆盖，或让“截图—图注”错位。正确顺序：
+
+1. `book.md` 定稿（占位符、图注都先写）；
+2. 全量截帧；
+3. 逐张看实际画面，再改图注（此时图片已物化，改的是 `images/...` 的 alt/图注文本）；
+4. 重跑 `post_process.py`；需要重截某一帧时，只删那一张 `shot_*.png` 再跑 `capture_frames.py`。
+
+## 问答 / 访谈段落的截图
+
+有长 Q&A 的演讲里，大屏经常停在最后一页幻灯片，讲者也可能在回答时翻回旧页。Q&A 时间戳截出来的往往**不是讲者特写，而是某页旧幻灯片**：
+
+- 截完先逐张 `read_image`，确认画面实际内容，再决定放在哪一节、图注怎么写；
+- 同一页幻灯片已经在前文用过时，不要在 Q&A 再堆一张；确需引用要写明“讲者回到某图”；
+- 不要按字幕语义臆测画面（例如以为在讲 rubric 就一定显示 rubric 页）。

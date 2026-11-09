@@ -127,3 +127,26 @@ python src/post_process.py "<URL>" output/<id>/book.md  # 重渲染 HTML
 
 不会落仓库：`dump_transcript.py` / `login_utils.py` 导出的 cookies 写入系统临时目录、用完即删；
 `cookies.txt`、`.capture-profile/`、`output/` 都已在 `.gitignore` 中。仍不要手工把 cookies 文件放进工作区。
+
+## 预览端口 12345 打开的是上一本书
+
+`http.server` 停掉后端口可能被上一个视频的进程继续占用；`book.html` 同名，很难一眼看出错。换书后先确认：
+
+```bash
+lsof -nP -iTCP:12345 -sTCP:LISTEN     # 看 pid
+ps -p <pid> -o command                 # 看 --directory 是不是当前 output/<id>
+```
+
+不是当前视频就停掉旧进程，再 `python -m http.server 12345 --directory output/<id>`；QA 与交付前各确认一次。
+
+## YouTube 截图只有 830–880px 宽
+
+见 `capture.md` 的「YouTube 画质 preflight」：匿名 720p 流 + embed 布局导致，不是黑帧也不是脚本失败；交付时说明，别改 viewport、别下载视频。
+
+## Mermaid 长链被缩成一条细线
+
+`graph LR` 的 6 节点以上长链会被容器等比缩小，文字只有 9–10px。改 `graph TD`（步骤链）或把并列关系拆成两条图，见 `writing.md`。
+
+## 英文视频的 MAP 误伤
+
+见 `correction.md` 的「英文视频：MAP 是中文向全局词表，先全量 dry-run」；不要改全局 MAP 来修单场视频。

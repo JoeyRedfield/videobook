@@ -31,6 +31,8 @@ metadata:
    把 cookies 同步进专用配置即可免扫码（默认仍优先让用户 `--setup-profile`，不要把主 Chrome 数据目录当长期方案）。
 4. 海外视频：**终端要代理**（抓字幕），**浏览器也要全局代理**（否则第三步降级出的 YouTube iframe 卡片是一片黑块）。
 5. 需要沙箱外/提权的命令见总览表最后一列；纯本地步骤沙箱内即可。
+6. **YouTube 截帧先看登录态**：`.capture-profile` 只有 B 站登录态时，YouTube 走匿名 720p 流；脚本又只对 B 站做原生分辨率探针/顶档流锁定，成图通常只有 830–880px 宽（幻灯片文字可读，但不是 1080p）。要更高画质先登录再重跑；交付时如实说明，不要改 viewport、不要改用屏幕截图。详见 `references/capture.md` 的「YouTube 画质 preflight」。
+7. **预览端口 12345 先查占用**：上一本书的 `http.server` 可能还占着端口，两个 `book.html` 同名，QA/用户很容易打开错书。起预览前用 `lsof -nP -iTCP:12345 -sTCP:LISTEN` + `ps -p <pid> -o command` 确认服务目录是当前 `output/<video_id>`；换书时先停旧进程再起新服务。
 
 ## 流水线总览
 
@@ -44,10 +46,20 @@ metadata:
 | 2c | 字幕校订对照稿（可选） | `python src/make_corrected.py <video_id>` | `references/correction.md` | 否 |
 | 3 | 截帧并把占位符物化为图片 | `python src/capture_frames.py <video_id> "<URL>"` | `references/capture.md` | 是 |
 | 4 | 渲染 HTML + 起本地预览 | `python src/post_process.py "<URL>" output/<id>/book.md` 然后 `python -m http.server 12345 --directory output/<id>` | 渲染前自动兜底：目录（编号/锛点）+ 文末许可页脚 | 否 |
+| 4b | 浏览器 QA（建议默认执行） | 先起 HTTP 预览，再 `python skills/videobook/scripts/verify_page.py output/<id>` | `references/qa.md` | 否 |
 | 5 | 告知用户结果、询问大文件清理 | — | 见下方「交付」 | — |
 | 6 | 发布成品到 `pages` 分支（可选） | `python src/publish.py <video_id>` 然后 `git push origin pages` | `references/publish.md` | 否（push 需网络） |
 
 报错、画质不对、字幕抓不到、ASR 中断等问题先查 `references/troubleshooting.md`。
+
+## 多代理协作（可选，agent 支持队友时）
+
+写书与最终合稿由 Lead 完成；截帧、字幕校订、浏览器 QA 可以并行交给不同 teammate：
+
+- 顺序：抓字幕 → 同时做「字幕校订 + 截帧 preflight」（校订不依赖 book.md）→ `book.md` 定稿 → 截帧 → 渲染 → QA；
+- 写文件范围互不重叠（`book.md` / `images/` / `transcript.corrected.txt` / `qa-*`），在任务板记录 owner 与 write scopes；
+- **截帧开始后 Lead 不再改 `book.md` 正文**（物化在最后统一读文件，见铁律 13）；
+- 队友报告不能替代 Lead 的最终复核：占位符清零、截图逐张与图注一致、`verify_page.py` 通过、`git status` 干净。
 
 ## 铁律（不可协商）
 
@@ -66,13 +78,15 @@ metadata:
 10. 生成或修改 HTML 时，文本与背景对比度不低于 WCAG AA 的 4.5:1。
 11. 各步幂等可重跑：占位符物化前脚本自动备份 `book.tagged.md`，只要它还在，重跑第三步即可恢复截图。
 12. **完整性与浏览器 QA**：默认生成覆盖全片的详细笔记；只有用户明确要求时才生成“提炼核心观点”摘要。`book.md` 定稿后再截帧和物化，交付前按仓库 `docs/quality-checklist.md` 检查实际截图、Mermaid SVG、懒加载图片、目录/lightbox、移动端布局，并在 Pages 更新后核对线上文件。
+13. **截帧期间不改 `book.md` 正文**：`capture_frames.py` 在整批截完后才统一读 `book.md` 物化图片。截帧开始后改正文/图注，可能被旧占位符清单或最后一次写入覆盖。正确顺序：`book.md` 定稿 → 截帧 → 逐帧核对画面再改图注 → 重跑 `post_process.py`；需要重截时只删对应 `images/shot_*.png` 再跑。
+14. **会议演讲 / 长问答视频的截图按实际画面写图注**：Q&A 时大屏常常停在最后一页，也可能被讲者翻回旧页，截出来的未必是讲者特写。截完逐张看再写/改图注，不要按字幕猜，也不要把同一页幻灯片在多章重复堆图；幻灯片上的精确数字优先于口播约数。
 
 ## 交付（第五步要一次性说清）
 
 1. `output/<video_id>/book.md` 的位置；
 2. 预览地址 `http://localhost:12345/book.html`，关闭服务在终端按 `Ctrl+C`；
 3. YouTube 视频需浏览器能访问 YouTube（代理），B 站视频可直接看；
-4. 截图清晰度取决于 `.capture-profile/` 里登录账号的档位；要更清晰就换账号登录后重跑第三步；
+4. 截图清晰度取决于 `.capture-profile/` 里登录账号的档位；要更清晰就换账号登录后重跑第三步。**YouTube 匿名会话只有 720p 流、成图约 830–880px 宽**（脚本的顶档流锁定目前只对 B 站实现），交付时如实说明，别承诺 1080p（见 `references/capture.md`）；
 5. 用了课程官方资料时，说明书中幻灯片插图是官方 4K 渲染图（书首已注明来源与 CC 许可），演示帧仍是视频帧，`course/` 目录可整体删除不影响阅读；
 6. 询问是否删除流程中产生的大文件（铁律 9）：媒体文件（`audio.m4a`、`video_source.mp4`），
    以及 `course/_probe_frames/` 这类抽帧中间产物（一次幻灯片定位可能上百 MB）；`images/` 是成品引用，建议保留。
@@ -87,6 +101,8 @@ metadata:
 | `references/course-assets.md` | 课程有官方主页时的第 1.5 步、覆盖铁律、幻灯片升级 |
 | `references/correction.md` | 生成字幕校订对照稿与 AI 行级订正提案 |
 | `references/capture.md` | 第三步截帧：优先级、明确禁用的方式、QA 习惯 |
+| `scripts/verify_page.py` | 第 4b 步浏览器 QA 脚本；期望值从 `book.md` 推导，不写死数字 |
+| `references/qa.md` | 浏览器 QA 用法、覆盖项与已知模板告警 |
 | `references/publish.md` | 第六步发布到 `pages` 分支 |
 | `references/troubleshooting.md` | 任何报错、画质异常、字幕抓不到、提权被拒 |
 
