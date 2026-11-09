@@ -28,7 +28,7 @@
 - 或把 `skills/videobook/` 复制 / 软链到 `~/.codex/skills/`（仅 Codex）或 `~/.agents/skills/`（跨 agent）
 - 装好后新开任务发同一句话即可，也可以显式调用 `$videobook`
 
-完成后你会拿到 `output/<视频ID>/book.md`。本地预览需在仓库根目录手动启动 `python -m http.server 8080 --directory output/<视频ID>`，然后打开 `http://localhost:8080/book.html`。
+完成后你会拿到 `output/<视频ID>/book.md`。本地预览需在仓库根目录手动启动 `python -m http.server 12345 --directory output/<视频ID>`，然后打开 `http://localhost:12345/book.html`。
 
 ## 原理
 

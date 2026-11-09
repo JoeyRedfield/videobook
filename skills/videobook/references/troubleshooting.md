@@ -13,7 +13,7 @@
 ## 为什么必须起 `python -m http.server`，不能双击打开 .html
 
 跨域安全与 Cookie 隐私协议：地址栏是 `file:///...` 的纯静态环境下，带交互控制器的内嵌播放组件会被视频源强制拒载。
-必须通过本地 HTTP 服务访问 `http://localhost:8080/book.html`。
+必须通过本地 HTTP 服务访问 `http://localhost:12345/book.html`。
 
 ## 大会员 / 登录限制视频抓不到
 
