@@ -146,6 +146,11 @@ def replace_screenshots_with_embeds(md_content: str, video_url: str, images_dir:
     return re.sub(pattern, replacer, md_content)
 
 
+def drop_toc_self_link(toc_html: str) -> str:
+    """去掉目录里指向「目录」标题自身的条目，避免渲染出「目录 → 目录」。"""
+    return re.sub(r'<li>\s*<a href="#[^"]*">目录</a>\s*</li>\s*', '', toc_html, count=1)
+
+
 def md_to_html(md_content: str, title: str) -> str:
     """将 Markdown 内容转为完整的 HTML 页面"""
     # 先将 markdown 转为 HTML 片段
@@ -157,13 +162,15 @@ def md_to_html(md_content: str, title: str) -> str:
         }
     )
     body_html = renderer.convert(md_content)
+    # 目录标题本身不是章节，不能作为目录条目列出。
+    toc_links = drop_toc_self_link(renderer.toc)
     # 旧稿中的手写目录可能与实际标题锚点不一致，统一使用渲染器生成的链接。
     body_html = re.sub(r'(<h2\b[^>]*>目录</h2>\s*)<(ol|ul)>.*?</\2>',
-                       lambda match: match.group(1) + renderer.toc, body_html, flags=re.S)
+                       lambda match: match.group(1) + toc_links, body_html, flags=re.S)
     toc_html = (
         '<aside class="book-toc"><details open><summary>目录</summary>'
-        f'<nav aria-label="章节目录">{renderer.toc}</nav></details></aside>'
-        if renderer.toc_tokens else ''
+        f'<nav aria-label="章节目录">{toc_links}</nav></details></aside>'
+        if '<li>' in toc_links else ''
     )
 
     return (HTML_TEMPLATE.replace("{title}", html.escape(title))

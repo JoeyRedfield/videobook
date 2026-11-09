@@ -113,3 +113,19 @@ def test_ensure_footer_appends_once():
     assert changed and "本电子书由" in fixed and fixed.endswith("*\n")
     again, changed2 = pp.ensure_footer(fixed)
     assert again == fixed and changed2 is False
+
+
+def test_toc_heading_is_not_listed_inside_itself():
+    """「## 目录」是目录容器本身，不能作为目录条目出现在侧栏或正文目录里。"""
+    page = pp.md_to_html(
+        '# 书名\n\n## 目录\n\n1. [旧锚点](#wrong-anchor)\n\n## 第一章\n\n正文\n', '书名'
+    )
+    nav = re.search(r'<nav aria-label="章节目录">(.*?)</nav>', page, re.S).group(1)
+    assert nav.count('<li>') == 1
+    assert '目录' not in re.sub(r'<[^>]+>', '', nav)
+    assert '目录</h2>' in page and '第一章' in nav
+
+
+def test_drop_toc_self_link_is_noop_without_toc_heading():
+    toc = '<div class="toc">\n<ul>\n<li><a href="#a">第一章</a></li>\n</ul>\n</div>'
+    assert pp.drop_toc_self_link(toc) == toc
