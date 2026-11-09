@@ -28,6 +28,63 @@ python src/make_corrected.py <video_id> --edits corrections.json --force
      **判断标准**：key 只有出现在你正在修的那句话里才安全，否则把 key 写长一点（带上上下文词）。
 2. **口癖清理**：纯语气词整段删除、句尾语气词剥离、单字口吃叠词折叠。
 
+## 生成前/后必做：diff 基线，逐条确认每处改动
+
+`MAP` 与口癖清理是**全局规则**，可能误伤当前视频的正常用语。生成前后先跑一遍 dry-run，把所有
+「原始段 → MAP/清理后的段」打出来逐条判断（不要只看脚本打印的「修正 N 行」）：
+
+```bash
+python - <<'PY'
+import json, sys
+sys.path.insert(0, "src")
+import make_corrected as mc
+segs = json.load(open("output/<video_id>/transcript.json", encoding="utf-8"))["segments"]
+for i, s in enumerate(segs):
+    after = mc.correct(s["text"])
+    if after != s["text"] or after in mc.FILLER_ONLY:
+        print(i, repr(s["text"]), "->", repr(after))
+PY
+```
+
+真实踩坑（BV1g6sf67Edz，职场口播视频，2026-11）：
+
+- MAP 里为**别的视频**加的 `"外部": "外包"` 把「外部的约束条件」「对外部市场的了解」全部改成「外包…」。
+- `STUTTER` 在跨词边界上误折叠：「但是 + 是不是」里的两个「是」被折成「但是不是忽略了一件事情」。
+- 这类误伤**不要改 MAP / 正则本身**（会破坏其他讲次），而是在生成后用 `--edits` 还原：
+  `original` 填 **MAP 之后**的基线文本（不是 transcript 原文），`replacement` 填还原文本，
+  `category` 用 `transcription` / `segmentation`，`reason` 写明是词表误替换或叠字误折叠。
+  审计报告 `transcript.corrections.json` 会记录每条的 `change_ratio`。
+
+## 用画面内嵌字幕核对可疑用词
+
+很多 B 站 / YouTube 口播视频把字幕直接烧进画面。遇到平台 AI 字幕与本地 ASR 意见不一致的**个别可疑词**
+（英文术语、同音词），不必整篇重转：在对应秒截一帧，读画面字幕即可定案。用专用配置（保证 1080P）
+和 `capture_frames.py` 的内部函数临时截到 `/tmp`，不要污染 `images/`：
+
+```python
+import os, sys
+sys.path.insert(0, "src")
+import capture_frames as cf
+from playwright.sync_api import sync_playwright
+
+vid, out = "<video_id>", "/tmp/frame-check"
+os.makedirs(out, exist_ok=True)
+shots = cf.shots_spec(["00:06:17"], "bilibili", vid)   # 只查可疑秒
+with sync_playwright() as p:
+    ctx = p.chromium.launch_persistent_context(
+        ".capture-profile", channel="chrome", headless=True,
+        viewport={"width": 1920, "height": 1080},
+        args=["--autoplay-policy=no-user-gesture-required"])
+    page = ctx.pages[0] if ctx.pages else ctx.new_page()
+    cf._force_top_quality(page)
+    cf._shoot(page, shots[0][0], "check_00_06_17", out, [shots[0][2], shots[0][3]])
+    ctx.close()
+```
+
+实测：BV1g6sf67Edz 里平台字幕的 `daylight` 画面实为 **deadline**、`honor` 实为 **owner**，
+据此在 `--edits` 里做了最小订正。注意画面字幕也可能滞后、省略句子或本身就是创作者转写，
+**只用来定格个别词**，不能当全文底稿；`capture_frames` 内部函数随仓库版本演进，参数以当前 `src/capture_frames.py` 为准。
+
 ## AI 行级订正（第二遍，叠加在 MAP 之后）
 
 MAP 覆盖不到的问题（少字、截断词、不通顺）由 agent 通读全文后提案，脚本校验通过才应用：

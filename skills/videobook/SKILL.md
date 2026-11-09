@@ -27,6 +27,8 @@ metadata:
    执行统一走仓库环境的解释器：`uv run python src/xxx.py` 或 `.venv/Scripts/python.exe src/xxx.py`。
 3. **一次性登录**：`python src/capture_frames.py --setup-profile` 弹出专用 Chrome（数据目录 `.capture-profile/`），
    扫码登录 B 站 / YouTube 后关窗即可，登录态长期复用。登录账号的会员档位 = 截图清晰度上限。
+   登录态过期时优先按 `references/transcript.md` 的「登录态快速恢复」处理：若本机日常 Chrome 已登录、用户同意复用，
+   把 cookies 同步进专用配置即可免扫码（默认仍优先让用户 `--setup-profile`，不要把主 Chrome 数据目录当长期方案）。
 4. 海外视频：**终端要代理**（抓字幕），**浏览器也要全局代理**（否则第三步降级出的 YouTube iframe 卡片是一片黑块）。
 5. 需要沙箱外/提权的命令见总览表最后一列；纯本地步骤沙箱内即可。
 
@@ -54,6 +56,9 @@ metadata:
 3. **cookies 只写系统临时目录、用完即删**，绝不落仓库，也不要在工作区手放 `cookies.txt`。
 4. **`output/` 不受任何 git 操作影响**；成品只发布到 orphan 分支 `pages`，`main` 只放代码。
 5. **校订稿保真**：逐段保留讲师原词与顺序，只做 ASR 错词替换 + 口癖清理；禁删段、禁多行、禁大幅改写（校验层会直接拒绝）。
+   生成前后必须按 `references/correction.md` 打印「原始 → 清理后」全量 diff 逐条确认——全局 `MAP` / 叠字正则
+   曾把别的视频的 `外部→外包` 词条和「但是+是不是」误伤到当前视频，这类误伤用 `--edits` 在基线上还原，
+   不要改全局词表。
 6. **写书保真底线**：书面化不等于摘要化；保留类比、案例、推导链；编者补充必须标注「编者说明」。
 7. **课程资料版权**：讲义与幻灯片归讲师（常见 CC BY-NC），书首信息块与文末必须保留出处链接、作者署名与许可名。
 8. **幻灯片覆盖铁律**：`slides_text.md` 里每一页在书中恰好出现一次，交稿前 `--audit` 必须 PASS。

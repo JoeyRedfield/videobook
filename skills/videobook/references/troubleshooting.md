@@ -18,9 +18,18 @@
 ## 大会员 / 登录限制视频抓不到
 
 给提取命令挂 cookies 参数，优先用专用配置（先 `--setup-profile` 登录一次）：`--cookies-from-profile <dir>`，
-或 `--cookies-file <path>`（Netscape 格式）。**不要用 `--cookies-from chrome`**：Windows 上 Chrome 新版
-App-Bound 加密使 yt-dlp 无法解密。截图清晰度同理 —— 在 `--setup-profile` 窗口登录大会员账号，
-截帧管线会自动按顶档原生分辨率截取。
+或 `--cookies-file <path>`（Netscape 格式）。**Windows 上不要用 `--cookies-from chrome`**：Chrome 新版
+App-Bound 加密使 yt-dlp 无法解密。macOS 上主 Chrome 已登录时可作应急（实测能抓到带登录态的字幕），
+但更稳的是把登录态同步进 `.capture-profile`，见 `transcript.md` 的「登录态快速恢复」。
+截图清晰度同理 —— 在 `--setup-profile` 窗口登录大会员账号，截帧管线会自动按顶档原生分辨率截取。
+
+## 专用配置无登录态，但本机日常 Chrome 已登录
+
+不要急着让用户扫码：先按 `transcript.md` 的「登录态快速恢复」把主 Chrome 的 B 站 cookies 注入
+`.capture-profile`（yt-dlp CLI 导出 → Playwright `add_cookies`），再跑
+`dump_transcript.py --cookies-from-profile .capture-profile` 验证 `SESSDATA` 存在。
+注入后截帧日志应出现 `native stream size: 1920x1080`；若分辨率仍低，说明 cookies 没生效，回到扫码方案。
+cookies 文件只放临时目录、用完即删，不要打印值、不要入库。
 
 ## 在 AI 沙箱里报「拒绝访问」
 
@@ -28,6 +37,9 @@ App-Bound 加密使 yt-dlp 无法解密。截图清晰度同理 —— 在 `--se
 `capture_frames.py <video_id> <url>`、`capture_frames.py --setup-profile`、
 `dump_transcript.py <url>`（B 站需登录态时会起无头 Chrome 导出 cookies）、`course_assets.py` 的幻灯片渲染与 `--locate-slides`。
 纯本地步骤（`post_process.py`、`make_corrected.py`、`publish.py`、`python -m http.server`）沙箱内即可。
+
+受限沙箱里 `uv run` 可能先写 `~/.cache/uv` 而报 `failed to open file .../.cache/uv/...: Operation not permitted`。
+这类环境直接改用仓库解释器：`.venv/bin/python src/xxx.py`（Windows `.venv\Scripts\python.exe`），不要为了绕开缓存去改 uv 配置。
 
 ## 视频完全没有字幕
 
@@ -51,6 +63,20 @@ App-Bound 加密使 yt-dlp 无法解密。截图清晰度同理 —— 在 `--se
 
 ## ASR 相关
 
+- **`TypeError: open() got an unexpected keyword argument 'metadata_errors'`**：PyAV 版本与 faster-whisper
+  预期的解码 API 不匹配（如 av 19 + faster-whisper 1.2.x，2026-11 实测）。临时绕过：用 ffmpeg 把音频解成
+  16k 单声道 PCM，再 `np.fromfile` 传给 `model.transcribe()`（faster-whisper 接受 numpy 数组），绕开 PyAV 解码；
+  或把 `av` 降到与 faster-whisper 兼容的版本。`asr_transcript.py` 内部用 `faster_whisper.decode_audio`，
+  同类环境会踩到同一个坑，先确认再整篇转写，别跑到一半才发现。
+  ```bash
+  ffmpeg -y -i audio.m4a -ar 16000 -ac 1 -f s16le /tmp/audio.pcm
+  ```
+  ```python
+  import numpy as np
+  from faster_whisper import WhisperModel
+  pcm = np.fromfile("/tmp/audio.pcm", dtype=np.int16).astype(np.float32) / 32768.0
+  segs, _ = WhisperModel("small", device="cpu", compute_type="int8").transcribe(pcm, language="zh", beam_size=5)
+  ```
 - `Library cublas64_12.dll is not found`：装 `nvidia-cublas-cu12 nvidia-cudnn-cu12`，脚本会自动注册 DLL 目录。
 - 显存 <= 4GB：加 `--compute-type int8_float16`；无 NVIDIA 卡自动退 CPU int8（更慢）。
 - 中途中断：直接重跑，进度从 `_asr_progress.jsonl` 续接；抽样试跑之后转全量**必须加 `--restart`**。
@@ -59,9 +85,22 @@ App-Bound 加密使 yt-dlp 无法解密。截图清晰度同理 —— 在 `--se
 
 ## 校订稿相关
 
+- **先 diff 基线再交付**：`MAP` / 口癖清理是全局规则，会误伤当前视频的正常用语（真实案例：
+  `"外部": "外包"` 把「外部约束」「外部市场」全改错；`STUTTER` 把「但是 + 是不是」折成「但是不是」）。
+  生成前后按 `correction.md` 的「生成前/后必做」打印 `原始 -> 清理后` 全量 diff 逐条确认；
+  误伤不要靠改全局 MAP / 正则，用 `--edits` 在基线之上还原，审计报告会记录每条改动。
 - `--edits` 报 `source_sha256 不匹配`：transcript 已变，基于当前版本重新生成提案。
 - 报「大幅修改」：确认改动合理后加 `--allow-large-edits`，否则拆成更小的行级订正。
 - 想重建对照稿：脚本默认拒绝覆盖已有文件，加 `--force`（会丢掉此前的人工订正，先备份）。
+
+## 浏览器 QA 常见误报
+
+- **`full_page=True` 截图在超长页面上重复/错位**：headless Chrome 对约 1.6 万像素以上的页面做全页拼接时
+  可能复制上一屏内容。QA 不要只看全页 PNG：改用分段 viewport 截图（`scrollTo(y)` + `page.screenshot()`），
+  并用 DOM 计数判定（截图卡片数、`img.naturalWidth>0`、`.mermaid svg` 数、`docWidth == clientWidth`）。
+- **懒加载图片被判为裂图**：`loading="lazy"` 的图片在未滚动到视口时 `naturalWidth == 0` 是正常的。
+  先按 600px 步长滚到底触发加载，再统计；页尾 lightbox 的 `<img>` 初始 `src` 为空，也会被误报一条。
+- 控制台出现 favicon 404 不影响成书，真正的报错看 `pageerror` 与资源 4xx/5xx 列表。
 
 ## 页面目录编号重复（「1. 1. 回顾与开场……」）
 
