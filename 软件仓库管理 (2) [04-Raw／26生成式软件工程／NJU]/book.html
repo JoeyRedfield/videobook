@@ -162,6 +162,7 @@
         /* ── 表格 ── */
         table {
             width: 100%;
+            overflow-wrap: anywhere;
             border-collapse: separate;
             border-spacing: 0;
             margin: 24px 0;
@@ -381,7 +382,6 @@
 <li><a href="#231-agent">23.1 讲者自己的邮件 agent：云盘同步 + 多级流水线</a></li>
 </ul>
 </li>
-<li><a href="#postscript">后记 Postscript：本书是如何生成的</a></li>
 </ul>
 </div>
 </nav></details></aside>
@@ -456,7 +456,6 @@
 <li><a href="#231-agent">23.1 讲者自己的邮件 agent：云盘同步 + 多级流水线</a></li>
 </ul>
 </li>
-<li><a href="#postscript">后记 Postscript：本书是如何生成的</a></li>
 </ul>
 </div>
 
@@ -882,9 +881,7 @@
 
 <p>那我下一节课——就周日——就会进入软件架构和构造的内容。好，今天下课。</p>
 <hr />
-<h2 id="postscript">后记 Postscript：本书是如何生成的</h2>
-<p>本书由 B 站 AI 字幕（<code>ai-zh</code>，覆盖率 99.9%、2427 段）经 AI 重构而成：口语转书面语、按内容逻辑分 23 章（另加本篇后记）、绘制 6 张 Mermaid 图、插入 40 个截图锚点；截帧管线在已登录的浏览器里逐个 seek 到锚点时间、隐藏播放器 UI、锁定顶码率流后截取纯视频帧；最终渲染为带截图放大（lightbox）与 Mermaid 交互的 HTML。</p>
-<p>与视频逐句对照的订正稿见 <code>transcript.corrected.txt</code>：先由脚本按本讲错词 MAP 修正（如 <code>web code→vibe code</code>、<code>A证/A政→agent</code>、<code>交流坑→焦油坑</code>、<code>瑞贝斯→rebase</code>、<code>t max→tmux</code>、<code>get it report→git repo</code>、<code>句句词/JJS→Jujutsu/jj</code>、<code>deep pick→DeepSeek</code> 等），再由 AI 通读全文做一轮行级订正（保留讲师原始字词与有意重复，仅修明显识别错误）。</p>
+<p><em>本电子书由 <a href="https://github.com/Luke-Evan/videobook">videobook</a> 流水线生成。课程讲义与幻灯片版权归讲师 © 蒋炎岩 所有，依 <a href="http://creativecommons.org/licenses/by/4.0/">CC BY-NC 4.0</a> 发布。</em></p>
     </article>
     <script>
         const tocDetails = document.querySelector('.book-toc details');
@@ -907,7 +904,7 @@
             codeNodes.forEach(function(node) {
                 const text = node.textContent.trim();
                 // 匹配常见的 mermaid 图表前缀
-                if (text.startsWith('graph ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
+                if (text.startsWith('graph ') || text.startsWith('flowchart ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
                     const tempDiv = document.createElement('div');
                     tempDiv.className = 'mermaid';
                     tempDiv.textContent = text;

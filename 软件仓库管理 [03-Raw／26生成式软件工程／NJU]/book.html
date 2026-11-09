@@ -162,6 +162,7 @@
         /* ── 表格 ── */
         table {
             width: 100%;
+            overflow-wrap: anywhere;
             border-collapse: separate;
             border-spacing: 0;
             margin: 24px 0;
@@ -383,7 +384,6 @@
 </ul>
 </li>
 <li><a href="#23-agent">23. 附：讲者自己的多 Agent 工作流</a></li>
-<li><a href="#postscript">后记 Postscript：本书是如何生成的</a></li>
 </ul>
 </div>
 </nav></details></aside>
@@ -460,7 +460,6 @@
 </ul>
 </li>
 <li><a href="#23-agent">23. 附：讲者自己的多 Agent 工作流</a></li>
-<li><a href="#postscript">后记 Postscript：本书是如何生成的</a></li>
 </ul>
 </div>
 
@@ -1106,18 +1105,7 @@ git<span class="w"> </span>status
 <p>好，今天下课。</p>
 </blockquote>
 <hr />
-<h2 id="postscript">后记 Postscript：本书是如何生成的</h2>
-<p>这本书的生成过程和之前的几讲有一个重要区别：<strong>这个视频在平台上没有任何字幕。</strong></p>
-<p>上传当天抓取时，B 站的字幕接口返回的是空列表——既没有作者上传的 CC 字幕，AI 字幕也还没有生成（<code>--list-subs</code> 里只有弹幕）。所以这次走的是一条新的兜底路径：</p>
-<ol>
-<li><strong>只下载音频轨</strong>（<code>yt-dlp -f bestaudio</code>，约 90 MB 的 <code>audio.m4a</code>），不下载任何视频流；</li>
-<li><strong>本地 ASR 转写</strong>：faster-whisper <code>large-v3</code>，CUDA + <code>int8_float16</code>（RTX 3050 4GB），VAD 过滤，配合一段领域术语 prompt（Git / 版本控制 / Conventional Commits 等）来压制同音错词并让中文输出自带标点；</li>
-<li>100 分钟的音频约 21 分钟转写完，切成 <strong>2907 段</strong>、覆盖率 100%，写成与平台字幕同构的 <code>transcript.json</code>；</li>
-<li>AI 通读全文，建立术语表并重构为本书：口语转书面语、按内容逻辑分 23 章（另加一篇后记）、绘制 6 张 Mermaid 图、插入 38 个截图锚点；</li>
-<li>截帧管线在已登录的浏览器里逐个 seek 到锚点时间、隐藏播放器 UI、锁定顶码率流后截取纯视频帧；</li>
-<li>渲染为带视频卡片、截图放大（lightbox）与 Mermaid 交互的暗色主题 HTML。</li>
-</ol>
-<p>本地 large-v3 的识别质量整体高于平台 AI 字幕，但仍有少量专有名词需要人工订正（例如 <code>GPT-6</code> 被识别成 <code>GP6</code>/<code>GP16</code>、<code>AGENTS.md</code> → <code>agency.md</code>、<code>int main(void)</code> → <code>interment</code>、<code>convention</code> → <code>考案神</code>、<code>外包</code> → <code>外部</code>、<code>Conventional Commits</code> → <code>confessional commits</code>）。与视频逐句对照的订正稿见 <code>transcript.corrected.txt</code>。</p>
+<p><em>本电子书由 <a href="https://github.com/Luke-Evan/videobook">videobook</a> 流水线生成。课程讲义与幻灯片版权归讲师 © 蒋炎岩 所有，依 <a href="http://creativecommons.org/licenses/by/4.0/">CC BY-NC 4.0</a> 发布。</em></p>
     </article>
     <script>
         const tocDetails = document.querySelector('.book-toc details');
@@ -1140,7 +1128,7 @@ git<span class="w"> </span>status
             codeNodes.forEach(function(node) {
                 const text = node.textContent.trim();
                 // 匹配常见的 mermaid 图表前缀
-                if (text.startsWith('graph ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
+                if (text.startsWith('graph ') || text.startsWith('flowchart ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
                     const tempDiv = document.createElement('div');
                     tempDiv.className = 'mermaid';
                     tempDiv.textContent = text;

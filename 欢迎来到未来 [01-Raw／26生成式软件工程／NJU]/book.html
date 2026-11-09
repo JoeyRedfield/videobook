@@ -162,6 +162,7 @@
         /* ── 表格 ── */
         table {
             width: 100%;
+            overflow-wrap: anywhere;
             border-collapse: separate;
             border-spacing: 0;
             margin: 24px 0;
@@ -823,6 +824,8 @@
 <blockquote>
 <p><div class="video-card screenshot-card">   <img src="images/shot_01_39_22.png" alt="最后一页幻灯片上并列的三句话：古法编程已死、AI 在单个任务上无人能敌、软件工程暂时未死" loading="lazy">   <p class="video-caption">📷 最后一页幻灯片上并列的三句话：古法编程已死、AI 在单个任务上无人能敌、软件工程暂时未死<br><a href="https://www.bilibili.com/video/BV1pb8o6yE8f/?t=5962" target="_blank" rel="noopener">回到原视频 (01:39:22)</a></p> </div></p>
 </blockquote>
+<hr />
+<p><em>本电子书由 <a href="https://github.com/Luke-Evan/videobook">videobook</a> 流水线生成。课程讲义与幻灯片版权归讲师所有，依 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> 发布。</em></p>
     </article>
     <script>
         const tocDetails = document.querySelector('.book-toc details');
@@ -845,7 +848,7 @@
             codeNodes.forEach(function(node) {
                 const text = node.textContent.trim();
                 // 匹配常见的 mermaid 图表前缀
-                if (text.startsWith('graph ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
+                if (text.startsWith('graph ') || text.startsWith('flowchart ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
                     const tempDiv = document.createElement('div');
                     tempDiv.className = 'mermaid';
                     tempDiv.textContent = text;

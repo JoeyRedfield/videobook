@@ -162,6 +162,7 @@
         /* ── 表格 ── */
         table {
             width: 100%;
+            overflow-wrap: anywhere;
             border-collapse: separate;
             border-spacing: 0;
             margin: 24px 0;
@@ -427,7 +428,6 @@
 </li>
 <li><a href="#_2">附：本讲的三条主线</a></li>
 <li><a href="#_3">附：本讲官方参考与延伸阅读</a></li>
-<li><a href="#postscript">后记 Postscript：本书是如何生成的</a></li>
 <li><a href="#_4">附录：课堂未展示的幻灯片</a></li>
 </ul>
 </div>
@@ -549,7 +549,6 @@
 </li>
 <li><a href="#_2">附：本讲的三条主线</a></li>
 <li><a href="#_3">附：本讲官方参考与延伸阅读</a></li>
-<li><a href="#postscript">后记 Postscript：本书是如何生成的</a></li>
 <li><a href="#_4">附录：课堂未展示的幻灯片</a></li>
 </ul>
 </div>
@@ -1602,11 +1601,6 @@
 <li><a href="https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf">Eric Evans：DDD Reference</a> —— 限界上下文（Bounded Context）与统一语言的原始文献。</li>
 </ul>
 <hr />
-<h2 id="postscript">后记 Postscript：本书是如何生成的</h2>
-<p>本书由 B 站 AI 字幕（<code>ai-zh</code>，覆盖率 100%、2387 段、总时长 96 分 50 秒）经 AI 重构而成：口语转书面语、按内容自身逻辑分为 27 章（另加本篇后记）、绘制 8 张 Mermaid 图、插入 48 个截图锚点；截帧管线在已登录的浏览器里逐个 seek 到锚点时间、隐藏播放器 UI、锁定顶码率流后截取纯视频帧；随后与课程官方资料（<code>course/</code> 目录）对齐：讲义用于术语与参考链接核对，26 张"画面即幻灯片"的截图经感知哈希匹配后替换为官方幻灯片的 4K 渲染图；<code>--locate-slides</code> 抽样视频定位每页幻灯片的首现时间，<code>--weave</code> 去重重复插图并补插缺失页（课堂未展示的 7 页入附录），使 47 页幻灯片各恰好出现一次（<code>--audit</code> PASS）；最终渲染为带截图放大（lightbox）与 Mermaid 交互的 HTML。</p>
-<p>与视频逐句对照的订正稿见 <code>transcript.corrected.txt</code>：先由脚本按本讲错词 MAP 修正（如 <code>java 系统 / 交互系统 / 撬务系统 → 教务系统</code>、<code>价格 → 架构</code>、<code>技术站 / 技术宅 → 技术债</code>、<code>淘宝号 / TPHONY / tao ho h诺尔 → 汉诺塔</code>、<code>get opp t / get a o p t → getopt</code>、<code>passer / passing → parser / parsing</code>、<code>video cup → VLOOKUP</code>、<code>卡牌 → lookup</code>、<code>史山 / 石山 / 使臣 → 屎山</code>、<code>南大没戏了 → 南大没系了</code>、<code>record is → Redis</code>、<code>二个C和阿个V → argc 和 argv</code>、<code>web code → vibe code</code> 等），再由 AI 通读全文做一轮行级订正（保留讲师原始字词与有意重复，仅修明显识别错误）。</p>
-<p><strong>本讲的一处已知瑕疵</strong>：官方章节把 00:00–15:03 标为"引言（后半音频翻车）"——录制现场讲者的机器输入设备全部失效（UI 与 OBS 推流仍正常），这一段音频质量明显下降，字幕在 07:50–08:10 一带尤其破碎；本书对该区间只做了保守归纳，未强行补全语义。</p>
-<hr />
 <h2 id="_4">附录：课堂未展示的幻灯片</h2>
 <div class="video-card screenshot-card">   <img src="images/slide_027.png" alt="第 27 页幻灯片 · 让需求变更找到自己的位置" loading="lazy">   <p class="video-caption">🖼️ 第 27 页幻灯片 · 让需求变更找到自己的位置</p> </div>
 <div class="video-card screenshot-card">   <img src="images/slide_028.png" alt="第 28 页幻灯片 · 中间语言要有明确的语义" loading="lazy">   <p class="video-caption">🖼️ 第 28 页幻灯片 · 中间语言要有明确的语义</p> </div>
@@ -1615,6 +1609,9 @@
 <div class="video-card screenshot-card">   <img src="images/slide_045.png" alt="第 45 页幻灯片 · 实践：先决定什么必须一起正确" loading="lazy">   <p class="video-caption">🖼️ 第 45 页幻灯片 · 实践：先决定什么必须一起正确</p> </div>
 <div class="video-card screenshot-card">   <img src="images/slide_046.png" alt="第 46 页幻灯片 · 实践：让运行中的系统逐步换轨" loading="lazy">   <p class="video-caption">🖼️ 第 46 页幻灯片 · 实践：让运行中的系统逐步换轨</p> </div>
 <div class="video-card screenshot-card">   <img src="images/slide_047.png" alt="第 47 页幻灯片 · 几个字的架构，改变整个系统的走向" loading="lazy">   <p class="video-caption">🖼️ 第 47 页幻灯片 · 几个字的架构，改变整个系统的走向</p> </div>
+
+<hr />
+<p><em>本电子书由 <a href="https://github.com/Luke-Evan/videobook">videobook</a> 流水线生成。课程讲义与幻灯片版权归讲师 © 蒋炎岩 所有，依 <a href="http://creativecommons.org/licenses/by/4.0/">CC BY-NC 4.0</a> 发布。</em></p>
     </article>
     <script>
         const tocDetails = document.querySelector('.book-toc details');
@@ -1637,7 +1634,7 @@
             codeNodes.forEach(function(node) {
                 const text = node.textContent.trim();
                 // 匹配常见的 mermaid 图表前缀
-                if (text.startsWith('graph ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
+                if (text.startsWith('graph ') || text.startsWith('flowchart ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
                     const tempDiv = document.createElement('div');
                     tempDiv.className = 'mermaid';
                     tempDiv.textContent = text;

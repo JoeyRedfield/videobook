@@ -162,6 +162,7 @@
         /* ── 表格 ── */
         table {
             width: 100%;
+            overflow-wrap: anywhere;
             border-collapse: separate;
             border-spacing: 0;
             margin: 24px 0;
@@ -322,6 +323,7 @@
     <aside class="book-toc"><details open><summary>目录</summary><nav aria-label="章节目录"><div class="toc">
 <ul>
 <li><a href="#_2">前言</a></li>
+<li><a href="#_3">目录</a></li>
 <li><a href="#agent">第一章 重新认识提示词：Agent 上下文的完整构成</a><ul>
 <li><a href="#11">1.1 提示词是与机器沟通的唯一接口</a></li>
 <li><a href="#12">1.2 上下文 ≠ 对话框里的那句话</a></li>
@@ -335,21 +337,21 @@
 <li><a href="#23-ide">2.3 顺带一提：把 IDE 配置正确</a></li>
 </ul>
 </li>
-<li><a href="#_3">第三章 写一个好的上下文：意图、规格与漂移控制</a><ul>
+<li><a href="#_4">第三章 写一个好的上下文：意图、规格与漂移控制</a><ul>
 <li><a href="#31">3.1 软件工程的老大难问题</a></li>
 <li><a href="#32">3.2 可验证性是第一原则</a></li>
 <li><a href="#33">3.3 "一句话生成极品飞车"：模糊约束无法被补全</a></li>
 <li><a href="#34-ai">3.4 去除"AI 味"：个人主页案例</a></li>
 </ul>
 </li>
-<li><a href="#_4">第四章 使模型遵循指令：从工作机制谈起</a><ul>
+<li><a href="#_5">第四章 使模型遵循指令：从工作机制谈起</a><ul>
 <li><a href="#41">4.1 有限计算与图灵机的纸带</a></li>
 <li><a href="#42">4.2 强化学习：从"舔狗"到"做题家"</a></li>
 <li><a href="#43">4.3 指令遵循能力实测：三道"无理取闹"的题</a></li>
 <li><a href="#44-prompt-verifier">4.4 结论：写 Prompt 最重要的是 Verifier</a></li>
 </ul>
 </li>
-<li><a href="#_5">第五章 注意力机制视角下的上下文工程</a><ul>
+<li><a href="#_6">第五章 注意力机制视角下的上下文工程</a><ul>
 <li><a href="#51-token">5.1 每个 token 只注意它需要注意的东西</a></li>
 <li><a href="#52-verifier">5.2 从"你是一个专家"到"把 Verifier 写清楚"</a></li>
 <li><a href="#53">5.3 有趣的副作用："白色背景（不要半透明效果）"</a></li>
@@ -365,7 +367,7 @@
 <li><a href="#66">6.6 学习的本质：扩展世界的边界</a></li>
 </ul>
 </li>
-<li><a href="#_6">第七章 更长程任务的建议</a><ul>
+<li><a href="#_7">第七章 更长程任务的建议</a><ul>
 <li><a href="#71">7.1 什么是长程任务</a></li>
 <li><a href="#72">7.2 一个悖论：从零到一容易，维护翻车，大型系统却游刃有余</a></li>
 <li><a href="#73">7.3 一个研究设想：把人类最好的设计经验注入上下文</a></li>
@@ -377,7 +379,6 @@
 <li><a href="#79">7.9 结语：世界很大，人很小</a></li>
 </ul>
 </li>
-<li><a href="#_7">后记</a></li>
 </ul>
 </div>
 </nav></details></aside>
@@ -396,6 +397,70 @@
 <li><strong>使模型遵循指令的技巧</strong>：从模型工作机制（思维链、注意力、强化学习）出发，理解为什么"可验证性（Verifier）"是写好提示词的第一原则；</li>
 <li><strong>更长程任务的建议</strong>：当任务跨越不确定性时，如何用算力换智力，以及人类应当把精力放在哪里。</li>
 </ol>
+<hr />
+<h2 id="_3">目录</h2>
+<div class="toc">
+<ul>
+<li><a href="#_2">前言</a></li>
+<li><a href="#_3">目录</a></li>
+<li><a href="#agent">第一章 重新认识提示词：Agent 上下文的完整构成</a><ul>
+<li><a href="#11">1.1 提示词是与机器沟通的唯一接口</a></li>
+<li><a href="#12">1.2 上下文 ≠ 对话框里的那句话</a></li>
+<li><a href="#13-agent">1.3 实践：让 Agent 解剖自己的上下文</a></li>
+<li><a href="#14-ai">1.4 费曼学习法的 AI 版本</a></li>
+</ul>
+</li>
+<li><a href="#agent_1">第二章 不再害怕复杂系统：用 Agent 解剖真实软件</a><ul>
+<li><a href="#21">2.1 现代软件工程的新常态</a></li>
+<li><a href="#22-codex">2.2 案例复盘：Codex 的命令风险分级</a></li>
+<li><a href="#23-ide">2.3 顺带一提：把 IDE 配置正确</a></li>
+</ul>
+</li>
+<li><a href="#_4">第三章 写一个好的上下文：意图、规格与漂移控制</a><ul>
+<li><a href="#31">3.1 软件工程的老大难问题</a></li>
+<li><a href="#32">3.2 可验证性是第一原则</a></li>
+<li><a href="#33">3.3 "一句话生成极品飞车"：模糊约束无法被补全</a></li>
+<li><a href="#34-ai">3.4 去除"AI 味"：个人主页案例</a></li>
+</ul>
+</li>
+<li><a href="#_5">第四章 使模型遵循指令：从工作机制谈起</a><ul>
+<li><a href="#41">4.1 有限计算与图灵机的纸带</a></li>
+<li><a href="#42">4.2 强化学习：从"舔狗"到"做题家"</a></li>
+<li><a href="#43">4.3 指令遵循能力实测：三道"无理取闹"的题</a></li>
+<li><a href="#44-prompt-verifier">4.4 结论：写 Prompt 最重要的是 Verifier</a></li>
+</ul>
+</li>
+<li><a href="#_6">第五章 注意力机制视角下的上下文工程</a><ul>
+<li><a href="#51-token">5.1 每个 token 只注意它需要注意的东西</a></li>
+<li><a href="#52-verifier">5.2 从"你是一个专家"到"把 Verifier 写清楚"</a></li>
+<li><a href="#53">5.3 有趣的副作用："白色背景（不要半透明效果）"</a></li>
+<li><a href="#54-trade-offagentsmd-skills">5.4 规则注入的 Trade-off：agents.md 与 Skills</a></li>
+</ul>
+</li>
+<li><a href="#ai">第六章 上下文污染实战：用 AI 读论文</a><ul>
+<li><a href="#61">6.1 一个干净的实验环境</a></li>
+<li><a href="#62">6.2 为什么"直接总结"是错的</a></li>
+<li><a href="#63-grounding">6.3 解法：先对齐（Grounding），再推理</a></li>
+<li><a href="#64">6.4 审稿人的立场：逻辑链条断开才拒稿</a></li>
+<li><a href="#65">6.5 学术发表体系正在崩溃</a></li>
+<li><a href="#66">6.6 学习的本质：扩展世界的边界</a></li>
+</ul>
+</li>
+<li><a href="#_7">第七章 更长程任务的建议</a><ul>
+<li><a href="#71">7.1 什么是长程任务</a></li>
+<li><a href="#72">7.2 一个悖论：从零到一容易，维护翻车，大型系统却游刃有余</a></li>
+<li><a href="#73">7.3 一个研究设想：把人类最好的设计经验注入上下文</a></li>
+<li><a href="#74">7.4 本讲的核心观点</a></li>
+<li><a href="#75-reward-hacking">7.5 案例：Reward Hacking 的研究项目</a></li>
+<li><a href="#76">7.6 你的精力应该放在哪里</a></li>
+<li><a href="#77">7.7 指令遵循的衰减规律</a></li>
+<li><a href="#78">7.8 长程开放问题：用算力换智力</a></li>
+<li><a href="#79">7.9 结语：世界很大，人很小</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
 <hr />
 <h2 id="agent">第一章 重新认识提示词：Agent 上下文的完整构成</h2>
 <h3 id="11">1.1 提示词是与机器沟通的唯一接口</h3>
@@ -502,7 +567,7 @@
 <p><em>(参考时间: 15:49)</em></p>
 <p>在 Agent 阅读代码的过程中，讲者顺带指出一个学生中普遍存在的问题：很多同学从 PA1 做到 PA4，VS Code 里始终有报错红线——这意味着没有解锁正确的配置。红线之下虽然仍可在受控环境里编译完成作业，但这不是正确的实践：花一点时间配置 include path（对应编译器的 <code>-I</code> 选项），就能解锁 IDE 的全部能力——Ctrl+点击跳转、以"重命名符号"方式一次性重构等。在大模型时代，这类配置本身也可以直接交给 AI 完成。</p>
 <hr />
-<h2 id="_3">第三章 写一个好的上下文：意图、规格与漂移控制</h2>
+<h2 id="_4">第三章 写一个好的上下文：意图、规格与漂移控制</h2>
 <h3 id="31">3.1 软件工程的老大难问题</h3>
 <p><em>(参考时间: 18:56)</em></p>
 <p>任何软件工程任务都可以抽象为三段：<strong>意图（Intent）→ 规格（Specification）→ 实现（Implementation）</strong>。我们脑子里想的是"做一个国民级应用"，由此推演出软件的架构、选什么语言、无数细节，最后才落到代码。用模型完成软件工程任务时，我们实际上是把这条大流程中的<strong>某一段</strong>整体塞进模型的上下文。</p>
@@ -570,7 +635,7 @@
 <div class="video-card screenshot-card">   <img src="images/shot_00_30_15.png" alt="AI 味与多样性：当所有生成物趋同" loading="lazy">   <p class="video-caption">📷 AI 味与多样性：当所有生成物趋同<br><a href="https://www.bilibili.com/video/BV1CQt365EzW/?t=1815" target="_blank" rel="noopener">回到原视频 (00:30:15)</a></p> </div>
 
 <hr />
-<h2 id="_4">第四章 使模型遵循指令：从工作机制谈起</h2>
+<h2 id="_5">第四章 使模型遵循指令：从工作机制谈起</h2>
 <p><em>(参考时间: 33:07)</em></p>
 <p>要更好地让模型听话，先要理解"听指令"这件事到底是怎么完成的。</p>
 <ul>
@@ -635,7 +700,7 @@
 <div class="video-card screenshot-card">   <img src="images/shot_00_44_50.png" alt="有 Verifier 的任务：AI 是人类能力的放大器" loading="lazy">   <p class="video-caption">📷 有 Verifier 的任务：AI 是人类能力的放大器<br><a href="https://www.bilibili.com/video/BV1CQt365EzW/?t=2690" target="_blank" rel="noopener">回到原视频 (00:44:50)</a></p> </div>
 
 <hr />
-<h2 id="_5">第五章 注意力机制视角下的上下文工程</h2>
+<h2 id="_6">第五章 注意力机制视角下的上下文工程</h2>
 <h3 id="51-token">5.1 每个 token 只注意它需要注意的东西</h3>
 <p><em>(参考时间: 47:37)</em></p>
 <p>现代模型的 self-attention（自注意力）机制与人非常相似：层层叠叠的 Transformer 注意力，在输出每个 token 时，会"特别注意"过去上下文中的某些 token，而忽略其余。</p>
@@ -739,7 +804,7 @@
 <li>字幕里的"从 <strong>171890</strong> 年开始"是转写乱码，实际是 <strong>1869 年</strong>（Nature 创刊年）</li>
 </ul>
 <hr />
-<h2 id="_6">第七章 更长程任务的建议</h2>
+<h2 id="_7">第七章 更长程任务的建议</h2>
 <p><em>(参考时间: 75:30)</em></p>
 <h3 id="71">7.1 什么是长程任务</h3>
 <p>课程作业（如计算机系统基础 PA）有明确 Verifier，还算不上真正的 long horizon。<strong>长程任务意味着不确定性</strong>：从初始状态出发，只有一个模糊的意图，规格与实现都不清楚，最终目标是交付一个高质量的实现。</p>
@@ -835,14 +900,7 @@
 <div class="video-card screenshot-card">   <img src="images/shot_01_37_00.png" alt="结语：算力、智力与那堵墙" loading="lazy">   <p class="video-caption">📷 结语：算力、智力与那堵墙<br><a href="https://www.bilibili.com/video/BV1CQt365EzW/?t=5820" target="_blank" rel="noopener">回到原视频 (01:37:00)</a></p> </div>
 
 <hr />
-<h2 id="_7">后记</h2>
-<p>本讲的三条主线可以浓缩为三句话：</p>
-<ol>
-<li><strong>提示词工程就是上下文工程</strong>——先搞清楚上下文里有什么，每个部分会把模型带向何方；</li>
-<li><strong>Verifier 是第一原则</strong>——给模型明确的验证信号，它就能不知疲倦地逼近正确；注意力的规律决定了规则要"能被看到"，也要警惕上下文污染；</li>
-<li><strong>长程任务中人依然关键</strong>——把开放问题分解为可验证的子问题（算力换智力），把有限的精力留给收益最大的事，其余放手交给 AI。</li>
-</ol>
-<p><em>（全书完。字幕中的人名、产品名与个别术语按上下文推断转写，如有出入以视频为准。）</em></p>
+<p><em>本电子书由 <a href="https://github.com/Luke-Evan/videobook">videobook</a> 流水线生成。课程讲义与幻灯片版权归讲师 © 蒋炎岩 所有，依 <a href="http://creativecommons.org/licenses/by/4.0/">CC BY-NC 4.0</a> 发布。</em></p>
     </article>
     <script>
         const tocDetails = document.querySelector('.book-toc details');
@@ -865,7 +923,7 @@
             codeNodes.forEach(function(node) {
                 const text = node.textContent.trim();
                 // 匹配常见的 mermaid 图表前缀
-                if (text.startsWith('graph ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
+                if (text.startsWith('graph ') || text.startsWith('flowchart ') || text.startsWith('sequenceDiagram') || text.startsWith('gantt') || text.startsWith('pie') || text.startsWith('classDiagram') || text.startsWith('stateDiagram') || text.startsWith('mindmap')) {
                     const tempDiv = document.createElement('div');
                     tempDiv.className = 'mermaid';
                     tempDiv.textContent = text;
