@@ -147,3 +147,9 @@ MAP 覆盖不到的问题（少字、截断词、不通顺）由 agent 通读全
 - 不要把“脚本打印修正 N 行”当作成功；先按本文件「生成前/后必做」全量 dry-run 逐条看。
 - 误伤用 `--edits` 还原（`original` 填 **MAP 之后**的基线文本），不要为了英文视频去改全局 MAP。
 - 英文只在确有必要时做行级订正（专有名词、截断词、不通顺），照旧不改写、不删段。
+
+2026-11 补充案例（英文视频）：
+
+- 英文稿命中 `MAP` 的 `"ripple": "repo"`，把 `crippled` 改成了 `crepod`；这类子串误伤一律用 `--edits` 还原，不改全局 MAP。
+- 老视频的英文自动字幕常无标点、`i` 小写。行级订正只修词形/漏词（`death burden → debt burden`、`wealthy halves → haves`、`different for money → from money`、`good services → goods services`、`i → I`），**不要整篇补标点**——那是改写，不是校订。
+- 英文 auto 字幕的 corrected 稿价值有限：先判断值不值得做；要做就保持逐段、最小改动，并在交付说明里写清「英文原字幕，仅词形订正」。

@@ -1,5 +1,17 @@
 # 排错速查
 
+## youtube-transcript-api 报 SSL EOF，但 yt-dlp 能下
+
+`SSLError ... UNEXPECTED_EOF_WHILE_READING` 经本地代理时可能只打断 `youtube-transcript-api`，而 yt-dlp 的请求正常。不要因此判断代理全坏；让脚本回退 yt-dlp，或按 `transcript.md` 第 5 节直接用 yt-dlp 取英文 SRT。
+
+## dump_transcript 覆盖率 0.0% / 退出码 3（YouTube yt-dlp 路径）
+
+`convert_vtt_to_json` 产出的时间戳是 VTT 时间串（`00:00:00.160`），覆盖率自检按 `HH:MM:SS` 解析会得到 0%——这是假警报，不是字幕缺失。按 `transcript.md` 第 5 节用英文 SRT 重建 `transcript.json`，再用「末段结束 / duration」自检。
+
+## 页面显示字面 `**`
+
+Python-Markdown 在「闭合 `**` 后紧跟汉字、且加粗内容以中文标点结尾」时不识别。按 `writing.md` 的边界规则改写（标点/英文括注移到加粗外），重跑 `post_process.py`。
+
 ## YouTube 字幕抓不到 / 页面里 iframe 报「视频配置错误 (153)」
 
 不是脚本问题，是网络审查与封锁。处理海外视频必须两头都代理：

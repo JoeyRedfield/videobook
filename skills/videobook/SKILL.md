@@ -32,7 +32,9 @@ metadata:
 4. 海外视频：**终端要代理**（抓字幕），**浏览器也要全局代理**（否则第三步降级出的 YouTube iframe 卡片是一片黑块）。
 5. 需要沙箱外/提权的命令见总览表最后一列；纯本地步骤沙箱内即可。
 6. **YouTube 截帧先看登录态**：`.capture-profile` 只有 B 站登录态时，YouTube 走匿名 720p 流；脚本又只对 B 站做原生分辨率探针/顶档流锁定，成图通常只有 830–880px 宽（幻灯片文字可读，但不是 1080p）。要更高画质先登录再重跑；交付时如实说明，不要改 viewport、不要改用屏幕截图。详见 `references/capture.md` 的「YouTube 画质 preflight」。
-7. **预览端口 12345 先查占用**：上一本书的 `http.server` 可能还占着端口，两个 `book.html` 同名，QA/用户很容易打开错书。起预览前用 `lsof -nP -iTCP:12345 -sTCP:LISTEN` + `ps -p <pid> -o command` 确认服务目录是当前 `output/<video_id>`；换书时先停旧进程再起新服务。
+7. **预览端口 12345 先查占用**：上一本书的 `http.server` 可能还占着端口，两个 `book.html` 同名，QA/用户很容易打开错书。起预览前用 `lsof -nP -iTCP:12345 -sTCP:LISTEN` + `ps -p <pid> -o command` 确认服务目录是当前 `output/<video_id>`；换书时先停旧进程再起新服务。交付收尾时停掉自己起的预览进程（managed 环境用 `job_kill`），别留孤儿端口。
+8. **YouTube 走 yt-dlp 兜底时先核对字幕语言与时间戳格式**：`youtube-transcript-api` 经本地代理可能报 `SSLEOFError`，脚本回退 yt-dlp；该路径会优先选中文轨（可能是机器翻译），且 `transcript.json` 的 start/end 可能是 VTT 时间串，覆盖率自检会误判成 0% 并退出码 3。不要据此判“无字幕”，按 `references/transcript.md` 第 5 节取英文原字幕重建 transcript。
+9. **中文加粗不要贴着后文**：Python-Markdown 在「闭合 `**` 后紧跟汉字、且加粗内容以中文标点结尾」时不识别，页面会露出字面 `**`；写法见 `references/writing.md`。
 
 ## 流水线总览
 

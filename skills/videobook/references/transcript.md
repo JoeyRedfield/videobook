@@ -108,3 +108,20 @@ python src/asr_transcript.py <video_id> [--sample-start 900 --sample-dur 180]
 
 ASR 产出**同样算「原始字幕」**：同样要建术语表、同样要容忍同音错词、同样要产出 `transcript.corrected.txt`
 （见 `correction.md`）。本地 large-v3 的错词率通常低于平台 AI 字幕，但专有名词仍需人工订正。
+
+## 5. YouTube 走 yt-dlp 兜底时的两个坑（2026-11 实测）
+
+- `youtube-transcript-api` 经本地代理可能报 `SSLEOFError`（`SSL: UNEXPECTED_EOF_WHILE_READING`），而 yt-dlp 正常。脚本回退 yt-dlp 后 `--sub-langs en.*,zh.*` 会优先选中文轨；但本片的 zh 轨其实是 **YouTube 机器翻译**（文件名如 `zh-Hant-tr`），质量低于英文原字幕。
+- 更隐蔽：`convert_vtt_to_json` 产出的 `start`/`end` 是 VTT 时间串（`00:00:00.160`），`dump_transcript.py` 的覆盖率自检按 `HH:MM:SS` 取整失败，打印 `0.0%` 并以退出码 3 结束——这是**假警报**，不是字幕缺失，也不是登录态问题。
+- 处理（不阻断成书）：用 yt-dlp 单独取英文原 SRT，再自己转成与平台同构的 `transcript.json`。
+
+```bash
+# 1) 取英文原字幕（auto caption 也行；有 manual en 时优先 manual）
+python -m yt_dlp --write-subs --write-auto-subs --sub-langs en --sub-format srt \
+  --skip-download --no-check-certificates -o "/tmp/subs/%(id)s.%(ext)s" "<URL>"
+# 2) 取元数据（title / duration / chapters）
+python -m yt_dlp -j --skip-download "<URL>" > /tmp/meta.json
+```
+
+- 解析 SRT 时把 `00:00:04,080` 规范成 `HH:MM:SS`，逐段写入 `segments`；`chapters` 从元数据转成同样格式。写完后仍用「末段结束时间 / duration」做一次覆盖率自检（应接近 100%）。
+- **语言选择原则**：平台有官方人工中文字幕才优先中文；只有 auto-caption 时，英文视频一律「英文原字幕 + 自己翻译」，不要拿机器翻译的中文轨当底稿。

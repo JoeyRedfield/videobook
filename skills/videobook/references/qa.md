@@ -49,3 +49,8 @@ python skills/videobook/scripts/verify_page.py output/<video_id> --headed
 2. 打开 `qa-desktop.png`、`qa-mobile.png`、`qa-lightbox.png`、`qa-diagram.png` 各看一遍；
 3. 在真实浏览器里随机点 2–3 个目录项与 2 张截图，确认交互成立；
 4. 若有截图与图注不符：改 `book.md` 的图注后重跑 `post_process.py` 即可，不需要重截图片。
+
+## 脚本抓不到、必须人工补的两项
+
+- **字面 `**`**：加粗在中文边界会失效（见 `writing.md`）。交付前 `grep -o '\*\*' book.html` 应为空（CSS 的 `*` 不算）；有就是漏渲染。
+- **图注 vs 画面**：`verify_page.py` 只比对 alt 与渲染后的图注文本，**不判断图注是否符合画面**。用缩略图总览复核全部截图，再挑 5–8 张（尤其图表、标题卡）原尺寸看轴标题/单位；发现不符改 `book.md` 图注或换帧，重跑 `post_process.py`。
