@@ -1,0 +1,1973 @@
+[00:00:12] We can kick it off. Thank you all for
+[00:00:14] coming. I'm Lance. I'm member of
+[00:00:16] technical staff at Anthropic.
+[00:00:18] And I actually want to share some very
+[00:00:19] simple things with you today.
+[00:00:22] A few simple ways to get the most out of
+[00:00:24] frontier models.
+[00:00:26] So we typically think of cost and
+[00:00:29] quality as a trade-off. So in order to
+[00:00:32] get, you know, better performance, you
+[00:00:33] have to spend more money.
+[00:00:35] And in order to kind of reduce cost, you
+[00:00:38] have to scratch sacrifice performance.
+[00:00:40] And so you can kind of think about it on
+[00:00:41] any given evaluation, you have models
+[00:00:43] that kind of create this Pareto
+[00:00:44] frontier.
+[00:00:46] And you can imagine this case, Fable is
+[00:00:48] kind of up on the far right of the
+[00:00:49] curve, and then you have Opus, you have
+[00:00:51] Sonnet, then you have Haiku.
+[00:00:54] Now what I want to share is actually
+[00:00:56] that many times you're not actually on
+[00:00:59] this frontier.
+[00:01:01] Your application is actually sitting
+[00:01:02] inside this frontier that you could be
+[00:01:04] on.
+[00:01:05] And it's because of minor
+[00:01:06] misconfigurations.
+[00:01:08] Which I'm going to show you today how to
+[00:01:10] fix.
+[00:01:11] >> [snorts]
+[00:01:11] >> And we've seen this repeatedly.
+[00:01:15] Improve performance and reduce cost for
+[00:01:17] many customers using some very
+[00:01:19] simple things.
+[00:01:22] So first, I'm going to cover five
+[00:01:24] themes. And then we can make it
+[00:01:25] interactive. The slides won't take an
+[00:01:27] hour. Not even close. So I
+[00:01:29] question answering is actually much more
+[00:01:31] fun.
+[00:01:32] First, audit your prompts.
+[00:01:34] This is a kind of important point that
+[00:01:37] prompts accumulate debt just like code.
+[00:01:41] So if you recall several generations
+[00:01:43] ago, we used to use things like think
+[00:01:45] step-by-step. We used to use
+[00:01:46] verification rituals, double-check your
+[00:01:48] work.
+[00:01:49] We used to use thoroughness
+[00:01:50] boosters, be maximally thorough.
+[00:01:53] Sometimes we would use kind of scratch
+[00:01:55] pads, tell the agent how to think, give
+[00:01:57] it places to think.
+[00:02:00] You don't need that anymore.
+[00:02:02] Frontier models are very good at
+[00:02:04] at
+[00:02:05] thinking, choosing when to think. They
+[00:02:08] don't need to be told what to do and
+[00:02:09] like kind of how to verify their work.
+[00:02:11] They naturally verify their work.
+[00:02:14] Um they don't need told to be
+[00:02:15] thoughtful. They're already very
+[00:02:16] thoughtful.
+[00:02:17] Um and worse, when you do these things,
+[00:02:21] it actually increases cost and can
+[00:02:23] reduce performance in some ways I'll
+[00:02:25] talk about briefly.
+[00:02:28] Another interesting one with earlier
+[00:02:29] models, if your prompt had contradictory
+[00:02:31] rules in them,
+[00:02:33] earlier models that weren't as good at
+[00:02:34] instruction following would kind of
+[00:02:36] ignore one of the two rules. So it kind
+[00:02:38] of still worked. But with frontier
+[00:02:40] models, they'll often get confused by
+[00:02:42] contradictory rules.
+[00:02:44] So I'm going to give you one very simple
+[00:02:46] thing to do right now if you have any
+[00:02:48] code that you want to check.
+[00:02:50] In Claude code, you can run this command
+[00:02:52] checkup prompt audit.
+[00:02:54] You can also run Claude API prompt
+[00:02:56] audit. These are two different skills in
+[00:02:57] Claude code. They link to the same code.
+[00:03:00] It's just checkup is typically how
+[00:03:02] people do checkups on their Claude code
+[00:03:04] configuration itself. So your skills,
+[00:03:06] your prompts within Claude code itself,
+[00:03:09] the Claude API skill is a separate skill
+[00:03:11] bundled in Claude code that's meant for
+[00:03:13] a kind of code that uses our APIs. But
+[00:03:16] both of these commands use the same
+[00:03:18] principle and they kind of link down to
+[00:03:19] the same underlying skill itself. It's
+[00:03:21] just two different ways to call it.
+[00:03:23] >> [snorts]
+[00:03:24] >> These skills will audit your code,
+[00:03:28] anything in the working directory of
+[00:03:29] Claude code. So that could be skills,
+[00:03:30] that could be tools, that could be
+[00:03:32] prompts for these anti-patterns and will
+[00:03:33] remove them for you.
+[00:03:35] This has become kind of very popular.
+[00:03:37] Many people we all Many people use it
+[00:03:38] within Anthropic. It's kind of become
+[00:03:40] somewhat popular, you know, on Twitter
+[00:03:41] as well. Um it's very simple
+[00:03:44] and often it can improve cost and
+[00:03:47] performance.
+[00:03:49] So here's an example
+[00:03:51] uh where it This is an evaluation that I
+[00:03:53] built.
+[00:03:54] It's a synthetic evaluation of customer
+[00:03:56] support tickets. There's like 50
+[00:03:58] tickets. And what I do is
+[00:04:00] I start with Opus 4.8.
+[00:04:03] And I basically simulate a migration to
+[00:04:07] Opus 5.5, okay?
+[00:04:09] And in this process, I inject each
+[00:04:12] anti-pattern individually
+[00:04:14] and measure the result. That's this
+[00:04:16] middle point, okay? So, what happens is
+[00:04:19] it's taking the average of all the
+[00:04:21] anti-patterns across the benchmark,
+[00:04:22] basically. The key point is this.
+[00:04:25] When I do the migration to Opus 5.5 from
+[00:04:27] 4.8, initially with these kind of
+[00:04:30] anti-patterns injected,
+[00:04:32] we do see some cost savings and a little
+[00:04:35] bit of performance savings. You can see it
+[00:04:37] goes to the left and it goes up a bit.
+[00:04:40] If I run prompt audit on top of that,
+[00:04:43] I get a further bump both in performance
+[00:04:45] and cost reduction for a bunch of
+[00:04:47] different reasons.
+[00:04:48] Because this command is going through
+[00:04:50] and it's removing verification rituals,
+[00:04:53] boosters that are actually causing Opus
+[00:04:55] 5.5 to expend excessive tokens.
+[00:04:58] So, this little simple command often
+[00:05:01] will basically reduce token use, saving
+[00:05:04] cost, and it can improve performance in
+[00:05:06] cases where
+[00:05:07] things like contradictory prompts were
+[00:05:09] confusing frontier models.
+[00:05:11] So, this is a very simple command that I
+[00:05:12] recommend. Um and we've used it very
+[00:05:15] extensively within Anthropic and also
+[00:05:16] many customers have enjoyed this quite a
+[00:05:18] lot. It's very simple to run. You run it
+[00:05:20] kind of in any code using the API or
+[00:05:21] even on your Claude Code configuration to
+[00:05:23] make sure your prompts are kind of
+[00:05:25] well-tuned for frontier models.
+[00:05:28] That's point one.
+[00:05:30] Now, point two is make sure you're using
+[00:05:32] the prompt cache.
+[00:05:34] This is probably pretty familiar to many
+[00:05:35] of users, but I do just want to make
+[00:05:37] sure it's extremely clear. So, agents,
+[00:05:40] for example, operate across many turns.
+[00:05:43] Every turn adds just a little bit. For
+[00:05:46] example, one tool call.
+[00:05:47] Much of kind of context is repeated
+[00:05:50] across turns. You don't want to pay for
+[00:05:51] it twice.
+[00:05:52] That's why you can use the prompt cache.
+[00:05:54] So, prompt cache is built at like a
+[00:05:55] tenth the the rate of base tokens. So,
+[00:05:58] it's much cheaper.
+[00:05:59] Varies a bit per model. I think 10
+[00:06:02] a a tenth is I think the current
+[00:06:03] pricing, but you can check the pricing
+[00:06:05] page. The point is it's much cheaper.
+[00:06:07] It's also much faster. So, it's very
+[00:06:09] important in multi-turn applications to
+[00:06:11] be making heavy use of the prompt cache.
+[00:06:14] Now, the problem is prompt cache are a
+[00:06:18] strict prefix match. So, any even a byte
+[00:06:22] change in your prefix will invalidate
+[00:06:24] the cache. So, you have to be careful in
+[00:06:26] building agents or multi-turn
+[00:06:27] applications that you don't break the
+[00:06:29] prompt cache. That's the key point.
+[00:06:32] And Claude console, if you're using the
+[00:06:34] API, has nice diagnostics for you. So,
+[00:06:36] if you're building applications with the
+[00:06:38] Claude API, you can see for your
+[00:06:39] application your prompt cache hit rate,
+[00:06:41] which is very important to track.
+[00:06:43] For example, with Claude code, we track
+[00:06:45] the prompt cache hit rate very very
+[00:06:47] religiously. It's very important for the
+[00:06:49] economics of the application, obviously.
+[00:06:51] And it's also in your cases, if you're
+[00:06:53] building apps with the Claude API, it's
+[00:06:55] very very important to make sure you're
+[00:06:56] using making heavy use of the prompt
+[00:06:57] cache.
+[00:07:00] Now,
+[00:07:01] in general, how to organize your
+[00:07:02] prompts. You know, you can think about
+[00:07:04] basically, um system instructions,
+[00:07:07] tools, things that are globally cached
+[00:07:08] across all of your sessions. You can
+[00:07:10] think about CLAUDE.md memory. That's
+[00:07:12] kind of cached per project. Session
+[00:07:14] state is kind of per session, and then
+[00:07:16] messages kind of incremented each turn.
+[00:07:17] So, that's kind of how you want to
+[00:07:18] structure your prompts.
+[00:07:20] And the key point is this, run this in
+[00:07:23] Claude code. So, if you have a project
+[00:07:25] using the API, you want to make check
+[00:07:27] and make sure that you're using you're
+[00:07:28] making proper use of the prompt cache.
+[00:07:29] You can run this. It'll run diagnostics
+[00:07:32] to make sure that you're using the
+[00:07:33] prompt cache effectively. It'll find
+[00:07:34] opportunities to reorganize your prompts
+[00:07:37] to make sure that they're organized such
+[00:07:38] that you get a high prompt cache hit
+[00:07:39] rate. That's really the key point here.
+[00:07:42] >> [sighs]
+[00:07:43] >> And this is kind of a fun exercise. So,
+[00:07:45] myself and some folks on our Claude AI
+[00:07:47] team ran um
+[00:07:49] ran this command on a bunch of internal
+[00:07:50] benchmarks that had kind of default
+[00:07:52] harnesses.
+[00:07:53] We found opportunities to reduce costs
+[00:07:55] by up to 72% with no meaningful change
+[00:07:59] in performance, just by running this
+[00:08:00] command, because some of the harnesses
+[00:08:02] on these Evals were not using the prompt
+[00:08:03] cache properly.
+[00:08:05] Really simple command. You can run it in
+[00:08:07] your API code and it'll just look for
+[00:08:08] opportunities to make sure you're saving
+[00:08:10] as much cost as you should be, i.e. by
+[00:08:12] using the prompt cache. It'll also check
+[00:08:14] for other things. It'll look for um I'll
+[00:08:16] I'll talk about it a little bit later,
+[00:08:17] but it'll also check your effort levels,
+[00:08:18] it'll check your prompt. So, it it'll do
+[00:08:21] a number of other things, but in
+[00:08:22] particular it'll look at your prompt
+[00:08:23] cache to make sure you have a high
+[00:08:24] prompt cache hit rate.
+[00:08:26] Again,
+[00:08:27] this has, you know,
+[00:08:29] optimized prompt cache has no change in
+[00:08:31] performance. It's like effectively just
+[00:08:33] free cost savings. So, it's something to
+[00:08:34] be very serious about when you're
+[00:08:36] building applications with the API in
+[00:08:37] particular.
+[00:08:38] Um it's very something to very to very
+[00:08:40] seriously make sure you're utilizing
+[00:08:42] effectively.
+[00:08:45] So,
+[00:08:46] I want to get into to some other
+[00:08:48] fundamentals. Um we talked about prompt
+[00:08:50] caching, we talked about making sure
+[00:08:51] your prompts are kind of well that are
+[00:08:54] that are well-tuned. You can audit them
+[00:08:56] using prompt audit. Now, let's talk
+[00:08:58] about a few other things that are very
+[00:09:00] important for working with frontier
+[00:09:01] models.
+[00:09:02] So, Claude,
+[00:09:04] frontier Claude in particular,
+[00:09:06] is very good at self-correction.
+[00:09:09] So, if you give Claude a well-structured
+[00:09:10] evaluation, it can basically just hill
+[00:09:12] climb on that in that eval and I'll talk
+[00:09:14] about that in a minute.
+[00:09:16] But important in that is good eval
+[00:09:18] design. And you have to give Claude an
+[00:09:21] evaluation that is climbable. And so,
+[00:09:23] actually we spend a lot of time thinking
+[00:09:25] about eval design
+[00:09:26] and making sure Claude is set up for
+[00:09:28] success when building an eval and
+[00:09:31] setting up hill climbing.
+[00:09:33] So, some general features of good eval
+[00:09:35] design. This is This is basics, this is
+[00:09:37] nothing [clears throat] related to, you
+[00:09:38] know, Anthropic, this is just kind of
+[00:09:39] fundamentals, but it's good to revisit
+[00:09:41] briefly.
+[00:09:43] What you should see generally is that
+[00:09:45] these are a number of different curves
+[00:09:46] looking at basically tokens per attempt.
+[00:09:49] This is kind of like thinking on the X
+[00:09:50] and then score on the Y.
+[00:09:53] Frontier model at the top, mid-size
+[00:09:55] model on in the middle curve, small
+[00:09:57] model at the bottom. So, think about
+[00:09:58] that as like Opus, Sonnet, Haiku.
+[00:10:01] You should generally see on your
+[00:10:03] evaluation as you step up model and
+[00:10:04] performance goes up. That's point one.
+[00:10:07] As you increase thinking, performance
+[00:10:09] should go up. That's point two.
+[00:10:11] There should be headroom to improve at
+[00:10:13] the frontier.
+[00:10:14] So, that's point three. So, basically
+[00:10:16] shouldn't be saturated.
+[00:10:18] And there should be low run-to-run
+[00:10:20] variance.
+[00:10:21] Very simple points,
+[00:10:22] uh but actually very important to get
+[00:10:24] right. And actually even a lot of very
+[00:10:26] popular evaluations that we see have
+[00:10:28] many tasks that are ambiguous,
+[00:10:29] effectively limiting that headroom at
+[00:10:32] the frontier.
+[00:10:34] And this is a problem I see all the
+[00:10:35] time. You build an evaluation, it turns
+[00:10:37] out you have a bunch of ambiguous cases
+[00:10:38] that can't be solved anyway. So, it
+[00:10:39] looks like, you know, oh, I've 20% more
+[00:10:42] that I can get on this, but no model can
+[00:10:43] actually achieve it.
+[00:10:45] So, you could spend many tokens
+[00:10:47] [clears throat] hill climbing on an
+[00:10:48] evaluation that's effectively saturated.
+[00:10:49] It's very important to get this right.
+[00:10:52] >> [sighs]
+[00:10:53] >> Try this command. Uh Claude API build
+[00:10:55] eval.
+[00:10:57] This is actually a very nice command
+[00:10:59] because it's not opinionated at all
+[00:11:02] about where your data lives. It doesn't
+[00:11:03] care. You can point this at whatever
+[00:11:05] tracing solution you have. It's just a
+[00:11:07] skill in Claude code.
+[00:11:10] It's more employing the principles I
+[00:11:12] talked about to test and sanity check
+[00:11:14] the evaluation for you.
+[00:11:16] So, you can kind of give this skill,
+[00:11:17] hey, here's a problem I want to solve,
+[00:11:19] here's what I'm interested in, here is
+[00:11:22] the raw data, for example, here's the
+[00:11:23] traces that I want to work with, and
+[00:11:25] this command can help you build an eval
+[00:11:26] set. It'll walk you through a process
+[00:11:27] and step you through building it. It'll
+[00:11:31] it'll help you you'll show you the data,
+[00:11:32] it'll show you the evaluation, it'll
+[00:11:34] sanity it'll sanity check the grader the
+[00:11:36] criteria with you. So, it'll kind of
+[00:11:38] walk you through the process of building
+[00:11:39] eval based upon some of our, you know,
+[00:11:41] some of our best practice and we have a
+[00:11:42] nice blog post on this as well that
+[00:11:44] that I'll share.
+[00:11:46] Um
+[00:11:47] and it pairs very well with hill
+[00:11:49] climbing. So, once you've built a good
+[00:11:51] evaluation that has headroom at the
+[00:11:53] frontier, low variance, scales as
+[00:11:55] expected with thinking and model, you
+[00:11:56] can then climb on it.
+[00:11:58] Frontier Claude models are very, very
+[00:12:00] effective at hill climbing. So,
+[00:12:01] autonomously looking at an evaluation
+[00:12:04] and autonomously kind of improving on it
+[00:12:06] without you in the loop. So, you build a
+[00:12:08] good eval,
+[00:12:10] Claude can hill climb on it.
+[00:12:13] The problem is there's many ways that
+[00:12:15] this can kind of go wrong. And in
+[00:12:17] particular, you can end up overfitting
+[00:12:20] on the evaluation itself.
+[00:12:22] So like some classic examples would be
+[00:12:25] um like the task in your benchmark have
+[00:12:28] particular needs that are bespoke or
+[00:12:30] specific to those tasks. Like maybe one
+[00:12:33] task needs OCR, so it happens your
+[00:12:35] harness to solve the eval
+[00:12:37] adds like an OCR tool. But in
+[00:12:39] production, you don't see that problems.
+[00:12:40] So you end up overfitting on the eval
+[00:12:43] distribution, it doesn't apply to
+[00:12:44] production. This is very common.
+[00:12:46] Um
+[00:12:48] yeah, like distinctive phrasing specific
+[00:12:50] to your eval examples.
+[00:12:52] For example, another classic is like it
+[00:12:55] just kind of it like the prompt when
+[00:12:58] you're basically hill climbing overfits
+[00:13:00] the specifics of your eval distribution,
+[00:13:02] it doesn't apply to to your to your test
+[00:13:03] distribution. So overfitting is the
+[00:13:05] major challenge concern when you're hill
+[00:13:07] climbing. Imagine you spent a lot of
+[00:13:09] tokens hill climbing an evaluation. It
+[00:13:11] looks really good after hill climbing.
+[00:13:13] You run it in production and performance
+[00:13:15] is not better at all. That's frustrating
+[00:13:17] because you spent a lot of money. You
+[00:13:18] hill climbed and like, oh, it's not
+[00:13:21] applicable to production because often
+[00:13:23] you'll you've just kind of overfit to
+[00:13:25] the eval distribution.
+[00:13:27] So try this command.
+[00:13:30] In Claude code, it's Claude API hill climb.
+[00:13:31] So if you build an eval, it'll hill
+[00:13:33] climb for you.
+[00:13:34] And it tries to combat this with a few
+[00:13:37] tricks. Now it's of course not perfect.
+[00:13:39] You have to audit this carefully and and
+[00:13:40] and indeed be in the loop and and make
+[00:13:42] sure you really understand what's
+[00:13:43] happening.
+[00:13:44] But it can help you.
+[00:13:46] And in particular, what it does is a
+[00:13:48] process like this.
+[00:13:51] It will look at your evaluation and it
+[00:13:54] will split it into test and train sets.
+[00:13:56] This is kind of very classic um kind of
+[00:13:58] classic principles from statistics.
+[00:14:00] Create a test and train split.
+[00:14:02] What happens is when hill climbing, this
+[00:14:04] is just on Claude code by the way. So
+[00:14:06] Claude code basically has this skill.
+[00:14:08] You run it on an eval.
+[00:14:10] It will only ever look at the train
+[00:14:12] split and reflect on those failures when
+[00:14:13] it's making decisions about what to
+[00:14:15] change to improve on the eval.
+[00:14:18] So, what's nice about that is at every
+[00:14:21] round, it never sees a test split.
+[00:14:24] And it will basically check performance
+[00:14:26] per round against test and train. So,
+[00:14:29] what happens is a little it's a little
+[00:14:30] early signal for overfitting.
+[00:14:32] If you see train improving but test
+[00:14:35] flat, it's a signal of "Ooh, you might
+[00:14:36] be overfitting."
+[00:14:38] So, basically it applies this check and
+[00:14:40] a number of other more subtle things
+[00:14:42] check to make sure while hill climbing's
+[00:14:44] happening, you aren't just overfitting
+[00:14:46] to your eval distribution, you're
+[00:14:47] actually hill climbing in a way that
+[00:14:49] will apply to production.
+[00:14:51] Assuming you built your eval
+[00:14:52] distribution well, and that's always
+[00:14:53] something that we can address in that
+[00:14:55] build eval phase.
+[00:14:58] Now, I'll share some concrete examples
+[00:14:59] that I've used here. So, this is
+[00:15:02] actually the Claude API skill itself.
+[00:15:04] So, if I back up a little bit,
+[00:15:07] this is a skill in Claude code.
+[00:15:10] And it is a skill that gives Claude full
+[00:15:13] awareness of our APIs.
+[00:15:15] Uh so, basically our SDKs, APIs. And it
+[00:15:19] has to be grounded in our documentation.
+[00:15:22] So, I built an eval set based upon our
+[00:15:24] documentation.
+[00:15:26] And I tested the skill.
+[00:15:28] The skill initially was not very good at
+[00:15:30] the eval questions in my set, 66%. So, I
+[00:15:33] set up a hill climbing loop with giving
+[00:15:35] Claude code access to the skill text and
+[00:15:38] the documentation itself, and let it
+[00:15:40] basically just iteratively look at the
+[00:15:41] failures in the eval set, and try to
+[00:15:43] figure out why the skill was
+[00:15:45] misrepresenting what's in the
+[00:15:46] documentation. And there's all sorts of
+[00:15:48] little tricks, and I could, you know,
+[00:15:49] talk about that more in more detail. But
+[00:15:51] the point is, Claude can autonomously
+[00:15:54] find, in this particular case, the right
+[00:15:56] skill text to improve significantly on
+[00:15:59] the evaluation. And I talk about this in
+[00:16:01] the blog link below.
+[00:16:03] Um but again, this is a good example of
+[00:16:05] a kind of a well-scoped evaluation, a
+[00:16:07] simple surface I'm modifying a skill,
+[00:16:10] and an autonomous hill climbing loop
+[00:16:11] that resulted in a much better
+[00:16:12] performance just when I set the system
+[00:16:14] up this way with a carefully scoped
+[00:16:15] eval,
+[00:16:16] a surface that's easy to modify, Claude
+[00:16:19] can just rip through it and like
+[00:16:20] significantly improve performance. This
+[00:16:22] works well for prompts, it works well
+[00:16:24] for skills.
+[00:16:25] Simple text-based surfaces are very very
+[00:16:27] good for this kind of hill climbing
+[00:16:28] process.
+[00:16:30] Now, this is another kind of interesting
+[00:16:32] trick that I've seen a lot of customers
+[00:16:34] like.
+[00:16:36] You can also apply hill climbing to cost
+[00:16:38] reduction.
+[00:16:39] So, what's kind of nice about this is
+[00:16:41] I've added guidance to this hill climb
+[00:16:42] command.
+[00:16:44] If you tell it to reduce cost, what
+[00:16:46] it'll do is it will basically try to
+[00:16:48] find a configuration that's that is at
+[00:16:51] is at least at parity in performance and
+[00:16:53] for sure reduces cost. And it'll search
+[00:16:55] things like effort, model, and your
+[00:16:57] prompts. Here's a simple example on that
+[00:16:59] same um customer support benchmark.
+[00:17:02] I start with Opus Opus 4.8 high with some
+[00:17:05] baseline prompt. And I basically tell
+[00:17:06] the hill climber reduce cost. So, what
+[00:17:09] it does, it basically will search
+[00:17:12] through model effort combinations and
+[00:17:15] basically pick those that continuously
+[00:17:17] reduces cost over the rounds without
+[00:17:20] degrading performance. In this case, it
+[00:17:21] moves to Opus 5 low. We see a big bump
+[00:17:24] in performance and minor reduction in
+[00:17:26] cost.
+[00:17:27] The hill climber then autonomously tries
+[00:17:29] Sonnet 5 low. We see again degrades
+[00:17:32] performance a bit, but big cost
+[00:17:33] reduction.
+[00:17:35] And then it it then decide tune the
+[00:17:37] prompt and we kind of rescue the
+[00:17:38] performance. So, we basically got a 90%
+[00:17:41] reduction in cost with notable
+[00:17:43] improvement in performance autonomously
+[00:17:45] using the hill climber. This is another
+[00:17:46] very nice way if you have an evaluation,
+[00:17:48] you can use the hill climber to
+[00:17:50] basically say, "Okay, keep performance
+[00:17:52] fixed but reduce my cost materially by
+[00:17:54] tuning things like effort, things like
+[00:17:56] model selection, and my prompts."
+[00:17:59] Another very nice use of the hill
+[00:18:00] climber. And actually, what's nice about
+[00:18:01] this is
+[00:18:02] you can do this if you have a saturated
+[00:18:05] eval. So, you can basically say, "Okay,
+[00:18:06] say my eval saturated, fine. It doesn't
+[00:18:08] matter. I'm not I don't care about
+[00:18:09] performance. I just want to reduce
+[00:18:10] cost." So, then you can just tell the
+[00:18:12] hill climber, "Okay,
+[00:18:14] keep performance fixed and just try to
+[00:18:15] burn down cost." And it can basically
+[00:18:17] search for configurations and often
+[00:18:19] it'll find very interesting things.
+[00:18:21] Like in this particular case, there's
+[00:18:23] generally an intuition
+[00:18:25] that moving to higher models at lower
+[00:18:26] effort is often cheaper and more
+[00:18:28] performant than lower models at high
+[00:18:30] effort. It's like giving someone who's
+[00:18:31] smarter can like try less to actually
+[00:18:34] get a better objective or or or to kind
+[00:18:36] of solve the problem more effectively.
+[00:18:38] Um and so it ends up actually using
+[00:18:40] fewer tokens and as a result ends up
+[00:18:43] being cheaper. That's kind of a broad
+[00:18:44] intuition here that we've seen quite a
+[00:18:45] bit. And that's baked into this hill
+[00:18:47] climber skill.
+[00:18:49] So, um another nice trick.
+[00:18:53] Now, I'm going to open up the questions
+[00:18:54] pretty soon. I'll just kind of close
+[00:18:56] with some other comments. And this is a
+[00:18:57] bit of a nod to the managed agents stuff
+[00:18:59] you heard this morning. I just want to
+[00:19:01] re-emphasize this a little bit. I do
+[00:19:03] think
+[00:19:04] um as part of unhobbling the frontier,
+[00:19:06] it's very important to design harnesses
+[00:19:08] that can take most advantage of the
+[00:19:10] latest Claude models.
+[00:19:12] And in particular, it's interesting if
+[00:19:15] you look back the last few years,
+[00:19:17] time is on the X, and this is task
+[00:19:20] duration for human on the Y. You've seen
+[00:19:22] these curves. They're just METR charts.
+[00:19:25] It's interesting to think back, you
+[00:19:26] know, Claude Opus 3 was capable of only
+[00:19:29] like 4 minutes of autonomous work.
+[00:19:32] And in that kind of regime, there were
+[00:19:34] very limited products you could build.
+[00:19:36] It's really auto completion or chat.
+[00:19:38] Now, we saw over the course of 2025,
+[00:19:40] models become more capable. They can do
+[00:19:41] like hours of work. Like maybe an hour
+[00:19:43] to 2 hours of human equivalent work.
+[00:19:45] Claude code obviously kind of um gained
+[00:19:48] significant over the past over 2025.
+[00:19:51] And we're kind of entering a new regime
+[00:19:53] now where these um task durations for
+[00:19:56] models are are exceeding like a day to 2
+[00:19:59] days. I think this is kind of outside
+[00:20:00] the scope of what METR can even measure
+[00:20:02] now.
+[00:20:03] But in this regime where you have models
+[00:20:05] that can do the equivalent of like, say,
+[00:20:07] days of work, what harnesses do you
+[00:20:09] need? Like the considerations change
+[00:20:11] quite a bit because you want models that
+[00:20:13] can just do things autonomously over
+[00:20:15] very, very long periods of time. Now,
+[00:20:16] how do you make sure they're secure and
+[00:20:17] reliable? The considerations change a
+[00:20:19] lot.
+[00:20:21] And I hear you heard about that morning,
+[00:20:23] but this is actually the motivation
+[00:20:24] behind one of our newer APIs called
+[00:20:26] Claude Managed Agents.
+[00:20:28] Um and the principle here, I wrote this
+[00:20:30] engine blog back in April on it,
+[00:20:33] is decoupling the brain from the hands.
+[00:20:35] And the idea is pretty simple here. You
+[00:20:37] have an agent harness, which is
+[00:20:38] effectively the brain. You have hands,
+[00:20:39] which are sandboxes. That's where the
+[00:20:40] agent harness writes code and performs
+[00:20:42] actions.
+[00:20:43] And you want those to be separate
+[00:20:45] things. In particular, you want that you
+[00:20:48] want it to be the case that if the
+[00:20:49] harness dies or the sand box dies, the
+[00:20:51] system can recover. Imagine you have an
+[00:20:53] agent that you spin up overnight to just
+[00:20:55] run and the sandbox dies midway through
+[00:20:58] the night. It's very frustrating. You
+[00:20:59] lose state, you lose your session log,
+[00:21:01] and everything.
+[00:21:02] So when we design this, we designed this
+[00:21:04] for a world where Claude would be doing
+[00:21:05] work for very, very long durations. And
+[00:21:07] so it's recoverable.
+[00:21:08] So that means the session log is an
+[00:21:10] independent object separate from the
+[00:21:11] harness, separate from the sandbox, that
+[00:21:14] is append-only, that is recoverable. So
+[00:21:16] if the harness dies, the sandbox dies,
+[00:21:18] you can always recover from the session
+[00:21:20] log. Sandboxes are also recoverable. So
+[00:21:23] if a sandbox dies, you can boot up a new
+[00:21:24] one. If the harness dies, you can boot
+[00:21:26] up a new one through this orchestrator.
+[00:21:28] Another point here is safety. So one of
+[00:21:31] the important things that Managed Agents
+[00:21:32] does is it actually never gives Claude
+[00:21:34] direct access to secrets. Secrets are
+[00:21:36] held in vaults.
+[00:21:38] Um and that's actually stored in that
+[00:21:39] kind of tools box you see at the top.
+[00:21:42] So vaults ensure that Claude can
+[00:21:43] reference API keys or secrets, but it
+[00:21:45] can't actually see them. Because
+[00:21:46] obviously, if you have an agent that's
+[00:21:47] working for, say, days on end, it's a
+[00:21:50] little bit spooky to give it direct
+[00:21:52] access to very kind of sensitive
+[00:21:53] secrets. And so we ensure the security
+[00:21:55] is is kind of very is is a very
+[00:21:58] important consideration when we build
+[00:22:00] Managed Agents.
+[00:22:02] So reliability and security become much
+[00:22:03] more important as agents can operate for
+[00:22:05] hours, days, and maybe soon weeks.
+[00:22:09] And this morning you probably heard a
+[00:22:11] little more about this, but we have a
+[00:22:12] nice uh recent blog that I put out with
+[00:22:15] CJ that walks through
+[00:22:18] uh an example of basically building an
+[00:22:20] agent that can serve as like kind of a
+[00:22:22] an an agent automation uh for regular
+[00:22:25] context updates. It can reach into
+[00:22:27] different sources that you specify, it
+[00:22:28] can write updates to Slack. Very simple
+[00:22:31] automation example, it's highly
+[00:22:32] customizable, but it shows how all these
+[00:22:34] different primitives come together. It
+[00:22:36] brings together a scheduled deployment,
+[00:22:38] all this all runs on Anthropic
+[00:22:40] infrastructure,
+[00:22:41] it secure- it securely stores secrets,
+[00:22:43] it has memory,
+[00:22:45] and um it's a very nice kind of end-to-end
+[00:22:48] example.
+[00:22:49] Now again, the final point is you can
+[00:22:52] just run this in Claude Code. So, run
+[00:22:54] Claude API managed agents onboard and then give
+[00:22:56] it the link to the blog, and it'll just
+[00:22:58] boot up this tutorial for you, it'll
+[00:22:59] spin up the example, and you can just
+[00:23:01] play with it.
+[00:23:03] Um so, the really the key point here is
+[00:23:06] um there's a number of ways you can kind
+[00:23:08] of harness
+[00:23:09] and uh make sure that Frontier is
+[00:23:11] effectively unhobbled.
+[00:23:13] Uh it is very important to audit your
+[00:23:16] prompts.
+[00:23:17] It's very important to make sure that
+[00:23:19] you're effectively using prompt cache,
+[00:23:20] especially building agents for long
+[00:23:21] duration, to make sure that cost is
+[00:23:23] managed. It's important to think about
+[00:23:24] harnesses that are designed for long
+[00:23:26] duration in terms of reliability and
+[00:23:28] security.
+[00:23:29] And it's also important to think about
+[00:23:30] evaluations and hill climbing. And when
+[00:23:32] this all comes together, you can have
+[00:23:33] agents that you can give a task, for
+[00:23:35] example, an evaluation, and let it run
+[00:23:37] for long period of time and hill climb
+[00:23:39] on that evaluation, come back, for
+[00:23:40] example, in the morning, and it's it's
+[00:23:42] significantly improved.
+[00:23:43] And that's really the way that I see
+[00:23:45] many of my colleagues working now.
+[00:23:46] People are spending much more time on
+[00:23:48] eval design,
+[00:23:49] and basically just specifying tasks that
+[00:23:51] Claude can effectively hill climb on,
+[00:23:53] and doing this in a way such that agent
+[00:23:55] is highly secure when doing this,
+[00:23:58] and is highly reliable for long duration
+[00:24:00] jobs.
+[00:24:02] And let's see where we are on time. With
+[00:24:04] that, I think I'll just take it to
+[00:24:05] questions, because it's more fun when
+[00:24:07] it's interactive anyway. You can follow
+[00:24:09] me on all the the socials here.
+[00:24:11] And uh thank you for your time and
+[00:24:13] attention.
+[00:24:16] >> [applause]
+[00:24:25] >> Sure, start there.
+[00:24:27] >> [laughter]
+[00:24:27] >> This is a very good question. The
+[00:24:29] question was how automatable is eval
+[00:24:31] design?
+[00:24:32] So actually I was engaging a bit with
+[00:24:34] with Hamel on Twitter.
+[00:24:35] Extremely thoughtful with respect to
+[00:24:37] evals. And some feedback he had on our
+[00:24:39] skill was that it should indeed walk the
+[00:24:42] user through the data first, which I
+[00:24:43] actually agree with. I'll make it some
+[00:24:45] minor modifications to the skill to do
+[00:24:47] that.
+[00:24:48] So
+[00:24:49] I think that
+[00:24:51] uh eval design, I'll go kind of go back
+[00:24:54] to it.
+[00:24:56] Claude can assist you when building
+[00:24:58] evals significantly.
+[00:25:00] So for example, in the example he gave
+[00:25:03] when his walk-through,
+[00:25:04] um he was looking at like a it was like
+[00:25:06] a customer support app or something. And
+[00:25:09] the first question was like, okay, like
+[00:25:11] it's a bunch of traces. What are the
+[00:25:14] failure cases here? What should I even
+[00:25:15] like promote to an eval set? So Claude's
+[00:25:18] really good at kind of identifying, ooh,
+[00:25:20] okay, here's case where there might be
+[00:25:21] errors. It's effectively like acting as
+[00:25:23] like an online evaluator, but looking at
+[00:25:25] your offline logs, scanning them saying,
+[00:25:27] okay, here's some problematic examples.
+[00:25:29] And Claude was very good at that in his
+[00:25:30] example.
+[00:25:32] Then it is actually important and quite
+[00:25:35] useful if Claude then shows those raw
+[00:25:38] like the raw data to you in a viewer. So
+[00:25:40] I'm going to add that to the skill. I
+[00:25:42] have a PR up and I'll add it.
+[00:25:44] Currently, Claude goes directly to
+[00:25:46] analyzing the data and like building the
+[00:25:48] eval and showing it to you. I do think
+[00:25:50] it's important and helpful for there to
+[00:25:52] be an intermediate stage where you look
+[00:25:53] at the data first. But I think having
+[00:25:56] data annotated by Claude where Claude's
+[00:25:57] giving you some ideas about what to look
+[00:25:59] at is very important. So kind of like
+[00:26:00] Claude assisted evaluation and scanning
+[00:26:03] of the data is like I think like I I
+[00:26:04] think a nice marriage.
+[00:26:06] Um and then once that's done, you can
+[00:26:08] kind of promote like kind of examples to
+[00:26:10] your eval set. So I think there is still
+[00:26:12] quite a role um for the human in the
+[00:26:14] loop there, but Claude can assist quite
+[00:26:16] a bit. Hill climb with human feedback.
+[00:26:19] Um
+[00:26:20] so hill climbing only requires that you
+[00:26:23] have an eval and you have some signal
+[00:26:26] that Claude can use to judge good versus
+[00:26:28] bad.
+[00:26:29] So if you've taken human feedback and
+[00:26:31] you've rolled that into an eval signal,
+[00:26:32] for example, then it should be perfectly
+[00:26:34] feasible to hill climb on an evaluation
+[00:26:36] structure that way.
+[00:26:37] Yeah, this is a good one.
+[00:26:39] So, for hill climbing, what's like the
+[00:26:40] best surface to start with? So, I kind
+[00:26:42] of have that here as like the thing we
+[00:26:44] edit. Yeah, so so I've actually played
+[00:26:46] with this quite a bit.
+[00:26:48] Text is nice, in particular if things
+[00:26:50] like prompts and skills are very nice
+[00:26:51] because it's a very
+[00:26:53] it is a very clear place that we know
+[00:26:56] sign that we know significantly alters
+[00:26:59] and affects model behavior.
+[00:27:01] So, it's like a very constrained surface
+[00:27:02] to modify, and we know it's highly
+[00:27:04] coupled to the output, typically in
+[00:27:06] terms of like what you're evaluating.
+[00:27:08] Uh like here's a good example. Um like
+[00:27:11] when I'm doing skill hill climbing, I'm
+[00:27:13] testing something that is directly
+[00:27:14] reading from the skill, so I know
+[00:27:15] there's clear coupling. Now, I'm going
+[00:27:17] to contrast that to I've also done hill
+[00:27:18] climbing with agent harnesses.
+[00:27:21] But, what happens there is it can be a
+[00:27:22] bit more hard to interpret. So, you're
+[00:27:23] modifying the harness code, and so the
+[00:27:26] the the the changes per round are much
+[00:27:29] larger diffs. And um there's just more
+[00:27:31] surface area for confusion. You can be
+[00:27:34] making changes that are actually
+[00:27:35] decoupled from the output signal you're
+[00:27:37] measuring. So, it's certainly possible,
+[00:27:39] and indeed people have done quite a bit
+[00:27:40] of work hill climbing on agent
+[00:27:41] harnesses. I just think it's a little
+[00:27:43] bit trickier, and text-based surfaces
+[00:27:45] are often a good starting point,
+[00:27:46] prompts, skills, um because they're so
+[00:27:49] clearly coupled to model behavior,
+[00:27:51] and they're easy to modify. The catch
+[00:27:54] actually is that is that things like
+[00:27:55] prompts are very easy to overfit. I've
+[00:27:57] seen that in in many of my uh hill
+[00:27:59] climbing efforts as well. So, like um I
+[00:28:01] don't know if I have a good diagram, but
+[00:28:03] um
+[00:28:04] you know, you have some eval
+[00:28:06] distribution you're hill climbing on,
+[00:28:07] even with these regularizations in
+[00:28:09] place, like you you the eval test train
+[00:28:11] split and so forth. Um prompts are very
+[00:28:14] easy to like wiggle. Claude's very good at
+[00:28:16] wiggling the prompt into a shape that
+[00:28:18] does well in your eval that isn't really
+[00:28:20] representative of what's in production.
+[00:28:22] So, you have to be very careful with
+[00:28:23] prompts, but they are very easy to to
+[00:28:25] modify. So, it's a good starting point,
+[00:28:26] you do need to be careful with
+[00:28:27] overfitting.
+[00:28:29] Uh let's see. Turning a prompt into a
+[00:28:32] skill. So, they're kind of compliment
+[00:28:33] like um maybe do you mean
+[00:28:36] if you if you're like going through some
+[00:28:38] standard operating procedure, when to
+[00:28:39] like promote that to a skill? Okay,
+[00:28:41] yeah. Um
+[00:28:43] that's actually kind of interesting. I
+[00:28:45] think often I and Claude is quite good
+[00:28:47] at judging that. So, basically you can
+[00:28:49] basically go through a workflow and then
+[00:28:51] you can ask Claude, okay, turn that into
+[00:28:53] a skill. I do that all the time. So,
+[00:28:54] Claude is pretty good at like catching,
+[00:28:56] okay, you're doing some repetitive
+[00:28:57] thing, make it a skill.
+[00:28:58] Uh I actually think you should just have
+[00:29:00] Claude do that. Um just tell it, turn
+[00:29:02] this into a skill, and it'll do it. So,
+[00:29:05] usually in the in the case of evals,
+[00:29:08] the setup will be
+[00:29:10] I'll have an existing skill that I've
+[00:29:13] kind of defined and maybe it has some
+[00:29:14] boilerplate starting text and I'll say,
+[00:29:16] okay, I want you to make this skill
+[00:29:17] improved. I want to improve this skill
+[00:29:20] text to basically perform better on this
+[00:29:22] eval. So, that's usually the way I set
+[00:29:24] it up. Like I have a skill boilerplate
+[00:29:26] as a starting point. I know I want this
+[00:29:28] thing to be a skill. Like in this in
+[00:29:30] this case, right? Like I had this skill
+[00:29:33] for the Claude API. So, and it was
+[00:29:35] basically you can imagine it's basically
+[00:29:37] distillation of our docs. It's like
+[00:29:39] go to this page if you want to learn
+[00:29:40] about this, go to this page you want to
+[00:29:41] learn about this. Um it had a bunch of
+[00:29:43] little gotchas and issues, and so my
+[00:29:45] eval performance was pretty low to
+[00:29:46] start. But I had a starting point, and
+[00:29:49] that's what Claude was able to then
+[00:29:51] modify. So, I think usually with skills
+[00:29:53] you're kind of starting with some
+[00:29:54] baseline.
+[00:29:56] And it could be like a very crude
+[00:29:58] default, but then give Claude something
+[00:30:00] to like start from. That's usually the
+[00:30:02] way I would do it. Right. So,
+[00:30:04] verification
+[00:30:05] in um
+[00:30:07] domains that that have kind of
+[00:30:09] open-ended criteria. So, like yeah, I
+[00:30:12] think in general heuristic evaluators
+[00:30:14] are preferable, of course. So, if you
+[00:30:15] can have define like a a a deterministic
+[00:30:19] check for good or bad, that's obviously
+[00:30:21] preferable. So, in the main, that doesn't
+[00:30:23] work. So, what I found is um
+[00:30:26] well-structured rubrics that produce
+[00:30:30] similar uh grades. So, okay, a few
+[00:30:34] different things.
+[00:30:36] Build a rubric that you as a human can
+[00:30:38] reason about first.
+[00:30:41] So, it's like
+[00:30:43] let's say we're grading a piece of like
+[00:30:44] text. Is this good or bad?
+[00:30:47] Build a rubric that like I could look at
+[00:30:49] as a human to like look at some text and
+[00:30:51] say, "Okay, I can grade that." That's
+[00:30:52] point one. Point two, don't use
+[00:30:55] arbitrary scales. I see this all the
+[00:30:57] time like grade it from zero to five.
+[00:31:00] It's very ambiguous. Make it crisp and
+[00:31:01] simple like ideally a binary
+[00:31:04] classification good versus bad. You if
+[00:31:06] you want to evaluate multiple things,
+[00:31:08] you can set up like multiple binary
+[00:31:09] classifiers rather than the worst thing
+[00:31:12] is give Claude like
+[00:31:13] from one to 10 rate this. That's
+[00:31:15] extremely noisy. Another sanity check,
+[00:31:18] test across different models. Have
+[00:31:20] Sonnet, Opus, and Fable all grade using
+[00:31:22] your rubric. If they all disagree,
+[00:31:23] that's like a bad sign. Another test,
+[00:31:26] run replicates. So, basically um like I
+[00:31:30] show here how you want low variance, run
+[00:31:31] replicates with your rubric and make
+[00:31:34] sure it's tight. So, if you do all those
+[00:31:36] things, you can definitely make it work
+[00:31:37] pretty well
+[00:31:39] um for yeah, like text-based answers
+[00:31:41] that are squishy. Like there is no very
+[00:31:43] definitive like way to heuristically
+[00:31:45] check that.
+[00:31:47] Uh but LLM as judge with a good
+[00:31:49] well-structured rubric can be quite
+[00:31:50] effective. Yeah, that's actually a good
+[00:31:52] one. So, actually I I I I should have
+[00:31:54] mentioned that. Uh
+[00:31:55] pairwise comparisons can actually be
+[00:31:56] quite good. It's much easier for humans
+[00:31:59] even models to kind of compare two
+[00:32:00] artifacts than it is to grade an
+[00:32:02] artifact. Like you can typically answer,
+[00:32:05] "Oh, I like this webpage better than
+[00:32:06] this one." versus "I'm sure this webpage
+[00:32:08] grade it between zero and five." It's
+[00:32:10] much harder. So, pairwise comparisons
+[00:32:11] are pretty effective and actually I
+[00:32:13] think that is a good that is a good way
+[00:32:15] uh if if your problem allows for that,
+[00:32:18] that actually can be a effective way to
+[00:32:19] deal with um
+[00:32:22] more ambiguous gradings. Well, I think
+[00:32:24] it goes a bit back to just looking at
+[00:32:26] the data carefully. Kind of relate to
+[00:32:28] the question asked over here. Um
+[00:32:31] when I say the distribution, um I more
+[00:32:34] mean ensuring that
+[00:32:37] um
+[00:32:38] you've sampled some set of cases for
+[00:32:40] your eval set. And making sure those
+[00:32:42] cases represent what you actually care
+[00:32:44] about in production. That's really what
+[00:32:45] I mean by distribution.
+[00:32:47] And so, there are some interesting
+[00:32:48] tricks here. Like one problem that
+[00:32:50] happens is adversarial sampling, where
+[00:32:53] you select like this is
+[00:32:55] maybe a little bit confusing, but I'll
+[00:32:56] try to explain it clearly. You select
+[00:32:59] cases that are specific failures from a
+[00:33:02] from a particular model class. So,
+[00:33:04] models are jagged. And so, you just look
+[00:33:07] at, okay, like Sonnet 5 can't do these
+[00:33:09] examples. I promote them to my eval.
+[00:33:11] Opus 5 may maybe it'll solve them all
+[00:33:13] just because intelligence is jagged. And
+[00:33:16] so, like a particular pocket of one
+[00:33:18] model might just get solved by another.
+[00:33:20] So, typically, a good recommendation is
+[00:33:24] promote eval cases promote cases in eval
+[00:33:26] set that are hard or interesting from
+[00:33:28] first principles, from your own
+[00:33:29] intuition, from looking at production
+[00:33:31] data, not necessarily completely sampled
+[00:33:33] from the failures of any given model.
+[00:33:35] Cuz that can result in kind of this odd
+[00:33:37] distribution that's shaped to the
+[00:33:39] valleys of one particular like jagged
+[00:33:40] model's intelligence that don't apply
+[00:33:42] when you upgrade models.
+[00:33:44] So, like can you use bucket-based evals
+[00:33:46] or do you have to use binary
+[00:33:46] classification? I'm being a little bit
+[00:33:49] overly prescriptive. You obviously can,
+[00:33:51] but just as a general rule, I see people
+[00:33:53] going too far in that direction. So,
+[00:33:55] there'll be some very arbitrary scale
+[00:33:56] between 0 and 10 with unclear grading
+[00:33:58] and rules that even a very small model
+[00:34:00] can't resolve. So, you obviously, if you
+[00:34:02] have a well thought through scale, you
+[00:34:04] obviously can do that as long as it
+[00:34:07] satisfies what we talked about. It has like
+[00:34:08] low variance, it's reproduced across
+[00:34:10] models, a human grader can kind of
+[00:34:13] distinguish between these two grades,
+[00:34:14] that's totally fine. I'm just saying
+[00:34:16] binary is like a shortcut of like if to
+[00:34:18] simplify the problem, usually. And also
+[00:34:20] for grading, you often want to use
+[00:34:21] smaller, cheaper models. So, you really
+[00:34:23] don't want Fable doing your grading and
+[00:34:25] depending on your cost sensitivity. So,
+[00:34:27] um, those are just the recommendations.
+[00:34:28] But obviously, if it's well thought out,
+[00:34:30] that's totally fine. You can think about
+[00:34:31] using, um, yeah, like a multi uh, like a
+[00:34:34] multi multi-category classification.
+[00:34:37] Yeah, that's a good point. Like when
+[00:34:39] when to build evals for what types of
+[00:34:41] problems. Like, is it worth building it
+[00:34:43] for my like personal like use cases or
+[00:34:46] we only doing it for things that are
+[00:34:47] kind of production grade? Um I think it
+[00:34:51] depends on um
+[00:34:54] I let's see. It probably depends a bit
+[00:34:57] on the importance of the task. So, if
+[00:34:58] it's even it's a personal task, you feel
+[00:35:00] that it's quite important, then it would
+[00:35:02] be perfectly reasonable to need eval for
+[00:35:03] it. I think that's totally fine. I think
+[00:35:04] people do that. Kind of varies by
+[00:35:06] person. I personally haven't necessarily
+[00:35:08] built many personal evals for like my
+[00:35:11] personal automations, but um I think if
+[00:35:14] it's a task that's highly important,
+[00:35:16] it's
+[00:35:17] in particular um
+[00:35:19] I okay, I'll give a good example. Like
+[00:35:21] if say people work in finance and like
+[00:35:23] you've automated parts of your your
+[00:35:24] personal workflow, but quality is
+[00:35:27] extremely important. Like, this is a
+[00:35:29] work output that's going to share
+[00:35:30] externally or something, that would
+[00:35:31] absolutely need evals. Even though it's
+[00:35:33] something you've built personally. Um if
+[00:35:35] it's my personal assistant, that's like,
+[00:35:37] you know, it's like a a meeting it's
+[00:35:39] like an app that I built to help me
+[00:35:41] manage my calendar.
+[00:35:42] Uh I may or may not build evals. It
+[00:35:44] depends upon the context. But I do think
+[00:35:46] obviously if it's something that's
+[00:35:46] important for your work, it's like, you
+[00:35:48] know, producing deliverables that are,
+[00:35:50] you know, externally viewed or doing
+[00:35:52] something very sensitive task, you
+[00:35:53] obviously want evals. Even if it's a
+[00:35:54] personal agent.
+[00:35:57] I actually worked at LangChain before
+[00:35:59] Anthropic, but I I I I can't advocate
+[00:36:01] for any one or the other.
+[00:36:03] Um
+[00:36:04] Yeah, I I I plead the fifth on that. Um
+[00:36:07] I mean, look, I've I've used many of
+[00:36:08] them. Um I think actually if you're if
+[00:36:11] you're working at relatively small
+[00:36:12] scale, you obviously could roll your
+[00:36:14] own. Like, you don't necessarily need a
+[00:36:15] fancy observability system. In fact,
+[00:36:17] we're going to be adding to the skill
+[00:36:19] the ability to to um
+[00:36:21] to to uh just like a simple data viewer
+[00:36:23] or we're actually adding to the skill.
+[00:36:24] So, Claude can kind of
+[00:36:26] Claude's very good at kind of building
+[00:36:28] you UIs and visualization surfaces. So,
+[00:36:30] they can kind of roll If you have like a
+[00:36:32] very bespoke problem you want to look at
+[00:36:33] the data for, it can kind of roll you
+[00:36:35] whatever app you want very easily. And
+[00:36:37] and not very expensively, either.
+[00:36:39] No, this is a key point. It's not
+[00:36:41] guaranteed to converge at all. So, I've
+[00:36:42] seen many cases in which the hill
+[00:36:44] climber gets stuck. And actually, we
+[00:36:46] built You can read the blog, but we
+[00:36:47] built a fallback in the hill climber
+[00:36:49] where if it gets stuck for multiple
+[00:36:50] rounds, it'll actually go and basically
+[00:36:52] try to cluster the the remaining failure
+[00:36:55] cases, and it'll try to look for. So,
+[00:36:57] for example, here's the problem.
+[00:36:59] Oftentimes, you'll run the hill climber
+[00:37:01] without having run like a build eval
+[00:37:02] command or with without having built a
+[00:37:04] very like carefully constructed eval
+[00:37:06] set. So, the hill climber will go and
+[00:37:08] look at your evals and try to find are
+[00:37:10] these cases ambiguous like we talked
+[00:37:13] about here. Maybe that last 20% are all
+[00:37:17] faulty grader examples, ambiguous
+[00:37:20] ambiguous instructions. This happens all
+[00:37:21] the time. This is like very common. So,
+[00:37:24] climber is just stuck not because Claude
+[00:37:25] can't do better, it's because the eval
+[00:37:27] is poorly structured. So, the hill
+[00:37:28] climbing skill will try to find that for
+[00:37:30] you.
+[00:37:31] Uh so, we added that. In fact, when I
+[00:37:33] did this hill climbing I talked about
+[00:37:34] here, um this second stage actually went
+[00:37:38] it kind of got stuck, and it went and
+[00:37:40] basically clustered the eval cases and
+[00:37:42] looked at, "Okay, why the failure cases?
+[00:37:43] Why are they failing? What's going on?"
+[00:37:45] It found a bunch of ambiguous cases. It
+[00:37:47] rewrote them. And And anyway, so it'll
+[00:37:49] actually do that for you, but that
+[00:37:51] happens all the time. It's absolutely
+[00:37:52] not guaranteed to converge.
+[00:37:54] And usually it's because of failures in
+[00:37:55] your eval or like kind of
+[00:37:56] misconfigurations in eval.
+[00:37:58] Uh so, that that's really interesting. I
+[00:38:00] You have a lot of respect for the DSPy
+[00:38:01] team and and Omar and and and and and um
+[00:38:04] and colleagues. Uh this this actually
+[00:38:07] just is a skill built like bundled with
+[00:38:09] Claude code. The skill is also open
+[00:38:10] source. So, you could consider taking
+[00:38:12] that skill and and like vendoring it in
+[00:38:14] any other surface. See if you want to
+[00:38:17] could probably work with DSPy. It's just
+[00:38:19] some very simple general instructions
+[00:38:21] for setting up a hill climbing loop
+[00:38:23] following basically these principles.
+[00:38:26] Um so, um that [clears throat] it could
+[00:38:30] be compatible with DSPy. I haven't used
+[00:38:33] DSPy,
+[00:38:34] so I don't know like the details and how
+[00:38:36] it's structured, but um it's possible
+[00:38:38] this skill guidance here could be
+[00:38:39] compatible with it. If you want to like
+[00:38:41] effectively implement this or run it in
+[00:38:43] DSPy, the skill is open source.
+[00:38:46] Uh you said choosing effort level.
+[00:38:49] Yeah, this is a classic one. Effort's
+[00:38:51] confusing, isn't it? Yeah. I'm also
+[00:38:53] confused by effort. It's Yeah. It it is
+[00:38:57] it's non-obvious.
+[00:38:59] Um
+[00:39:01] so um
+[00:39:03] this is a so what's nice is if you have
+[00:39:07] an eval
+[00:39:08] uh the hill climber can absolutely try
+[00:39:11] to configure effort for you.
+[00:39:13] Now, I get it. It's like not that easy
+[00:39:15] to have an eval. So, like it's not a
+[00:39:17] it's not applicable to every problem,
+[00:39:18] but if you happen to have an eval then
+[00:39:20] this hill climber can search through
+[00:39:21] your model effort configurations and it
+[00:39:23] follows a very simple principle. The
+[00:39:24] principle is just simply that typically
+[00:39:26] the stronger model at lower effort is is
+[00:39:29] like more effective uh or it sorry is
+[00:39:32] more token efficient and therefore
+[00:39:33] cheaper than like a weaker model at high
+[00:39:35] effort. That's like the general
+[00:39:36] principle. That actually turns out to be
+[00:39:38] true a lot. So, it'll kind of search
+[00:39:40] through the different models at low
+[00:39:41] effort first and basically continue that
+[00:39:44] search until you see a degradation
+[00:39:45] performance below the baseline. So, for
+[00:39:48] here I don't show it, but like when I
+[00:39:49] tried Haiku for this was 4.5. Haiku we
+[00:39:52] now have 5.5, which is quite a bit
+[00:39:54] better. Uh 4.5 at low effort was a
+[00:39:56] significant regression, so we omitted
+[00:39:58] that that data point. But basically if
+[00:39:59] you have an eval
+[00:40:01] hill climbing is a very good way to try
+[00:40:02] search for a good model effort
+[00:40:04] combination.
+[00:40:05] More general effort guidance if you
+[00:40:06] don't have an eval is obviously tricky
+[00:40:08] and subtle and like I think um people
+[00:40:11] typically um
+[00:40:13] I I will say the guidance I recommend
+[00:40:15] generally on effort is try stronger
+[00:40:17] model low effort
+[00:40:18] in general.
+[00:40:19] Opus 5.5 low effort.
+[00:40:22] Try that. Basically. Uh better models
+[00:40:24] low effort are often more token
+[00:40:26] efficient and therefore cheaper than
+[00:40:28] than weaker models at high effort.
+[00:40:29] That's like the key point I'll I'll
+[00:40:31] leave you with.
+[00:40:32] >> So, not medium?
+[00:40:33] >> Uh try low to start. Um you can always
+[00:40:37] dial back up. But basically I like very
+[00:40:40] smart model not trying too hard. That's
+[00:40:43] a very that's often a sweet spot for for
+[00:40:46] um
+[00:40:47] kind of kind of cost performance.
+[00:40:50] Obviously, you can dial up effort, but I
+[00:40:52] think the the counter is people often
+[00:40:54] start with something like max effort.
+[00:40:55] This extremely token and like token
+[00:40:58] hungry.
+[00:40:59] So, it is actually wise often start like
+[00:41:02] small smarter model low effort and kind
+[00:41:04] of kind of go from there if you need it.
+[00:41:07] Yeah, actually, we talked about this in
+[00:41:11] the blog here. I was open that up. I
+[00:41:14] don't have internet. That's fine. I'll
+[00:41:16] just tell you then.
+[00:41:18] Yeah, so it's basically telling Claude
+[00:41:19] how hard to think.
+[00:41:21] So, low effort saying like don't think
+[00:41:23] as hard as you scale it up it's saying
+[00:41:25] think harder.
+[00:41:27] So, and that's kind of why more
+[00:41:29] fundamentally intelligent model at low
+[00:41:31] effort can actually
+[00:41:33] be more token efficient and therefore
+[00:41:35] cheaper than a cheaper model in terms of
+[00:41:38] base tokens at high effort cuz that that
+[00:41:41] for example, Sonnet 5 at high effort is
+[00:41:43] spending lots and lots of tokens
+[00:41:45] thinking where smarter model low effort
+[00:41:47] will spend fewer tokens thinking at a
+[00:41:49] higher baseline of intelligence. That's
+[00:41:51] kind of the intuition.
+[00:41:52] Yeah, so the question is about setting
+[00:41:54] budgets in hill climbing. So, basically
+[00:41:56] when you when you run this skill and set
+[00:41:57] this up, it'll ask you for a budget. So,
+[00:42:01] um
+[00:42:02] it will manage that for you. It'll track
+[00:42:03] the budget you allocate for the hill
+[00:42:05] climbing round.
+[00:42:06] That can definitely happen though. And
+[00:42:07] that's actually why this is a classic
+[00:42:09] example. That's why designing a good
+[00:42:11] evaluation is really important. If you
+[00:42:12] have if you have a poorly specified
+[00:42:14] evaluation, imagine for example, you
+[00:42:15] have an eval where that final 20% is
+[00:42:18] impossible. You burn a huge number of
+[00:42:20] tokens trying to solve those final you
+[00:42:22] know, 20% of problems that are
+[00:42:23] effectively not solvable.
+[00:42:25] Kind of an eval building, the question
+[00:42:28] is about kind of human loop kind of
+[00:42:30] human Claude collaboration.
+[00:42:32] So, I think
+[00:42:34] I think that um
+[00:42:37] humans still have the role to kind of
+[00:42:40] steer the goal. Like what are we
+[00:42:42] actually trying to evaluate and why is
+[00:42:43] it important? So, it's kind of taste is
+[00:42:45] important. So, like what are you
+[00:42:46] actually trying to see answer?
+[00:42:48] For example, I'll give you I'll take an
+[00:42:50] example from like Hamel's public kind of
+[00:42:52] ant or a public dog fooding of our
+[00:42:56] um build eval skill. So, it's like okay,
+[00:42:58] it's a customer support app. So, let's
+[00:43:00] say that's your application. What
+[00:43:01] matters? What's important? What do you
+[00:43:02] care about? Those are things that a
+[00:43:03] human can guide Claude. Now, once those
+[00:43:06] things are clearly specified, Claude um
+[00:43:10] can look at like raw traces and
+[00:43:12] determine effectively like okay, where
+[00:43:15] is the app likely falling short of my
+[00:43:17] goals? So, that's I think kind of nice
+[00:43:19] collaboration you can have in place.
+[00:43:22] And and and that's actually when like
+[00:43:24] kind of looking at the data is very
+[00:43:25] helpful. So, Claude can kind of help to
+[00:43:26] steer you okay, I've looked at the data.
+[00:43:28] Here's a bunch of cases that look
+[00:43:29] problematic. And that's that's just like
+[00:43:31] having an online evaluator. So, you like
+[00:43:33] imagine you have a tracing system, you
+[00:43:34] have an online evaluator. It has some
+[00:43:36] like grading for like customer
+[00:43:38] satisfaction. It's flagging like here's
+[00:43:41] problematic traces for you. The same
+[00:43:42] kind of thing. Like you're telling
+[00:43:44] Claude, you're telling online evaluator,
+[00:43:46] here's what I care about, here's what I
+[00:43:47] want you check. It can look at the data,
+[00:43:48] it can elevate a bunch of cases that
+[00:43:50] look like these look problematic. Then
+[00:43:52] given those cases,
+[00:43:53] you can like review them, understand
+[00:43:55] them, and then say okay, yes, build me
+[00:43:57] an eval based upon these. That's
+[00:43:58] typically a very nice marriage between
+[00:43:59] like Claude and human when it comes to
+[00:44:01] building evals.
+[00:44:03] Yeah, question is like who's responsible
+[00:44:04] for building evals? I mean, it depends
+[00:44:05] on the problem, it depends upon I mean
+[00:44:07] again throw back at everyone ever
+[00:44:09] everyone is empowered to build evals.
+[00:44:10] So, it's not really delineated per team.
+[00:44:13] It's typically based on ownership like
+[00:44:14] of the product and um
+[00:44:16] I think in particular when you have
+[00:44:18] skills like this, it make it easier to
+[00:44:20] build evals to help climb, it really
+[00:44:21] opens up the number of people that can
+[00:44:24] feasibly kind of build and design evals,
+[00:44:26] which is actually quite nice. So, we've
+[00:44:28] seen like Anthropic many many many
+[00:44:29] different types of roles build
+[00:44:31] evaluations. Um because Claude's so
+[00:44:34] involved and then has can help so much.
+[00:44:36] Um
+[00:44:37] much of the tedium of like um
+[00:44:39] you know, building an eval runner and
+[00:44:41] stuff, that's like Claude can handle all
+[00:44:42] that. So, really it's about what we're
+[00:44:43] talking about before, the human taste
+[00:44:46] guiding the process. What do I care
+[00:44:47] about? And that's very that many
+[00:44:49] different types of roles can can kind of
+[00:44:50] serve that guidance or provide that
+[00:44:52] steering.
+[00:44:53] Um let's see if I have a good one.
+[00:44:56] Uh
+[00:44:59] Right.
+[00:45:00] Um
+[00:45:01] Uh,
+[00:45:03] off top of my head. Um
+[00:45:06] I've seen
+[00:45:08] Okay, I have a good one. I have seen um
+[00:45:11] evals for generative UIs.
+[00:45:14] Um, so that's kind of a good example.
+[00:45:18] Uh, actually I think in that case it was
+[00:45:20] a pairwise judge back to the point that
+[00:45:22] you were making. Like so it's basically
+[00:45:23] comparing
+[00:45:25] like configuration A B,
+[00:45:27] um what is better
+[00:45:29] um between like two different generative
+[00:45:31] UIs and like the grader would would do
+[00:45:33] kind of pairwise comparison. I think
+[00:45:35] then those results were rolled across
+[00:45:36] many trials and scored with something
+[00:45:38] like an Elo score. So that's an example
+[00:45:41] of like generative UI with a pairwise
+[00:45:43] evaluator I I've seen before. There's
+[00:45:45] many other examples I can't think of at
+[00:45:47] the top of my head. Um, but people use
+[00:45:49] LLM as judge all the time. Um, for like
+[00:45:52] retrieval tasks or like writing tasks.
+[00:45:55] Um
+[00:45:55] Uh
+[00:45:57] Look, categorizing traces, looking at
+[00:45:59] traces and saying oh this is bad or
+[00:46:00] good. So like it's extremely common.
+[00:46:03] Yeah. So okay, that
+[00:46:05] a lot of the motivation for the hill
+[00:46:07] climbing work is kind of it is kind of
+[00:46:09] flowing from auto research. Auto
+[00:46:11] research is
+[00:46:13] motivated heavily by the fact that
+[00:46:14] models are getting very very good.
+[00:46:16] They're very good at self-correction. If
+[00:46:17] you give them a well-structured problem
+[00:46:20] uh they can hill climb on. So I think
+[00:46:22] Karpathy's case is a good example of I
+[00:46:24] think I can't remember the precise
+[00:46:25] problem. I think that general setup work
+[00:46:27] with many different formulations. Like
+[00:46:29] it could be um you know, like drive down
+[00:46:31] loss or something. Um, so again there's
+[00:46:33] like a very clear verifiable objective
+[00:46:36] and Claude can look at the objective and
+[00:46:37] use that as a guide to hill climb. Um, I
+[00:46:40] have
+[00:46:41] Yeah, I didn't show it here but I have
+[00:46:42] some other examples doing auto research
+[00:46:45] um in this kind of hill climbing process
+[00:46:46] and it would it would this kind of um
+[00:46:50] This command in particular is actually
+[00:46:52] designed more for eval-based hill
+[00:46:54] climbing where you have like an eval set
+[00:46:55] with a with a split. Auto research was
+[00:46:57] looking more like you build an artifact
+[00:46:59] and like grade it, like look at the loss
+[00:47:01] or something, but the the setup could
+[00:47:03] probably very be very easily kind of
+[00:47:05] modified to work with auto research with
+[00:47:07] the very same intuition. The point is
+[00:47:08] that models are good at autonomous work
+[00:47:10] over long horizons when given a clear um
+[00:47:14] a clear objective or verifiable
+[00:47:17] that that they can reward that they can
+[00:47:19] kind of measure and use to inform what
+[00:47:20] their next move is, they're very very
+[00:47:22] good at autonomously solving problems.
+[00:47:24] So, it's driven by the same intuition as
+[00:47:26] auto research.
+[00:47:28] >> hill climb and then extend into auto
+[00:47:30] research.
+[00:47:31] >> Uh the the methodology for hill climb
+[00:47:33] would So, it's just a it's just a
+[00:47:35] question of a problem formulation. This
+[00:47:37] just to be clear. So, like the auto
+[00:47:39] research from formulation was um
+[00:47:42] was initially focused more on like on
+[00:47:44] like designing, for example, an a like a
+[00:47:47] network with, for example, um solving
+[00:47:50] some problem where you have like a a
+[00:47:51] verifiable objective like loss. That's
+[00:47:53] really it. The the hill climbing process
+[00:47:55] though was like very similar where like
+[00:47:56] Claude runs some experiments. It
+[00:47:58] measures loss. It looks at the results
+[00:48:00] and then adapts, does something else.
+[00:48:01] So, it's the same kind of hill climbing
+[00:48:02] loop, but like in that particular case
+[00:48:05] it's just applied to a slightly
+[00:48:06] different domain.
+[00:48:07] So, it's like you could probably take
+[00:48:09] this skill and basically say, "Okay, set
+[00:48:11] this up for if you had like like a the
+[00:48:13] nanoGPT repo, you could use this skill
+[00:48:15] with it, I'm sure." It would Claude
+[00:48:16] would figure out how to adapt things.
+[00:48:18] Just If you're interested in that, just
+[00:48:19] just like try it. But the the core
+[00:48:21] process is the same. The core intuition
+[00:48:23] is also the same that like models are
+[00:48:24] very very effective at using um at
+[00:48:28] self-correction and hill climbing.
+[00:48:30] That's the key intuition.
+[00:48:32] Yep.
+[00:48:33] Yeah, I kind of try to do that in like
+[00:48:35] this example where I'm looking at cost
+[00:48:37] and um performance. So, you're like kind
+[00:48:40] of jointly optimizing across those two.
+[00:48:42] And yeah, you can just tell Claude the
+[00:48:44] multi-objective.
+[00:48:46] And usually it will just kind of measure
+[00:48:49] multiple objectives and and take that
+[00:48:50] into account. Um that's certainly
+[00:48:52] feasible. And this is a good example of
+[00:48:54] that.
+[00:48:55] >> Have you checked like what's like the
+[00:48:56] max you like
+[00:48:58] >> Uh I mean, yeah, I haven't pushed that
+[00:49:00] far. I think but I've typically looked
+[00:49:02] at as cost and performance.
+[00:49:04] And like speed's another dimension. So,
+[00:49:05] you like cost performance speed. That
+[00:49:07] feels like a pretty reasonable like
+[00:49:08] trifecta of things that you would like
+[00:49:09] kind of jointly measure.
+[00:49:11] Um,
+[00:49:12] yeah, I mean, I think that um, as you
+[00:49:14] kind of scale up, it just hobbles the
+[00:49:17] process of hill climbing a lot cuz
+[00:49:18] there's lots of different objectives
+[00:49:19] that Claude is trying to balance when
+[00:49:20] making these changes. So, I think it'll
+[00:49:22] just it'll make the problem harder, but
+[00:49:24] like it is doable.
+[00:49:26] Maybe you could think about kind of
+[00:49:27] changing one thing at once.
+[00:49:29] Doing doing them serially.
+[00:49:31] Yeah, that's it that's a very good
+[00:49:32] question. Uh, so the prompt audit on this
+[00:49:34] stuff, which actually of all the things
+[00:49:36] I talked about is the simplest thing to
+[00:49:37] try and often is like extremely it's
+[00:49:39] like do the simple thing first. It's
+[00:49:41] very simple and often very effective.
+[00:49:43] Uh,
+[00:49:44] this general the general guidance in the
+[00:49:46] skill applies to
+[00:49:48] um,
+[00:49:49] the the model delineation's a little bit
+[00:49:52] on like it's not precise. These are
+[00:49:54] well-known anti-patterns that
+[00:49:55] definitively frontier models like the 5.5
+[00:49:58] series don't need anymore. How far back
+[00:50:01] do you need to go until these patterns
+[00:50:02] are still like appropriate? It's like
+[00:50:04] not quite clear. I've tried to do some
+[00:50:06] testing. It's maybe like Opus 4.5 is
+[00:50:09] the point at which these things start to
+[00:50:11] like become less relevant. So, it's a
+[00:50:13] little bit squishy. I don't know like
+[00:50:14] precisely the model at which like you
+[00:50:16] need to remove these, but my view is
+[00:50:18] basically
+[00:50:19] when you're doing a migration to the
+[00:50:20] latest to like to like Opus 5.5, just do
+[00:50:23] this. Like definitively like the latest
+[00:50:26] frontier models don't need these
+[00:50:27] patterns.
+[00:50:28] Yeah, yeah, okay, good point. So, the
+[00:50:30] skill does have some model specific
+[00:50:32] caveats. So, the skill takes that into
+[00:50:34] account a little bit. If you're for
+[00:50:35] example going to like Haiku, I get it.
+[00:50:37] Like maybe Haiku like um, isn't quite as
+[00:50:40] autonomous. Maybe it does need slightly
+[00:50:41] more boosters. I don't know if that's
+[00:50:43] true. I'm just kind of yeah, kind of
+[00:50:45] kind of suggesting something. Um, it
+[00:50:48] it'll take that into account. So, it
+[00:50:49] does have some model specific guidance
+[00:50:51] built in. It's like smart to figure out
+[00:50:53] like okay, here's the model you're
+[00:50:54] working with and here's the
+[00:50:54] anti-patterns that we know are are not
+[00:50:56] needed anymore. Um, but it's it's a good
+[00:50:58] call out.
+[00:51:00] Yeah, uh,
+[00:51:03] uh,
+[00:51:04] >> Yeah, um it it is not a Yeah, I I should
+[00:51:08] I should get back to to like to be
+[00:51:10] really clear about this. Um it is not a
+[00:51:15] hard cap. It is basically telling Claude
+[00:51:18] emphasizing how much thinking to do to
+[00:51:20] solve the problem. So, like for example,
+[00:51:23] even if you're on very high effort, you
+[00:51:25] give it a simple problem that won't just
+[00:51:27] arbitrarily spend huge amounts of tokens
+[00:51:28] verifying it. There's some
+[00:51:31] Claude has some thoughtfulness about
+[00:51:32] like what problems require, um you know,
+[00:51:35] all this extra thinking. So, like um
+[00:51:38] And and I don't know if I have any evals
+[00:51:40] that show that. Uh yeah, maybe not. Um
+[00:51:43] but it is suggested thinking. So, that's
+[00:51:47] the kind of way I think it's basically
+[00:51:48] telling Claude how hard to think about a
+[00:51:49] problem. The problem comes up when you
+[00:51:51] have like a harder problem, like a
+[00:51:53] frontier coding problem. That's where at
+[00:51:56] for example hot extra high effort or max
+[00:51:57] effort, you can see huge differences in
+[00:51:59] token usages from like medium or low
+[00:52:01] without much difference in actual
+[00:52:02] outcome because Claude will do more work
+[00:52:04] to verify the result for example. So, I
+[00:52:05] think out in the frontier regime of
+[00:52:08] problems, that's where these effort
+[00:52:09] differences can really result in like
+[00:52:11] big big token spend differences. And
+[00:52:13] that's where we need to be more careful.
+[00:52:15] Yeah, I mean, this um
+[00:52:18] this is So, if you kind of think about
+[00:52:21] what's happening,
+[00:52:22] um it's not dissimilar to to training.
+[00:52:25] And basically you're giving a model some
+[00:52:27] some reward or objective, and it it is
+[00:52:30] indeed trying to make modifications to
+[00:52:32] the system to improve the objective.
+[00:52:34] Um so, yeah, philosophically that is
+[00:52:36] similar. And in fact, even where we're
+[00:52:38] used, you know, we employ some simple
+[00:52:40] principles like test train splits that
+[00:52:41] are often employed like at training
+[00:52:43] time. But the nice thing is these are
+[00:52:45] kind of run time modifications you can
+[00:52:47] make. So, this is basically a way to
+[00:52:49] employ some of those principles, but
+[00:52:50] basically like once a model has been
+[00:52:52] deployed and like you're modifying
+[00:52:54] surfaces like prompts or skills, um you
+[00:52:56] can employ some of those same principles
+[00:52:58] that we use in training, um but like in
+[00:53:01] your particular domain.
+[00:53:02] Uh that's kind of the the big idea.
+[00:53:04] Yeah, so like is Claude aware this being
+[00:53:06] evaled?
+[00:53:07] >> Um, right, exactly. That I think that's
+[00:53:09] something we've published on a fair
+[00:53:11] amount. That is a concern um,
+[00:53:14] in the
+[00:53:16] that that is certainly a concern kind of
+[00:53:18] in in training
+[00:53:20] uh, in different stages of training,
+[00:53:21] absolutely. What we're talking about
+[00:53:23] here um,
+[00:53:25] I
+[00:53:27] I do think
+[00:53:30] um,
+[00:53:30] it could be somewhat of a concern. I
+[00:53:32] think the bigger concern than what we're
+[00:53:34] talking about here is typically more
+[00:53:35] overfitting. So, Claude may know it's
+[00:53:38] kind of being evaluated. Um, but it will
+[00:53:41] find ways to hill climb the objective
+[00:53:45] based upon what's been provided in kind
+[00:53:48] of this eval distribution that has. The
+[00:53:49] classic example being it'll find um,
+[00:53:52] kind of prompt tricks and tuning that
+[00:53:55] aren't applicable to production that
+[00:53:57] indeed improve performance significantly
+[00:53:59] on your eval. So, I've seen that happen
+[00:54:01] that happens all the time. And it's um,
+[00:54:04] it's not necessarily that Claude's like
+[00:54:05] aware it's being evaled and saying like
+[00:54:07] it's it's kind of some um,
+[00:54:10] kind of unexpected behavior. It's more
+[00:54:11] that like okay, you've given it a prompt
+[00:54:14] and Claude can find ways to shape this
+[00:54:15] prompt to like make number go up and
+[00:54:17] it'll just do that. Um, that's why we
+[00:54:19] use things like test train splits and
+[00:54:20] try to regularize. So, I think
+[00:54:22] overfitting is more of the practical
+[00:54:23] concern that we're going to think about
+[00:54:24] here. Um, but it is true that eval
+[00:54:26] awareness is like a broader phenomenon
+[00:54:28] that we we have discussed in in some in
+[00:54:30] some of research blogs.
+[00:54:32] Yeah, that's a good point. Um, kind of
+[00:54:34] what's like the minimum
+[00:54:36] kind of data set that's that's useful.
+[00:54:38] What is like the split between test and
+[00:54:39] train?
+[00:54:40] Uh, I haven't looked at that in depth.
+[00:54:42] Um, frankly, just ask Claude. Like um,
+[00:54:45] when you set this up and you run this
+[00:54:46] command, Claude has some heuristics to
+[00:54:49] reason about the size of the eval set
+[00:54:50] that's actually helpful given the signal
+[00:54:52] or like what you're trying to measure.
+[00:54:54] Claude can kind of reason about like how
+[00:54:55] many examples you should have. And then
+[00:54:57] there's some guidance in the skill for
+[00:54:58] this. So, it's something you can kind of
+[00:55:01] uh, work with Claude to kind of con-
+[00:55:03] tune. But I haven't looked at like spoop
+[00:55:04] or super specifically like uh, different
+[00:55:07] like eval set sizes and like um
+[00:55:09] I think the central concern I would have
+[00:55:12] is more um
+[00:55:14] it is probably overfitting and um and
+[00:55:17] like variance. So, if you have a very
+[00:55:18] very small number of samples, like okay,
+[00:55:20] is that really representative of what
+[00:55:21] you care about? Um
+[00:55:24] uh it's a lot easier to overfit. So,
+[00:55:25] like they may not be out of distribution
+[00:55:27] for your production like what you
+[00:55:29] actually care about. Um they may be
+[00:55:31] easier to overfit. Uh they may be
+[00:55:32] noisier. Um so, anyway, like I think
+[00:55:36] those are the problems that arise when
+[00:55:37] you're in like the very very small
+[00:55:38] sample regime.
+[00:55:40] Yeah, okay. So, the question is about
+[00:55:41] hill climbing on tasks that are like
+[00:55:43] very very long duration. So, kind of
+[00:55:45] that's funny cuz that's actually why I
+[00:55:46] mentioned I typically do like simple
+[00:55:49] surfaces like prompts because they're
+[00:55:50] like very very quick to change.
+[00:55:52] Uh you are right though. There's some
+[00:55:54] cases you're in a regime where like your
+[00:55:56] changes could be very very long
+[00:55:58] duration. That effectively makes hill
+[00:56:00] climbing much harder cuz like it's a
+[00:56:01] much longer duration task then. So, it's
+[00:56:03] a lot longer time. That's actually where
+[00:56:04] that gets into our final point about
+[00:56:06] kind of harness design. If you're going
+[00:56:07] to do that If you're doing like very
+[00:56:09] very long duration hill climbing, you
+[00:56:10] actually need harnesses that can like
+[00:56:13] remain reliable for like many many hours
+[00:56:15] to days. And so, we have we have that
+[00:56:17] obviously internally. We use things like
+[00:56:18] Managed Agents.
+[00:56:19] Um I think it just becomes a bigger
+[00:56:21] infrastructure lift when you're doing
+[00:56:23] that. It can be done. Um it obviously is
+[00:56:25] harder because of what I just mentioned,
+[00:56:27] infrastructure issues, failures, um and
+[00:56:29] just like a lot longer time to see your
+[00:56:31] signal.
+[00:56:32] Uh single turn versus multi-turn evals.
+[00:56:35] Um
+[00:56:35] I mean, yeah. When you're building
+[00:56:37] agents, you do typically need multi-turn
+[00:56:39] evals. Um
+[00:56:41] Claude can help you do that.
+[00:56:43] Particularly like the build eval
+[00:56:44] command, it can look at traces. It can
+[00:56:46] If you give it a bunch of traces, it can
+[00:56:48] help you promote
+[00:56:50] um
+[00:56:51] it can help you promote particular
+[00:56:52] traces to your eval set. Um in terms of
+[00:56:55] grading, um
+[00:56:57] I mean, yeah, there's a lot of different
+[00:56:57] philosophies on this. You can have
+[00:56:59] evaluators looking at the entire trace
+[00:57:01] trajectory. You can have evaluators
+[00:57:02] looking at like the final agent outcome.
+[00:57:04] Uh there's a lot of different
+[00:57:05] philosophies. The build eval command has
+[00:57:06] a lot of guidance. So, like if you have
+[00:57:08] a particular like agent you're
+[00:57:10] interested in, if you basically give
+[00:57:11] this command access to the traces, it
+[00:57:13] should be pretty pretty effective at
+[00:57:15] kind of
+[00:57:16] shaping and designing the eval for you.
+[00:57:18] And if you can tell it I want multi-turn
+[00:57:20] and here's what I'm considering.
+[00:57:21] Um cool.
+[00:57:23] Interesting. So like for context
+[00:57:24] engineering, what promotes of
+[00:57:26] reliability a lot versus what's like
+[00:57:27] overhyped as a technique? Um
+[00:57:30] Uh let's see.
+[00:57:33] Um
+[00:57:34] So okay, the key thing I think
+[00:57:38] and I've actually I've mentioned this in
+[00:57:39] the past, we mentioned in the paper too.
+[00:57:41] I think the recursive language model
+[00:57:43] work, the RLM idea is quite good.
+[00:57:45] Um and we actually employ that idea
+[00:57:47] here. I think a very important thing in
+[00:57:48] terms of context engineering reliability
+[00:57:50] is decoupling brain and hands. So
+[00:57:53] basically designing your system such
+[00:57:54] that it um the con-
+[00:57:58] the key point is this, the context
+[00:58:00] object is independent from the harness.
+[00:58:02] So the harness is basically your Claude
+[00:58:04] can effectively query this context
+[00:58:06] object that lives independently. That's
+[00:58:08] beneficial for all these different
+[00:58:09] reasons. One, the context is always
+[00:58:12] recoverable. So typically imagine
+[00:58:14] alternatively you just have like, you
+[00:58:16] know, a message history, you do a
+[00:58:17] compaction event and everything you
+[00:58:18] compacted is gone. You can never recover
+[00:58:20] it if you haven't like backed it up in
+[00:58:22] the way like this. That's why I actually
+[00:58:24] like this architecture a lot for
+[00:58:25] reliability in terms of context
+[00:58:27] engineering. It does exactly what the
+[00:58:28] RLM work advocated. Like it's basically
+[00:58:30] splitting the context object from the
+[00:58:31] model and the context object comes
+[00:58:33] linked the model can interrogate through
+[00:58:35] different mechanisms. And that's exactly
+[00:58:37] what we do here.
+[00:58:38] So interrogating that session log is
+[00:58:41] basically done by the harness through
+[00:58:42] different tools. Um and that's a very
+[00:58:44] nice architecture I think. So I think
+[00:58:46] that's like one of the tricks that I I
+[00:58:47] found to be very nice for reliability,
+[00:58:48] recoverability,
+[00:58:50] um
+[00:58:51] and in particular building like long
+[00:58:52] duration agents, it's hard to know what
+[00:58:55] will matter in the future. So when you
+[00:58:57] do a compaction,
+[00:58:58] um
+[00:58:59] you don't necessarily know if you need
+[00:59:01] to like go back and interrogate that
+[00:59:03] context that you're summarizing. And
+[00:59:04] when you have it backed up in an object
+[00:59:06] like this, you can always do that.
+[00:59:08] So I think that's a trick that I I I a
+[00:59:10] lot. Uh and the RLM work was was very
+[00:59:13] nice in that direction.
+[00:59:15] Yep.
+[00:59:17] Yeah. Well, I think [clears throat]
+[00:59:18] that's why,
+[00:59:20] you know,
+[00:59:21] we spend a lot of time on
+[00:59:24] um, good eval design.
+[00:59:26] Um,
+[00:59:27] yeah, these models,
+[00:59:30] um, are non-deterministic.
+[00:59:32] Um, in many cases the operating regimes
+[00:59:35] where outcomes are not easily
+[00:59:36] verifiable, like not everything is a
+[00:59:38] coding problem. Many cases you want
+[00:59:40] agents to do things that are more
+[00:59:41] judgment-based, more free-form
+[00:59:43] open-ended outputs. In those regimes,
+[00:59:45] you have to be very smart about your
+[00:59:47] eval design so that you're giving Claude
+[00:59:49] an objective that I can climb. And I
+[00:59:51] think all the things we talked about in
+[00:59:52] terms of like kind of verifier design,
+[00:59:54] like
+[00:59:55] good objectives, clear grading scales,
+[00:59:58] multiple models can validate the result,
+[01:00:00] low variance, all are like super
+[01:00:01] important when designing like the
+[01:00:04] problem that you want Claude to go and
+[01:00:06] solve. So, I think,
+[01:00:08] as kind of mentioned it in this talk,
+[01:00:10] when it comes to unhobbling frontier
+[01:00:11] models, I think
+[01:00:13] spending a lot of time up front in a
+[01:00:14] very very good eval design is a way to
+[01:00:16] make sure that you're getting the most
+[01:00:18] out of the model because if you said
+[01:00:21] tell the model, "Okay, optimize
+[01:00:22] performance on this like very poorly
+[01:00:24] structured evaluation." It won't get
+[01:00:25] anywhere. And it's not the model's fault
+[01:00:27] because you haven't thought through the
+[01:00:28] eval, it's because cases are impossible
+[01:00:30] or ambiguous. So, I think part of the
+[01:00:33] message here is to just be thoughtful
+[01:00:35] and spend a lot of time up front in the
+[01:00:36] eval design such that you kind of set up
+[01:00:40] frontier models for success and
+[01:00:41] effectively unhobble them. That was kind
+[01:00:42] of the the namesake of the talk.
+[01:00:45] Maybe, um, I we're probably at time and
+[01:00:47] everyone's probably tired. I was at a
+[01:00:49] wedding last night, so I'm very tired.
+[01:00:51] That was a funny timing, but it's very
+[01:00:53] nice to be here, of course. And
+[01:00:54] actually, it's been uh, it's been a lot
+[01:00:55] of fun, very good questions. Um, maybe
+[01:00:57] one more question over here.
+[01:01:00] Mm. Yeah, so I think that's a good
+[01:01:02] question. It's about like, yeah, models
+[01:01:03] are getting better all the time, so
+[01:01:04] like, how do I modify my evals to keep
+[01:01:08] up? And I think simply it should be the
+[01:01:10] case that as models get better, you
+[01:01:12] should see performance on eval going up
+[01:01:13] like we see in this diagram. If you
+[01:01:15] don't see that, then I would go back and
+[01:01:16] question how the eval was structured. Um it
+[01:01:19] is true like Yeah, we see this all the
+[01:01:21] time. Models are saturating eval very
+[01:01:23] quickly. So, we do need the development
+[01:01:27] of new and harder evals that like keep
+[01:01:29] up with the material. And actually,
+[01:01:30] that's a good point. It's actually
+[01:01:31] pretty hard. It's hard to come up with
+[01:01:33] evals that really challenge like the
+[01:01:35] best models today, like the Fables
+[01:01:37] Opus 5.5 even.
+[01:01:39] Um so, I do think it's a it's a it's a
+[01:01:42] it's a recurring challenge
+[01:01:45] um to design good evals that test the
+[01:01:47] capabilities of the best models.
+[01:01:50] It's absolutely a challenge. Um but I do
+[01:01:53] think so, if you have evals that you
+[01:01:54] built sometime ago, you should be seeing
+[01:01:57] this trend on them. So, as models get
+[01:01:59] better, you should be seeing performance
+[01:02:00] going up and up and up. If you don't, I
+[01:02:02] would question things about the eval
+[01:02:03] itself. That's kind of the key point I
+[01:02:05] would make.
+[01:02:06] I mean, I've actually seen a lot of
+[01:02:08] interesting work on this from the
+[01:02:09] various trace and companies.
+[01:02:11] So, like the the the like workflow I've
+[01:02:14] seen quite a bit of is like you have
+[01:02:15] agents that are deployed, they're like
+[01:02:18] producing traces, you have an online
+[01:02:20] eval you're looking at those traces and
+[01:02:21] scoring them.
+[01:02:22] Score Trace that score poorly are like
+[01:02:24] then pulled into some offline eval set,
+[01:02:27] you kind of then hill climb on that.
+[01:02:30] And then that loop continues. That's a
+[01:02:32] good That's like a very good pattern, I
+[01:02:33] think. It's very reasonable. Uh and so,
+[01:02:36] what's happening there is you're
+[01:02:37] typically like hill climbing on these
+[01:02:39] cases that you're failing on in
+[01:02:40] production.
+[01:02:41] And then you're like, you know, putting
+[01:02:43] those in regression tests once they all
+[01:02:44] pass, and that like continues until in
+[01:02:47] production you're seeing very few
+[01:02:48] failures. So, that actually is a good
+[01:02:51] general way to structure your kind of
+[01:02:54] eval loop and in many of the, you know,
+[01:02:56] the LangChains, Arize, Braintrusts, all
+[01:03:00] these companies kind of have product
+[01:03:01] offerings that offer this kind of
+[01:03:04] this like outer loop, which does seem
+[01:03:06] quite quite effective.
+[01:03:08] You do. So, the challenge there becomes
+[01:03:11] okay, well, what are your online
+[01:03:12] evaluators? So, like okay, how do you
+[01:03:13] know what good is in production and what
+[01:03:14] are you promoting to your offline eval
+[01:03:16] sets? And
+[01:03:17] Um, yeah, it's not easy at all.
+[01:03:21] Um,
+[01:03:23] I think that is Yeah, that's like
+[01:03:25] there's like a lot of product work in
+[01:03:27] that particular domain now. As far as I
+[01:03:28] haven't followed that area too closely.
+[01:03:31] Um, like what all the latest um, kind of
+[01:03:34] updates that the various like tracing
+[01:03:35] observability companies are working on,
+[01:03:37] but my understanding is that it's like a
+[01:03:38] very very active area of like product
+[01:03:40] development among that class of
+[01:03:41] companies.
+[01:03:43] So, that's pretty interesting.
+[01:03:46] Uh, okay, with that maybe we'll let
+[01:03:47] everyone go.
+[01:03:48] And um, very nice to see you all. So,
+[01:03:51] feel free to reach out to me anywhere
+[01:03:53] and thanks for the time.
+[01:03:55] >> [applause]
